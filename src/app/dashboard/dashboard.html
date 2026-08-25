@@ -1,0 +1,14 @@
+
+        <div class="nk-main bg-lighter">
+            <div class="nk-sidebar nk-sidebar-fixed is-dark" [ngClass]="sidebar.isExpanded() ? (hasHover() ? 'is-compact has-hover' : 'is-compact') : sidebar.isExpandedm() ? 'nk-sidebar-active':''">
+                <app-side-menus (hoverin)="hoverEvt($event)"></app-side-menus>
+            </div>
+            <div class="nk-wrap">
+                <div class="nk-header nk-header-fixed is-light">
+                    <app-header></app-header>
+                </div>
+                <div class="nk-content bg-lighter">
+                    <app-page></app-page>
+                </div>
+            </div>
+        </div>

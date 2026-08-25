@@ -1,0 +1,39 @@
+ .w-150{
+  max-width: 200px;
+ }
+ th{
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 22;
+    font-size: 14px;
+    color: #8094ae;
+    font-weight: 500;
+    padding: 0.85rem 1.25rem !important;
+    border-top: 1px solid #dbdfea;
+    border-bottom: 1px solid #dbdfea;
+    text-transform: capitalize;
+    div{
+      padding: 0;
+    }
+}
+td{
+    vertical-align: middle;
+    font-size: 14px;
+    color: #322772;
+    padding: 1rem 1.25rem !important;
+    div{
+      padding: 0;
+    }
+    .text-id{
+    color: #31924f;
+    }
+}
+
+
+.c-pg {
+    width: 60px;
+    padding: 0.4rem;
+    line-height: 0.75rem;
+    min-height: calc(1.125rem + 2px);
+}

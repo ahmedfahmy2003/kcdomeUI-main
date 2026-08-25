@@ -1,0 +1,19 @@
+<div class="modal custom-modal fade" [id]="ids">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5"></h1>
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+          </div>
+        <div class="modal-body overflow-auto">
+            @if(type === 'callingMenu'){
+              @if(menus() && recordId()){<details-page (closeNewRecord)="closeNewRecordEvent($event)" (deletedSubRecord)="deletedRecordEvent($event)" [mainMenuId]="menuId()" [pmenuid]="pmenuid" [page]="page" [subwfstatus]="wfStatus" [submrEnabledStatus]="mrEnabledStatus()" [_subwfEnabledStatus]="wfEnabledStatus()" [_recordId]="recordId()" [companyID]="companyID()" [menulabel]="menus()" [_pageType]="'callingmenu'" [recordList]="recordList" [ids]="ids" [subreadonly]="readonly()"></details-page>}
+              @if(menus() && !recordId()){<p class="text-danger h4 text-center">Linked Query returned Null ID </p>}
+            }
+            @else if(type === 'addNew'){
+              @if(menus() && menuId()){<details-page (closeNewRecord)="closeNewRecordEvent($event)" (deletedSubRecord)="deletedRecordEvent($event)" [mainMenuId]="menuId()" [pmenuid]="pmenuid" [page]="page" [_recordId]="recordId()" [subwfstatus]="wfStatus" [companyID]="companyID()" [submrEnabledStatus]="mrEnabledStatus()" [_subwfEnabledStatus]="wfEnabledStatus()" [menulabel]="menus()" [_pageType]="'callingmenu'" [recordList]="recordList" [ids]="ids" [subreadonly]="readonly()"></details-page>}
+            }
+        </div>
+      </div>
+    </div>
+</div>

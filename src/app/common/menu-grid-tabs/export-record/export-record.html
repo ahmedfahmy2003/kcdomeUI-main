@@ -1,0 +1,13 @@
+<div class="kc-dropdown">
+    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="toggle()">
+        <em class="icon ni ni-download-cloud"></em>
+    </span>
+     @if(isOpen()){
+        <div class="kc-dropdown-menu py-2">
+            <div><span class="small px-2 cursor-pointer"> Export All Fields <input class="form-check-input border border-dark ms-2" [(ngModel)]="exportAll" type="checkbox" value=""></span></div>
+            <hr class="my-2" />
+            <div (click)="exportData(exportid, pageSize)"><span class="small px-2 cursor-pointer">Export Current Page</span></div>
+            <div (click)="exportData(exportid, resultsLength)" class="mt-2"><span class="small px-2 cursor-pointer">Export All Data</span></div>
+        </div>
+     }
+</div>

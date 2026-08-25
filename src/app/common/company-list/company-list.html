@@ -1,0 +1,48 @@
+ <div class="kc-dropdown logo-body">
+                            <a class="kc-dropdown-toggle" (click)="toggle()">
+                            @if(selectedCompany() && selectedCompany()?.logo){
+                              <img src="data:image/png;base64,{{selectedCompany()?.logo}}" class="logo-img" style="max-height: 24px;" alt="Logo" />
+                            }
+                            @else if(selectedCompany() && selectedCompany()?.descriptionEn){
+                                <span class="text-wrap hc-name">
+                                  @if(langid === 1){
+                                    {{selectedCompany()?.descriptionEn}}
+                                  }
+                                  @else if(langid === 2 && selectedCompany()?.descriptionAr){
+                                    {{selectedCompany()?.descriptionAr}}
+                                  }
+                                  @else {
+                                    {{selectedCompany()?.descriptionEn}}
+                                  }
+                                </span>
+                            }
+                          </a>
+                          @if (isOpen()) {
+                          <div class="kc-dropdown-menu menu-dark">
+                            <div class="dropdown-body">
+                            @for (company of companyList; track company; let companyIndex = $index){
+                              <div class="row mx-0" [ngClass]="companyIndex !== 0 ? 'border-top':''" (click)="setCompany(companyIndex)">
+                                <div class="p-3 col-4">
+                                @if(company.logo){
+                                  <img src="data:image/png;base64,{{company.logo}}" class="logo-img" style="height: 24px;" />
+                                } 
+                                </div>
+                                <div class="p-3 col-8 px-0">
+                                  <span class="dropdown-item ps-0 text-truncate">
+                                    @if(langid === 1){
+                                      {{company.descriptionEn}}
+                                    }
+                                    @else if(langid === 2 && company.descriptionAr){
+                                      {{company.descriptionAr}}
+                                    }
+                                    @else {
+                                      {{company.descriptionEn}}
+                                    }  
+                                  </span>
+                                </div>
+                              </div>
+                            }
+                            </div>
+                          </div>
+                        }
+                        </div>

@@ -1,0 +1,46 @@
+.nk-menu-sub{
+    .nk-menu-sub{
+        margin-left: 48px;
+        ul{
+            margin-left: 20px;
+        }
+        .nk-menu-link{
+            padding-left: 0;
+        }
+    }
+}
+
+.nk-menu-sub .nk-menu-link{
+    padding-right: 8px;
+}
+
+img{
+    height: 14px;
+    width: 14px;
+}
+
+.more-v{
+    right: 8%;
+    margin-top: -24px;
+}
+
+.kc-dropdown {
+    height: 20px;
+    color: #6e82a5;
+}
+
+.kc-dropdown-menu {
+    width: 150px;
+    background: #18212d;
+    border-color: #263547;
+    right: 40%;
+    top: 50%; 
+}
+
+a{
+    color: #8094ae !important;
+}
+
+a:hover{
+    color: #6576ff !important;
+}

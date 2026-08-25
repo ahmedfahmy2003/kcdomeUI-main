@@ -1,0 +1,117 @@
+<div>
+<div class="row mx-0 border-bottom" [ngClass]="page.pageType === 'prerequisitemenu' ? 'bg-white pt-2':''">
+    <div class="col-3 px-0">
+      <ul class="nav nav-tabs border-bottom-0">
+        @if(activeSubTab() === 'grid'){
+          <li class="nav-item">
+            <a class="nav-link px-1 py-1 small active"><i class="feather icon-grid me-1"></i> Grid <i class="fa fa-refresh ms-1 cursor-pointer" (click)="onRefresh()"></i></a>
+          </li>
+        }
+        @else{
+          <li class="nav-item">
+            <a class="nav-link px-1 py-1 small" (click)="setTabs('grid')"><i class="feather icon-grid me-1"></i> Grid <i class="fa fa-refresh ms-1"></i></a>
+          </li>
+        }
+        @if(showSubDetails()){
+          <li class="nav-item">
+            <a class="nav-link px-1 py-1 small" [ngClass]="activeSubTab() === 'rdetails' ? 'active':''" (click)="setTabs('rdetails')">Record ID: {{subRecordId}}</a>
+          </li>
+        }
+        @else if(newsubrecord() && menulabel()){
+          <li class="nav-item">
+            <a class="nav-link px-1 py-1 small" [ngClass]="activeSubTab() === 'newrecord' ? 'active':''" (click)="setTabs('newrecord')"><i class="fa fa-plus me-1"></i> New Record</a>
+          </li>
+        }
+        @if(menuaccess() && menuaccess().InsertFlag){
+          @if(pageType ()=== 'dimension' || (pageType() === 'callingsubmenu' && !readOnly) ||  pageType() !== 'submenu' || (pageType() === 'submenu' && menulabel() && ((!readOnly && !disabelbtns) || ((wfEnabledStatus || mrEnabledStatus()) && !editablefielddetails)))){
+          <li class="nav-item" [ngClass]="activeSubTab() === 'grid' && !newsubrecord() ?'':'d-none'">
+            <a class="nav-link px-2 py-1 cursor-pointer" (click)="addNewSubRecord()"><i class="fa fa-plus"></i></a>
+          </li>
+          }
+        }
+      </ul>
+    </div>
+    <div class="col-9 px-0">
+      @if(showSubDetails() && activeSubTab() === 'rdetails'){
+        <ul class="nav nav-tabs float-end border-bottom-0">
+          <li class="nav-item">
+            <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'details' ? 'active':''" (click)="setGridTabs('details')"><i class="fa fa-file-text me-1"></i> Details</a>
+          </li>
+        @if(page && page.pageType !== 'prerequisitemenu'){
+          @if(menuaccess() && menuaccess().ApplyDimensions){
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'dimensions' ? 'active':''" (click)="setGridTabs('dimensions')"><i class="fa fa-cubes me-1"></i> Dimensions</a>
+            </li>
+          }
+          @if(menuaccess() && menuaccess().ApplyWorkflow){
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'workflow' ? 'active':''" (click)="setGridTabs('workflow')"><i class="fa fa-fast-forward me-1"></i> Workflow</a>
+            </li>
+          }
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'notes' ? 'active':''" (click)="setGridTabs('notes')"><i class="fa fa-pencil-alt me-1"></i> Notes @if(notesCount()){<span class="badge rounded-pill bg-warning">{{notesCount()}}</span>}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small"  [ngClass]="activeGridTab() === 'attachments' ? 'active':''" (click)="setGridTabs('attachments')"><i class="fa fa-paperclip me-1"></i> Attachments @if(filecount()){<span class="badge rounded-pill bg-warning">{{filecount()}}</span>}</a>
+            </li>  
+            @if(menuaccess() && menuaccess().AllowComments){
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'comments' ? 'active':''" (click)="setTabs('comments')"><i class="fa fa-comment me-1"></i> Comments</a>
+              </li>
+            }
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'notifications' ? 'active':''" (click)="setGridTabs('notifications')"><i class="fa fa-bullhorn me-1"></i> Notifications</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab() === 'logdata' ? 'active':''" (click)="setGridTabs('logdata')"><i class="fa fa-database me-1"></i> Log Data</a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div> 
+  <div class="mb-1 bg-white border border-top-0">
+    @if(activeSubTab() === 'grid'){ 
+      <div [ngClass]="activeSubTab() === 'grid' ? '':'d-none'">
+        @if(!isaLoading()){
+          @if(pageType() === 'submenu'){
+            <editable-grid-tabs (deletedSubRecord)="deletedRecordEvent($event)" [submrEnabledStatus]="mrEnabledStatus()" [_menuaccess]="menuaccess()" [precordid]="precordid" [recordList]="recordList" [_pmenuid]="pmenuid" [_readOnly]="readOnly" [_wfstatus]="wfstatus" [wfStatus]="wfStatus" [mrEnabledStatus]="mrEnabledStatus()" [_wfEnabledStatus]="wfEnabledStatus" [_otherUser]="otherUser" [newRecordAdded]="newRecordAdded()" [newRecordID]="newrecordid()" [page]="page" [companyID]="companyID()" [pageType]="pageType()" [recordDeleted]="recorddeleted" [_subMenuId]="menuId()" [filterKey]="filterKey()" [fieldQuery]="fieldQuery" [subRecordId]="recordId()" [subeditablefielddetails]="editablefielddetails" (subRecordDetail)="subRecordDetail($event)" (rowCount)="rowCountEvent($event)"></editable-grid-tabs>
+          }@else{
+            <editable-grid-tabs (deletedSubRecord)="deletedRecordEvent($event)" [submrEnabledStatus]="mrEnabledStatus()" [_menuaccess]="menuaccess()" [precordid]="precordid" [recordList]="recordList" [_pmenuid]="pmenuid" [_readOnly]="readOnly" [_wfstatus]="wfstatus" [wfStatus]="wfStatus" [mrEnabledStatus]="mrEnabledStatus()" [_wfEnabledStatus]="wfEnabledStatus" [_otherUser]="otherUser" [newRecordAdded]="newRecordAdded()" [newRecordID]="newrecordid()" [page]="page" [companyID]="companyID()" [pageType]="pageType()" [recordDeleted]="recorddeleted" [_subMenuId]="menuId()" [filterKey]="filterKey()" [fieldQuery]="fieldQuery" [subRecordId]="recordId()" [subeditablefielddetails]="editablefielddetails" (subRecordDetail)="subRecordDetail($event)" (rowCount)="rowCountEvent($event)" (prerequisiteType)="prerequisiteTypeEvent($event)" [recordList]="recordList" [ngClass]="_prerequisitesType() !== 'grid' ? '':'d-none'" ></editable-grid-tabs>
+          }
+        }
+      </div>  
+    }
+    @if(activeSubTab() === 'newrecord'){
+      <div [ngClass]="activeSubTab() === 'newrecord' ? '':'d-none'" class="border-top">
+        <details-page (closeNewRecord)="closeNewRecordEvent($event)" [prerequisitesType]="_prerequisitesType()" [_precordid]="precordid" [pmenuid]="pmenuid" [plinkedfieldid]="filterKey()" [page]="page" [menuaccess]="menuaccess()" [companyID]="companyID()" [_pageType]="pageType()" (newSubRecordId)="newSubRecordIdEvent($event)" [mainMenuId]="menuId()" [menulabel]="menulabel()" [_newRecord]="true" [recordList]="recordList" [seqrowcount]="rowcount()"></details-page>      
+      </div>  
+    }
+    @if(activeSubTab() === 'rdetails'){
+      <details-page (closeNewRecord)="closeNewRecordEvent($event)" (wfstatusemit)="wfstatusEvent($event)" (deletedSubRecord)="deletedRecordEvent($event)" (disablerecordemit)="disablerecordEvent($event)" (enableAttachmentEmit)="enableAttachmentEvt($event)" (enableDimensionEmit)="enableDimensionEvt($event)" (enableNoteEmit)="enableNoteEvt($event)" [_associateUser]="associateUser" [prerequisitesType]="_prerequisitesType()" (prerequisiteType)="prerequisiteTypeEvent($event)" [subwfstatus]="wfStatus" [submrEnabledStatus]="mrEnabledStatus()" [_subwfEnabledStatus]="wfEnabledStatus" [_subotherUser]="otherUser" [subeditablefielddetails]="editablefielddetails" [subreadonly]="readOnly" [page]="page" [menuaccess]="menuaccess()" [ngClass]="activeGridTab() === 'details' ? '':'d-none'" [companyID]="companyID()" [_pageType]="pageType()" [mainMenuId]="menuId()" [pmenuid]="pmenuid" [_precordid]="precordid" [_recordId]="subRecordId" [menulabel]="menulabel()" [_newRecord]="false" [recordList]="recordList"></details-page>      
+      @if(activeGridTab() === 'dimensions'){
+        <dimensions-page  [_readOnly]="readOnly" [wfstatus]="wfStatus" [_subwfEnabledStatus]="wfEnabledStatus" [submrEnabledStatus]="mrEnabledStatus()" [companyID]="companyID()" [recordList]="recordList" [menuId]="menuId()" [recordId]="subRecordId"></dimensions-page>
+      }        
+      @else if(activeGridTab() === 'workflow'){
+        <workflow-page></workflow-page> 
+      }
+      @else if(activeGridTab() === 'notes'){
+        @if(!isLoading() && !wfstatus && !disablerecord && !enableNote){<notes-page [readOnly]="readOnly" [page]="page" [notesCount]="notesCount()" [menuId]="menuId()" [companyID]="companyID()" [notesList]="notesList" [recordId]="recordId" (fileCountNote)="fileCountNoteEvent($event)"></notes-page>}
+        @if(!isLoading() && (wfstatus || disablerecord || enableNote)){<notes-page [readOnly]="readOnly"  [enableNote]="enableNote" [page]="page" [wfstatus]="wfstatus" [notesCount]="notesCount()" [menuId]="menuId()" [companyID]="companyID()" [notesList]="notesList" [recordId]="recordId" (fileCountNote)="fileCountNoteEvent($event)"></notes-page>}
+      }
+      @else if(activeGridTab() === 'attachments'){
+        @if(!isLoading() && !wfstatus && !disablerecord && !enableAttachment){<attachments-page [page]="page" [menuId]="menuId()" [recordId]="subRecordId" [_itemlist]="itemlist" [totalCount]="filecount()" (fileCountNew)="fileCountEvent($event)" (getallAttachments)="getallAttachmentsEvt($event)"></attachments-page>}
+        @if(!isLoading() && (wfstatus || disablerecord || enableAttachment)){<attachments-page [wfstatus]="wfstatus" [disablerecord]="disablerecord" [enableAttachment]="enableAttachment" [page]="page" [menuId]="menuId()" [recordId]="subRecordId" [_itemlist]="itemlist" [totalCount]="filecount()" (fileCountNew)="fileCountEvent($event)" (getallAttachments)="getallAttachmentsEvt($event)"></attachments-page>}
+      }
+      @else if(activeGridTab() === 'comments'){
+        <comments-page></comments-page>
+      }
+      @else if(activeGridTab() === 'notifications'){
+        <notification-page></notification-page>
+      }
+      @else if(activeGridTab() === 'logdata'){
+        <logdata-page [recordId]="subRecordId" [menuid]="menuId()"></logdata-page>
+      }
+    }
+  </div>
+</div>

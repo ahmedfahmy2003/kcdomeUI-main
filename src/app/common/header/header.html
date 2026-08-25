@@ -1,0 +1,34 @@
+
+                    <div class="container-fluid">
+                        <div class="nk-header-wrap">
+                            <div class="nk-menu-trigger d-xl-none ms-n1">
+                                <a class="nk-nav-toggle nk-quick-nav-icon" (click)="sidebar.mtoggle()"><em class="icon ni ni-menu"></em></a>
+                            </div>
+                            <div class="nk-header-brand d-xl-none">
+                               <app-company-list></app-company-list>
+                            </div><!-- .nk-header-brand -->
+                            <div class="nk-header-news d-none d-xl-block">
+                                <div class="nk-news-list">
+                                   
+                                </div>
+                            </div><!-- .nk-header-news -->
+                            <div class="nk-header-tools">
+                                <ul class="nk-quick-nav">
+                                   <!--- <li>
+                                        <app-report-list></app-report-list>
+                                    </li>-->
+                                    <li class="language-dropdown d-none d-sm-block me-n1">
+                                        <app-language></app-language>
+                                    </li>
+                                    <!-- .dropdown -->
+                                    <li class="user-dropdown">
+                                        <user-menu></user-menu>
+                                    </li><!-- .dropdown -->
+                                    <li class="notification-dropdown me-n1">
+                                        <app-notification></app-notification>
+                                    </li><!-- .dropdown -->
+                                </ul><!-- .nk-quick-nav -->
+                            </div><!-- .nk-header-tools -->
+                        </div><!-- .nk-header-wrap -->
+                    </div><!-- .container-fliud -->
+                

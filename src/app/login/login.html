@@ -1,0 +1,94 @@
+<!-- Main Wrapper -->
+<div class="npc-default pg-auth no-touch nk-nio-theme">
+<div class="nk-main">
+  <div class="nk-wrap nk-wrap-nosidebar">
+    <div class="nk-content bg-lighter">
+      <div class="nk-block nk-block-middle nk-auth-body wide-xs">
+        <div class="brand-logo pb-4 text-center">
+          <img class="logo-img logo-img-lg logo-dark" src="img/logo2.png" alt="Logo">
+        </div>  
+          
+        <div class="card card-bordered">
+          <div class="card-inner card-inner-lg">
+            <div class="nk-block-head">
+              <div class="nk-block-head-content">
+                <h4 class="nk-block-title">Sign-In</h4>
+                <div class="nk-block-des">
+                  <p>Access to our dashboard</p>
+                </div>
+              </div>
+            </div>
+            
+            <form [formGroup]="form" (ngSubmit)="loginFormSubmit()">
+                  <div class="form-group">
+                    <div class="form-label-group">
+                      <label for="username" class="form-label">Username</label>
+                    </div>
+                    <div class="form-control-wrap">
+                    <input id="username" class="form-control form-control-lg" type="text" formControlName="username" 
+                      [ngClass]="{'is-invalid': f['username'].touched && f['username'].invalid}"/>
+                      @if (f['username'].touched && f['username'].invalid) {
+                        <div class="invalid-feedback">
+                          @if (f['username'].errors && f['username'].errors['required']) {
+                            <div>
+                              Username is required.
+                            </div>
+                          }
+                        </div>
+                      }
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-label-group">
+                        <label for="password" class="form-label">Password</label>
+                        <a class="link link-primary link-sm">Forgot Password?</a>
+                      </div>
+                      <div class="form-control-wrap">
+                          <span class="form-icon form-icon-right passcode-switch lg cursor-pointer" (click)="pwdToggle()">
+                            <em class="passcode-icon icon-show icon ni" [ngClass]="show_password === true ? 'ni-eye-off' : 'ni-eye'"></em>
+                          </span>
+                        <input class="form-control form-control-lg" [type]="show_password ? 'text' : 'password'" formControlName="password" id="password" [ngClass]="{'is-invalid': f['password'].touched && f['password'].invalid}" />
+                        
+                          @if (f['password'].touched && f['password'].invalid) {
+                            <div class="invalid-feedback">
+                              @if (f['password'].errors && f['password'].errors['required']) {
+                                <div>
+                                  Password is required.
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div class="input-block mb-3">
+                        <div class="row">
+                          <div class="col-6 text-danger small">
+                            {{errorMessage()}}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <button [disabled]="form.invalid || isLoading()" class="btn btn-lg btn-primary btn-block" type="submit">
+                          Sign in
+                        </button> 
+                      </div>
+                      @if(isLoading()){
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border spinner" role="status"></div>
+                        </div>
+                      }
+            </form>
+            <hr class="text-secondary my-3" />
+            <div class="text-center small">
+                <div class="py-1"><em class="icon ni ni-layers text-primary"></em> Version {{version()}}</div>
+                <div class="pt-1">&copy; {{copyright()}}. All rights reserved </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</div>            <!-- /Main Wrapper -->
+  

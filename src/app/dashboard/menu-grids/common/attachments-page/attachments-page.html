@@ -1,0 +1,225 @@
+<div class="py-3 overflow-auto">
+    <div class="row mb-3 mx-0">
+        <div class="col-6">
+            <div class="form-check form-switch">
+                <input class="form-check-input" [ngClass]="!currentAll() ? '':'bg-success border-success-subtle'" type="checkbox" [(ngModel)]="currentAll" role="switch" id="flexSwitchCheckChecked" (change)="getAllAttachments()">
+                @if(currentAll()){
+                    <label class="form-check-label" for="flexSwitchCheckChecked">All</label>
+                }
+                @else{
+                    <label class="form-check-label" for="flexSwitchCheckChecked">Current</label>
+                }
+                
+            </div>
+        </div>
+        @if((enableAttachment() || wfstatus() !== 'Approved') && (!page || (page && page.menuType !== 'View'))){
+        <div class="col-6 text-end">
+            @if(!readOnly() || enableAttachment()){<button class="btn bg-white border border-secondary-subtle px-2 py-1" (click)="showHideNew()"><i class="fa-solid me-2 text-secondary" [ngClass]="addNewSection ? 'fa-circle-minus':'fa-circle-plus'"></i> <span class="small text-secondary">Add</span></button>}
+        </div>
+        }
+    </div>
+    @if(addNewSection){
+        <div class="my-3 p-2">
+            <div class="row mx-0 bg-light py-2">
+                <div class="col-3">
+                    <label>Attachment Category:</label>
+                    <select class="form-select rounded-0 b-value" [(ngModel)]="attachmentCategory">
+                    @for(list of categoryList; track list){
+                      <option [value]="list.ID">{{list.Description}}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-9">
+                    <label>File Link:</label>
+                    <input class="form-control" [(ngModel)]="fileLink">
+                </div>
+                <div class="col-12 mt-3">
+                    <label class="form-label">Description:</label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="description"></textarea>
+                </div>
+                <div class="col-12 mt-3 mb-2 d-flex w-100">
+                    <div>
+                        <label class="btn border bg-secondary text-white" for="selectFile">Select file</label>
+                    </div>
+                    <div class="ms-3 drag-drop position-relative px-3 bg-white">
+                        <input type="file" id="selectFile" class="file-input" (change)="handleFileInput($event)" accept=".jpg,.jpeg,.gif,.png,.jfif,.svg,.txt,.doc,.xls,.ppt,.docx,.xlsx,.pptx,.pdf" multiple>
+                        <div class="position-absolute mt-2 top-0">or Drop files here</div>
+                    </div>
+                </div>
+                @if(this.fileName){
+                    <div class="col-12 mt-3">
+                        <button type="button" class="btn btn-sm border py-1 px-2 bg-white" (click)="clearFile()"><i class="fa fa-times"></i></button> <span class="text-success ms-2 me-1">{{this.fileName}}</span> <span class="small">{{fileSize}}</span>
+                    </div>
+                }
+
+                <div class="col-8 mt-3">
+                    <div class="small">Maximum file size: 9 MB.</div>
+                    <div class="small">Allowed file extensions: .jpg,.jpeg,.gif,.png,.jfif,.svg,.txt,.doc,.xls,.ppt,.docx,.xlsx,.pptx,.pdf</div>
+                </div>
+                <div class="col-4 text-end mb-3">
+                    <button class="btn border border-secondary-subtle bg-danger text-white fw-normal" (click)="closeSection()">Cancel</button>
+                    <button class="btn border border-secondary-subtle ms-3 bg-success text-white fw-normal" (click)="AddAttachment()">Add</button>
+                </div>
+            </div>
+            
+            
+        </div>
+    }
+    <div class="overflow-auto">
+    <table class="table table-tranx">
+        <thead class="border-top table-light">
+            <tr>
+                <th>&nbsp;</th>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Source
+                </th>
+                <th>
+                    RecordID
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    File
+                </th>
+                <th>
+                    Path/Link
+                </th>
+                <th>
+                    Created Date
+                </th>
+                <th>
+                    Created By
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(!atotalCount || atotalCount === 0){
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    </td>
+                </tr>
+            }
+            @else{
+                @for (item of itemlist; track item.Id; let index = $index) {
+                    <tr>
+                        <td class="text-wrap">
+                            @if(userid === item.CreatedBy && ((wfstatus() !== 'Approved' && !readOnly() && !disablerecord) || (wfstatus() === 'Approved' && enableAttachment()))){
+                                <i class="text-danger fa fa-trash-can cursor-pointer" (click)="deleteRecord(item)"></i>
+                            }
+                        </td>
+                        <td class="text-wrap">
+                            {{item.Id}}
+                        </td>
+                        <td class="text-wrap">
+                            &nbsp;
+                        </td>
+                        <td class="text-wrap">
+                            {{item.RecordId}}
+                        </td>
+                        <td class="text-wrap">
+                            {{item.CategoryId}}
+                        </td>
+                        <td class="text-truncate">
+                            {{item.Description}}
+                        </td>
+                        <td class="text-truncate">
+                                <div class="me-2 d-flex align-items-end">
+                                    <span class="mt-1">{{item.FileName}}</span>
+                                    <div (click)="downloadFile(item.Id, item.FileName, 'download')">
+                                        <span class="small"><i class="fa fa-download ms-2 mt-2 text-secondary"></i></span>
+                                        <span class="px-1 cursor-pointer mt-1 small">Save</span>
+                                    </div>
+                                    @if(item.fileOpen){
+                                        <div class="small">
+                                            <i class="fa fa-external-link mt-2 text-secondary" (click)="downloadFile(item.Id, item.FileName, 'open')"></i> <span class="px-1 cursor-pointer mt-1 text-secondary" (click)="downloadFile(item.Id, item.FileName, 'open')">Open</span>
+                                        </div>
+                                    }
+                                </div>
+                        </td>
+                        <td class="text-truncate">
+                            <div class="text-truncate" style="max-width:100px">{{item.FilePath}}</div>
+                        </td>
+                        <td class="text-wrap">
+                            {{item.CreatedDate | date: dateTimeFormat}}
+                        </td>
+                        <td class="text-wrap">
+                            {{item.CreatedBy}}
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    </div>
+</div>
+
+@if(modal.isOpen('deleteModalAttachment'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('deleteModalAttachment'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h4 class="text-center mb-3">Are you sure you want to delete the attached file?</h4>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-success me-2" (click)="deleteConfirm(itemid)">Ok</button>
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('fileModal'+recordId)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('fileModal'+recordId)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            @if(openImg()){
+                <img [src]="reportURL" class="w-100" />
+            }
+            @else if(reportURL){
+                <embed [src]='reportURL' height="500" width="100%">
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+}

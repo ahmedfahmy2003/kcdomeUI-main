@@ -1,0 +1,106 @@
+@if(rreadonly || (readOnly && !field().wfEnabled && pageType !== 'callingsubmenu') || field().mrEnabled === false){
+    <input class="form-control" disabled [value]="field().FieldVal | date: dateFormat" [placeholder]="dateFormat" [ngClass]="field().Mandatory ? 'rounded-0 b-value':''" />
+  }
+  @else{
+    <div class="input-group add-field">  
+      <input class="form-control" [disabled]="!field().Enabled && !field().wfEnabled" matInput [placeholder]="dateFormat" [matDatepicker]="dp" (focus)="inputKeypress($event)" (blur)="setInputVal($event)" [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 b-value':''" [value]="date.value" (dateChange)="addEvent('change', $event)" />
+      <span class="input-group-text cursor-pointer">
+        <mat-datepicker-toggle matIconSuffix [for]="dp" [disabled]="!field().Enabled && !field().wfEnabled" [tabIndex]="-1"></mat-datepicker-toggle>
+        <mat-datepicker #dp [disabled]="!field().Enabled && !field().wfEnabled" [tabIndex]="-1"></mat-datepicker>
+      </span>
+      @if(isHijri){
+        @if(!field().Enabled && !field().wfEnabled){
+          <span class="input-group-text cursor-pointer"><i class="fa fa-regular fa-moon small text-dark"></i></span>
+        }@else{
+          <span class="input-group-text cursor-pointer" (click)="openHijri()"><i class="fa fa-regular fa-moon small text-dark"></i></span>
+        }
+      }
+    </div>
+  }
+
+  @if(hijriModal.isOpen('hijri'+field().Id+recordStamp)){
+    <div class="modal custom-modal" [class.show]="hijriModal.isOpen('hijri'+field().Id+recordStamp)">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header border-bottom">
+              <div class="form-header modal-header-title text-start mb-0">
+                <h6 class="">Hijri Calendar</h6>
+              </div>
+              <button type="button" class="btn-close" (click)="closeHijriModal()" aria-label="Close" [tabIndex]="-1">
+                
+              </button>
+            </div>
+            <div class="modal-body mb-3">
+              <h6>Hijri</h6>
+              <div class="row mt-3 mb-4">
+                <div class="col-3">
+                  <select class="form-select"  [(ngModel)]="hDate" (change)="hijriEvent()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                  </select>
+                </div>
+                <div class="col-6">
+                  <select class="form-select" [(ngModel)]="hMonth" (change)="hijriEvent()">
+                    <option value="1">1 - Muharram</option>
+                    <option value="2">2 - Safar</option>
+                    <option value="3">3 - Rabi al-Awwal</option>
+                    <option value="4">4 - Rabi al-Thani</option>
+                    <option value="5">5 - Jumada al-Ula</option>
+                    <option value="6">6 - Jumada al-Thani</option>
+                    <option value="7">7 - Rajab</option>
+                    <option value="8">8 - Shaban</option>
+                    <option value="9">9 - Ramadan</option>
+                    <option value="10">10 - Shawwal</option>
+                    <option value="11">11 - Dhu al-Qadah</option>
+                    <option value="12">12 - Dhu al-Hijjah</option>
+                  </select>
+                </div>
+                <div class="col-3">
+                  <input class="form-control py-2 rounded" type="text" (keypress)="numbersOnly($event)" maxlength="4" (blur)="hijriEvent()"  [(ngModel)]="hYear" />
+                </div>
+              </div>
+              <h6 class="">Gregorian</h6>
+              <div class="input-group add-field mt-3">
+              <input class="form-control" matInput [matDatepicker]="picker" readonly [(ngModel)]="hijrien" [value]="date.value" (dateChange)="addEvent('change', $event)" />
+                <span class="input-group-text cursor-pointer">
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn border border-secondary-subtle" (click)="closeHijriModal()">Cancel</button>
+              <button type="button" class="btn border border-secondary-subtle ms-2" (click)="setEnDate()">Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }

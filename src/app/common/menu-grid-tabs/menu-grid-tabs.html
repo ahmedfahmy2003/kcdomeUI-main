@@ -1,0 +1,639 @@
+<div [hidden]="!visible">
+
+<div class="row mx-0">
+    <div [ngClass]="!showFilter ? 'd-none': pageType === 'submenu' ? 'px-0' : sidebar.isExpanded() ? 'ps-0 col-2':'ps-0 col-3'">
+        <div class="card card-bordered card-stretch">
+            @if(sysList().length > 0){<filter-box [recordList]="recordList" [pageType]="pageType" [companyID]="companyID()" (closefilter)="filterOff($event)" (setFilterValue)="setFilterValueEvent($event)" (subQueryEmit)="subQueryEmitEvt($event)" [menuid]="menuid" [_sysList]="sysList()"></filter-box>}
+        </div>
+    </div>
+    <div class="px-0" [ngClass]="!showFilter ? 'col-12' :   sidebar.isExpanded() ? 'col-10':'col-9' ">
+        <div class="card card-bordered card-stretch">
+        @if(eisLoading()){
+            <div style="position: fixed; width: 100% !important; height: 100%; background: rgba(255, 255, 255, 0.8); top: 0; left: 0; z-index: 111111;" >
+                <div class="d-flex h-100 w-100">
+                <h4 class="text-center flex-fill align-self-center">Exporting...</h4>
+                </div>
+              </div>
+        }
+        @if(isLoading()){
+            <div class="text-center w-100">
+            <h5 class="text-center py-5">Loading....</h5>
+            </div>
+        }
+        @if(reportURL() && page.menuType === "CrystalReport"){
+            <div  [ngClass]="isLoading() ? 'd-none':''">
+                @if(reportType() === 'pdf'){
+                    <embed [src]='reportURL()' height="500" width="100%" type="application/pdf" />
+                }
+                @else if(reportType() === 'excel'){
+                    <h4 class="text-center text-success py-5">Excel File Exported</h4>
+                }
+            </div>
+        }
+        @else{
+            @if(resultsLength() || (!resultsLength() && pageType !== 'dimensions')){  
+                <div [ngClass]="isLoading() ? 'd-none':''"> 
+                    <div class="card-inner-group">
+                        @if(menuaccess){
+                            <div class="card-inner position-relative card-tools-toggle">
+                                <div class="card-title-group">
+                                    <div class="card-tools">
+                                        <ul class="btn-toolbar gx-1">
+                                            <li>
+                                                    <div class="d-flex pt-1">
+                                                        <div class="custom-control custom-control-sm custom-radio">
+                                                            <input type="radio" [name]="'tabType'+page.dtid" class="custom-control-input" [(ngModel)]="tabType" value="table" [id]="pageIndex+'table'" (change)="tabTypeEvt('table')"> <label class="custom-control-label" [for]="pageIndex+'table'">Overview</label>
+                                                        </div>
+                                                        <div class="ms-2 custom-control custom-control-sm custom-radio">
+                                                            <input type="radio" [name]="'tabType'+page.dtid" class="custom-control-input" [(ngModel)]="tabType" value="pivot" [id]="pageIndex+'pivot'" (change)="tabTypeEvt('pivot')"> <label class="custom-control-label" [for]="pageIndex+'pivot'">Pivot</label>
+                                                        </div>
+                                                        @if(menuaccess && menuaccess.TreeMenu){
+                                                        <div class="ms-2 custom-control custom-control-sm custom-radio">
+                                                            <input type="radio" [name]="'tabType'+page.dtid" class="custom-control-input" [(ngModel)]="tabType" value="tree" [id]="pageIndex+'tree'" (change)="tabTypeEvt('tree')"> <label class="custom-control-label" [for]="pageIndex+'tree'">Tree</label>
+                                                        </div>
+                                                        }
+                                                    </div>
+                                                </li>
+                                            <li class="btn-toolbar-sep"></li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="card-tools flex-grow-1">
+                                        <ul class="btn-toolbar gx-1">
+                                            @if(setApprovebtn()){
+                                                <li>
+                                                <a class="btn btn-sm border-success bg-success-dim rounded-0 text-success" (click)="openApproveModalBulk('Approve')">
+                                                    <em class="icon ni ni-thumbs-up me-1"></em> Approve</a>
+                                                <a class="btn btn-sm border-danger bg-danger-dim rounded-0 text-danger" (click)="openApproveModalBulk('Reject')">
+                                                    <em class="icon ni ni-thumbs-down me-1"></em> Reject</a>
+                                                </li>
+                                                <li class="btn-toolbar-sep"></li>
+                                            }
+                                            @if(page && page.menuType !== 'View' &&  page.pageType !== 'prerequisitemenu' && useraccess && useraccess.InsertFlag && menuaccess && menuaccess.InsertFlag && (pageType === 'mainmenu' || pageType === 'pendingwf' || pageType === 'detailsBtnGrid')){
+                                                <li>
+                                                    <span class="btn btn-sm btn-trigger btn-icon cursor-pointer" (click)="addRecord()">
+                                                        <em class="icon ni ni-plus-round"></em>
+                                                    </span>
+                                                </li>
+                                            }
+                                            @if(pageType === 'mainmenu' || pageType === 'prerequisitemenu' || pageType === 'pendingwf' || pageType === 'detailsBtnGrid'){
+                                                <li>
+                                                    <span class="btn btn-sm btn-trigger btn-icon cursor-pointer" (click)="getmenuFields(activeId)">
+                                                        <em class="icon ni ni-reload"></em>
+                                                    </span>
+                                                </li>
+                                            }
+                                            <li>
+                                                <export-record [_exportid]="exportid()" [_pageSize]="pageSize" [_resultsLength]="resultsLength()" (exportEmit)="exportEmitEvt($event)"></export-record>
+                                            </li>
+                                            <li class="btn-toolbar-sep"></li>
+                                            <li>
+                                                <span class="btn btn-sm btn-icon btn-trigger cursor-pointer">
+                                                    <em class="icon ni ni-filter-fill" (click)="filterToggle()"></em>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <div class="kc-dropdown-wrap">
+                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="toggleCount('rcount')">
+                                                        <em class="icon ni ni-setting"></em>
+                                                    </span>
+                                                    @if(openMenuId() === 'rcount'){
+                                                        <div class="kc-dropdown-menu rocount">
+                                                            <ul class="link-check">
+                                                                <li><span>Show</span></li>
+                                                                @for(list of pageSizeOption; track list){
+                                                                    <li [ngClass]="list === pageSize ? 'active':''" (click)="sizeChange(list)"><a class="cursor-pointer">{{list}}</a></li>
+                                                                }
+                                                            </ul>
+                                                            <ul class="link-check">
+                                                                <li><span>Order</span></li>
+                                                                <li [ngClass]="_sortOrder() === 'desc' ? 'active':''" (click)="sortOrder('desc')"><a class="cursor-pointer">DESC</a></li>
+                                                                <li [ngClass]="_sortOrder() === 'asc' ? 'active':''" (click)="sortOrder('asc')"><a class="cursor-pointer">ASC</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </li>
+                                            @if(exportid() && vlist){
+                                                <li>
+                                                    <visbility-grids [vlist]="vlist" [menuid]="exportid()" [ids]="activeId" [getDataResposne]="getDataResposne" [companyID]="companyID()" (refreshTable)="refreshTableEvt($event)"></visbility-grids>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="card-tools ms-2">
+                                        @if(totalPages() > 1){
+                                        <div class="nk-block-between-md g-3">
+                                            <div class="g">
+                                              @if(resultsLength()){  {{((currentPage() - 1) * pageSize) + 1}} - {{dataSource().length === pageSize ? pageSize * currentPage() : ((currentPage() - 1) * pageSize) + dataSource().length}} of {{resultsLength()}} }
+                                            </div>
+                                            <div class="g">
+                                                <ul class="pagination justify-content-center justify-content-md-start">
+                                                    <li class="page-item" [class.disabled]="currentPage() === 1">
+                                                        @if(currentPage() === 1){
+                                                            <span class="page-link">Prev</span>
+                                                        }
+                                                        @else {
+                                                            <a class="page-link" (click)="goToPage(currentPage() - 1)">Prev</a>
+                                                        }
+                                                                    
+                                                    </li>
+                                                    @if(!showFilter){            <!-- First two pages -->
+                                                    @for(page of [1, 2]; track page){
+                                                        <li class="page-item">
+                                                            <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{page}}</a>
+                                                        </li>
+                                                    }
+
+                                                    @if(currentPage() > 4){
+                                                        <li class="page-item">
+                                                            <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                                                        </li>
+                                                    }
+
+
+                                                                <!-- Current, Previous, Next -->
+                                                    @for(page of [currentPage() - 1, currentPage(), currentPage() + 1]; track page){
+                                                        @if(page > 2 && page < (totalPages() - 1)){
+                                                            <li class="page-item">
+                                                                <a class="page-link"[class.active]="currentPage() === page" (click)="goToPage(page)">{{ page }}</a>
+                                                            </li>
+                                                        }
+                                                    }
+
+                                                                <!-- Ellipsis before last -->
+                                                    @if(currentPage() < totalPages() - 3){
+                                                        <li class="page-item">
+                                                            <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                                                        </li>
+                                                    }
+
+                                                                <!-- Last two pages -->
+                                                    @for(page of [totalPages() - 1, totalPages()]; track page){
+                                                        @if(page > 2){
+                                                            <li class="page-item">
+                                                                <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{ page }}</a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                    }
+                                                    <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+                                                        @if(currentPage() === totalPages()){
+                                                            <span class="page-link">Next</span>
+                                                        }
+                                                        @else{
+                                                            <a class="page-link" (click)="goToPage(currentPage() + 1)">Next</a>
+                                                        }
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="g">
+                                                            <!-- Page Dropdown -->
+                                                <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                                                    <div>Page</div>
+                                                    <div class="pe-0">
+                                                        @if(totalPages()){
+                                                            <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
+                                                        }
+                                                    </div>
+                                                    <div class="ps-0">/ {{ totalPages() }}</div>
+                                                    <div>
+                                                        <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary text-white btn-outline-light">Go</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                        @else{
+                                            <div class="nk-block-between-md g-3">
+                                                <div class="g">
+                                                    {{((currentPage() - 1) * pageSize) + 1}} - {{dataSource().length === pageSize ? pageSize * currentPage() : ((currentPage() - 1) * pageSize) + dataSource().length}} of {{resultsLength()}}
+                                                </div>
+                                            </div>
+                                        }
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if(tabType() === 'pivot'){
+                            <pivot-grid [plist]="plist" [page]="page" [companyID]="companyID()" [menuID]="exportid()" [menuData]="dataSource()"></pivot-grid>   
+                        }
+                        @if(tabType() === 'tree'){
+                            <tree-menu [menuID]="exportid()" [refreshTable]="refreshTable()" [companyID]="companyID()" [size]="resultsLength()" (viewid)="openTreeView($event)"></tree-menu>
+                        }
+                        @if(!isLoading()){
+                            <div class="card-inner p-0 table-div"  [class.d-none]="tabType() !== 'table'">
+                                <table class="table table-tranx">
+                                    <thead class="table-light">
+                                        <tr>
+                                            @if(page && page.pageType === 'prerequisitemenu' && !preReqIndex){
+                                                <th>
+                                                    &nbsp;
+                                                </th>
+                                            }
+                                            @if(pageType === 'pendingwf'){
+                                                <th>
+                                                    <div [ngClass]="noData() ? 'px-3':'custom-control custom-control-sm custom-checkbox'">
+                                                        <input type="checkbox" class="custom-control-input" [id]="pageIndex+'all'" [(ngModel)]="selectAll" (change)="selecEvent()">
+                                                        <label class="custom-control-label" [for]="pageIndex+'all'">&nbsp;</label>
+                                                    </div>
+                                                </th>
+                                            }
+                                            <th (click)="sortData('ID')"><span class="cursor-pointer">ID</span></th>
+                                            @for(item of columns; track item){
+                                                <th (click)="sortData(item.name)"> <div class="text-truncate cursor-pointer">{{item.header}}</div></th>
+                                            }
+                                            @if(page && page.menuType !== 'View'){
+                                            <th class="fixed-last"></th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(noData()){
+                                            <tr>
+                                            <td>&nbsp;</td>
+                                            @for(ikey of columns; track ikey){
+                                                <td>&nbsp;</td>
+                                            }
+                                            <td>&nbsp;</td>
+                                            </tr>
+                                        }
+                                        @else{
+                                            @for(item of dataSource(); track index; let index = $index){
+                                                <tr (click)="onRowSelect(index)" [class.selected]="selectedRow() === index">
+                                                    @if(page && page.pageType === 'prerequisitemenu' && !preReqIndex){
+                                                    <td>
+                                                        @if(item.ID){<span class="btn btn-sm btn-trigger btn-icon"><em class="icon ni ni-caret-right-fill text-danger" (click)="genReport(item.ID, item.SNO)"></em></span>}
+                                                    </td>
+                                                    }
+                                                    @if(pageType === 'pendingwf'){
+                                                        <td>
+                                                            <div class="custom-control custom-control-sm custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input" [(ngModel)]="item.selctSNO" [value]="item.ID" [id]="pageIndex+''+index+''+item.ID" (change)="selectID($event)">
+                                                                <label class="custom-control-label" [for]="pageIndex+''+index+''+item.ID">&nbsp;</label>
+                                                            </div>
+                                                        </td>
+                                                    }
+                                                    <td>
+                                                        @if(page.menuType !== 'View' && (pageType === 'mainmenu' || pageType === 'pendingwf' || pageType === 'detailmenu' || pageType === 'detailsBtnGrid') && page && page.pageType !== 'prerequisitemenu'){
+                                                        
+                                                            <span class="text-id cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'details')">{{item.ID}}</span>
+                                                        }
+                                                        @else if(page && page.pageType === 'prerequisitemenu' && page.isJobEnable){
+                                                            <span class="text-id cursor-pointer" (click)="showPreRecord(item.ID, item.SNO, 'details', 'details')">{{item.ID}}</span>
+                                                        }
+                                                        @else {
+                                                            <span class="text-id">{{item.ID}}</span>
+                                                        }
+                                                    </td>
+                                                    @for(ikey of columns; track ikey; let i = $index){
+                                                    <td [ngClass]="(ikey.fieldType === 'number' || typeof item[ikey.name] === 'number') ? 'td-num':'td-string'">
+                                                        <div class="text-truncate">
+                                                        @if(ikey.fieldType === "Image"){
+                                                            @if(item[ikey.name]){
+                                                                <img src="data:image/png;base64,{{item[ikey.name]}}" class="mt-2 grid-img">
+                                                            }
+                                                            @else {
+                                                                <em class="icon ni ni-img"></em>
+                                                            }
+                                                        }
+                                                                        @else if(ikey.fieldType === "DateTime"){
+                                                                            {{item[ikey.name] | date: dateFormat}}
+                                                                        }
+                                                                        @else if(ikey.fieldType === "Number"){
+                                                                            {{item[ikey.name] | number}}
+                                                                        }
+                                                                        @else if(ikey.fieldType === "Memo"){
+                                                                            <em class="icon ni ni-edit" (click)="openMemo(ikey.name, item[ikey.name])"></em>
+                                                                        }
+                                                                        @else if(ikey.fieldType === "CheckBox"){
+                                                                            @if(item[ikey.name] === 1 || item[ikey.name] === '1' || item[ikey.name] === true){
+                                                                                <div class="custom-control custom-control-sm custom-checkbox">
+                                                                                    <input class="custom-control-input" type="checkbox" [id]="pageIndex+ikey.name+index+i" [value]="item[ikey.name]" disabled checked>
+                                                                                    <label class="custom-control-label" [for]="pageIndex+ikey.name+index+i">&nbsp;</label>
+                                                                                </div>
+                                                                            }
+                                                                            @else{
+                                                                                <div class="custom-control custom-control-sm custom-checkbox">
+                                                                                    <input class="custom-control-input" type="checkbox" [id]="pageIndex+ikey.name+index+i" [value]="item[ikey.name]" disabled>
+                                                                                    <label class="custom-control-label" [for]="pageIndex+ikey.name+index+i">&nbsp;</label>
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                        @else{
+                                                                            <span>{{item[ikey.name]}}</span>
+                                                                        }
+                                                                        </div>
+                                                                    </td>
+                                                                }
+                                                                @if(page.menuType !== 'View'){
+                                                    <td class="fixed-last">
+                                                        <span class="btn btn-sm btn-icon btn-trigger cursor-pointer trwrap" (click)="checkStatus(item.ID)" [matMenuTriggerFor]="moreMenu">
+                                                            <em class="icon ni ni-more-h cursor-pointer"></em>
+                                                        </span>
+                                                        
+                                                                        <mat-menu #moreMenu="matMenu" yPosition="below">
+                                                                                <div class="d-flex">
+                                                                                @if(pageType !== 'prerequisitemenu'){
+                                                                                <div class="px-2" mat-menu-item [matMenuTriggerFor]="morestting">
+                                                                                    <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                        <em class="icon ni ni-setting-alt cursor-pointer"></em>
+                                                                                    </span>
+                                                                                </div>
+                                                                            }
+                                                                                @if(menuaccess && menuaccess.ApplyDimensions && !noData() && pageType !== 'prerequisitemenu'){
+                                                                                    <div class="px-2" mat-menu-item (click)="modalRecord(item.ID)">
+                                                                                        <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                            <em class="icon ni ni-package-fill cursor-pointer"></em>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                }
+                                                                                @if(applyDrillDown && !noData()){
+                                                                                    <div class="px-2" mat-menu-item [matMenuTriggerFor]="drilldown">
+                                                                                        <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                            <em class="icon ni ni-server cursor-pointer"></em>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                }
+                                                                                @if(!noData() && (printBTN().length > 0 || actionBTN().length > 0)){
+                                                                                    <div class="px-2" mat-menu-item [matMenuTriggerFor]="rowaction">
+                                                                                        <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                            <em class="icon ni ni-spark-fill cursor-pointer"></em>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                }
+                                                                                </div>
+                                                                        </mat-menu>
+                                                            
+                                            
+                                                <mat-menu #morestting="matMenu" yPosition="below" xPosition="before">
+                                                    @if(menuaccess && menuaccess.ApplyDimensions && page.menuType !== 'View'){
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'dimensions')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-package-fill"></em></span><span class="small ms-1">Dimensions</span></div>
+                                                    }
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'notes')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-edit-fill"></em></span><span class="small ms-1">Notes</span></div>
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'attachments')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-clip"></em></span><span class="small ms-1">Attachments</span></div>
+                                                    @if(menuaccess && menuaccess.AllowComments && page.menuType !== 'View'){
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'comments')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-comments"></em></span><span class="small ms-1">Comments</span></div>
+                                                    }
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'notifications')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-bell"></em></span><span class="small ms-1">Notifications</span></div>
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'logdata')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-db-fill"></em></span><span class="small ms-1">Log Data</span></div>
+                                                    @if(page && page.menuType !== 'View'){
+                                                        <hr class="my-1" />
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'details')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">Open</span></div>
+                                                    }
+                                                </mat-menu>
+                                            
+                                            
+                                                <mat-menu #drilldown="matMenu">
+                                                    @for(subitem of drillDown; track subitem){
+                                                        <div menu-item class="dropdown-inner my-1 pt-1 pb-0 ps-3 mb-0 cursor-pointer" (click)="detailsOpen(subitem, item.ID, item.SNO)"><span class="small">{{subitem.Description}}</span></div>
+                                                    }
+                                                </mat-menu>
+                                            
+                                                <mat-menu #rowaction="matMenu" yPosition="below" xPosition="after">
+                                                @for(abtn of actionBTN(); track abtn.FieldCaption){
+                                                        @if(abtn.mrEnabled === false){
+                                                            <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(abtn.mrEnabled === true){
+                                                            <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(abtn, 'action', item.ID, index)"><span class="btn btn-sm btn-icon small">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(actionBTNDisabled()){
+                                                            <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(wfstatus === 'Approved' || wfstatus === 'Rejected'){
+                                                            <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(abtn.wfEnabled){
+                                                            <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(abtn, 'action', item.ID, index)"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(!abtn.Enabled){
+                                                            <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else {
+                                                            <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(abtn, 'action', item.ID, index)"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                        }
+                                                    }
+                                                    @if(printBTN().length > 0 && actionBTN().length > 0){
+                                                        <hr class="my-2" />
+                                                    }
+                                                    @for(pbtn of printBTN(); track pbtn.FieldCaption){
+                                                        @if(pbtn.mrEnabled === false){
+                                                            <div class="me-2 ms-1"><span class="btn btn-sm btn-icon small ms-3 text-start"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(pbtn.mrEnabled === true){
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(pbtn, 'print', item.ID, index)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(actionBTNDisabled()){
+                                                            <div class="me-2 ms-1"><span class="btn btn-sm btn-icon"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(wfstatus === 'Approved' || wfstatus === 'Rejected'){
+                                                            <div class="me-2 ms-1"><span class="btn btn-sm btn-icon"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(pbtn.wfEnabled){
+                                                            <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(pbtn, 'print', item.ID, index)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else if(!pbtn.Enabled){
+                                                            <div class="me-2 ms-1"><span class="btn btn-sm btn-icon"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                        @else {
+                                                            <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(pbtn, 'print', item.ID, index)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                        }
+                                                    }
+                                                </mat-menu>
+                                            
+                                                    </td>
+                                                }
+                                                </tr>
+                                                            
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                            
+                            </div>
+                        }
+                    </div>
+                </div>    
+            }@else {
+                <h5 class="text-center py-5">No Data</h5>
+            }
+
+        }
+        </div>
+    </div>
+</div>
+@if(modal.isOpen('modalBox'+exportid())){
+  <div class="modal custom-modal" [class.show]="modal.isOpen('modalBox'+exportid())">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div class="form-header modal-header-title text-start mb-0" [ngClass]="memoNote ? '':'bg-danger'">
+            @if(memoNote){
+              {{modalTitle}}
+            }
+            @else{
+              &nbsp;
+            }
+          </div>
+          <button type="button" class="btn-close text-white" (click)="closeModal()" aria-label="Close">
+            
+          </button>
+        </div>
+        <div class="modal-body mb-3 overflow-auto">
+          @if(memoNote){
+            <textarea class="form-control" rows="8" disabled [(ngModel)]="modalMessage"></textarea>
+          }
+          @else {
+            <label>{{modalMessage}}</label>
+          }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if(modal.isOpen('modalDimension'+recordStamp)){
+  <div class="modal custom-modal" [class.show]="modal.isOpen('modalDimension'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div class="form-header modal-header-title text-start mb-0">
+            Dimensions
+          </div>
+          <button type="button" class="btn-close text-white" (click)="closeModal()" aria-label="Close">
+            
+          </button>
+        </div>
+        <div class="modal-body mb-3 overflow-auto">
+            @if(openDimension()){
+                <div class="pt-1" style="max-height: 400px; overflow: auto;">
+                    <dimensions-page [companyID]="companyID()" [menuId]="activeId" [recordId]="subRecordID"></dimensions-page>
+                </div>
+            }
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if(modal.isOpen('approveModal'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('approveModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-bottom py-3">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">{{wfType()}}</h6>
+            </div>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+              
+            </button>
+        </div>
+        <div class="modal-body overflow-auto">
+            <label>Note</label>
+            <p>
+                <textarea class="form-control" rows="3" [(ngModel)]="workflownote"></textarea>
+            </p>
+        </div>
+        <div class="modal-footer">
+            @if(!hideProceed()){<button type="button" class="btn border border-secondary-subtle btn-success me-2" (click)="approveFlow(wfType())">{{wfType()}}</button>}
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+}
+@if(modal.isOpen('actionModal'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('actionModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h5 class="text-center py-5">{{modalMessage}}</h5>
+        </div>
+        <div class="modal-footer">
+            @if(!hideProceed()){<button type="button" class="btn btn-success me-2" (click)="proceedAction('action')">OK</button>}
+            <button type="button" class="btn btn-danger" (click)="closeModal()">{{!hideProceed() ? 'Cancel':'OK'}}</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('gxlModal'+pageIndex)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('gxlModal'+pageIndex)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-bottom py-3">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">{{actionbtnname}}</h6>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-6">
+                    <em class="icon ni ni-caret-right-fill"></em> <strong>RecordID: </strong> {{recordId}}
+                </div>
+                <div class="col-6">
+                    <em class="icon ni ni-caret-right-fill"></em> <strong>Target Table: </strong> {{targetTable}}
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <p>If you don't have MS Excel template, please generate one</p>
+                <button type="button" class="mt-3 btn border border-secondary-subtle" (click)="dnldTemplate()"><i class="fa fa-download text-success me-3"></i> Generate Template</button>
+            </div>
+            <div class="mt-4">
+                <p>Import MS Excel data to the target table</p>
+                <div class="mt-2">
+                    <label class="btn border border-secondary-subtle" [for]="'selectxlsFile'+pageIndex"><i class="fa fa-upload text-success me-3"></i> Import MS Excel</label>
+                </div>
+                <!--<button type="button" class="mt-3 btn border border-secondary-subtle"><i class="fa fa-upload text-success me-3"></i> Import MS Excel</button>-->
+                <div class="input-group d-none">
+                    <input type="file" [id]="'selectxlsFile'+pageIndex" class="file-input" (change)="handleFileInput($event)" accept=".xls, .xlsx">
+                </div>
+            </div>
+
+            @if(fileName){
+                <div class="mt-3">
+                    <p><strong>{{fileName}}</strong></p>
+                </div>
+                <div class="mt-3">
+                    <input type="checkbox" [id]="pageIndex+'clearFile'" [(ngModel)]="deleteXlFile" class="form-check-input ms-0 ps-0"> <label [for]="pageIndex+'clearFile'" class="ms-2 form-check-label cursor-pointer text-dark fw-bolder">Clear table data before import</label>
+                </div>
+            }
+            
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="mt-3 btn btn-success me-3" [disabled]="exceltype() && !xlOk()" (click)="contProcedure()">Ok</button>
+            <button type="button" class="mt-3 btn btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+}
+
+@if(modal.isOpen('errorMsg'+exportid())){
+<div class="modal custom-modal" [class.show]="modal.isOpen('errorMsg'+exportid())">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h5 class="text-center py-5">You don't have access for this menu</h5>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger me-2" (click)="closeAccessModal()">OK</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+</div>

@@ -1,0 +1,250 @@
+@if(field.FieldType === "TextBox"){
+    <div class="input-group add-field">
+        <filter-operator [type]="field.FieldType" [operator]="field.Operater" (operatorEmit)="operatorEvent($event)"></filter-operator>
+        <input class="form-control" type="text" (blur)="setInputVal($event)" (keyup.enter)="setEnterKey($event)" [(ngModel)]="field.FieldVal" [disabled]="filteroperator === 'null' || filteroperator === 'notnull'" />
+    </div>
+}
+@else if(field.FieldType === "Memo"){
+    <div class="input-group add-field">
+        <filter-operator [type]="field.FieldType" [operator]="field.Operater" (operatorEmit)="operatorEvent($event)"></filter-operator>
+        <input class="form-control" type="text" (blur)="setInputVal($event)" (keyup.enter)="setEnterKey($event)" [(ngModel)]="field.FieldVal" [disabled]="filteroperator === 'null' || filteroperator === 'notnull'"/>
+    </div>
+}
+@else if(field.FieldType === "Number"){
+    <div class="input-group add-field">
+        <filter-operator [type]="field.FieldType" (operatorEmit)="operatorEvent($event)"></filter-operator>
+        <input class="form-control" type="number" (blur)="setInputVal($event)" (keyup.enter)="setEnterKey($event)" [(ngModel)]="field.FieldVal" [disabled]="filteroperator === 'null' || filteroperator === 'notnull'"/>
+    </div>
+}
+@else if(field.FieldType === "Editor" || field.FieldType === "MultiCheckBox"){
+    <div class="input-group add-field">
+        <filter-operator [type]="field.FieldType" (operatorEmit)="operatorEvent($event)"></filter-operator>
+        <input class="form-control" type="hidden" [(ngModel)]="field.FieldVal"/>
+        <input class="form-control" readonly (click)="openLookUp(currentPage(), pageSize(), '')" [(ngModel)]="field.descEn"/>
+        <span class="position-absolute bg-white px-1" style="top: 20%; right: 1%;">
+            @if(field.descEn){<i class="fa fa-circle-xmark text-danger" (click)="clearLookUp()"></i>}
+            <i class="ms-2 fa fa-search" (click)="openLookUp(currentPage(), pageSize(), '')"></i>
+        </span>
+    </div>
+}
+@else if(field.FieldType === "LookUp"){
+    
+        @if(optionslist().length > 0 && !multiSelectOption()){
+            @for(list of optionslist(); track list; let i = $index){
+                <div class="custom-control custom-control-sm custom-checkbox">
+                  <input class="custom-control-input" name="filterChecbox" type="checkbox" [id]="list[field.ListId]+''+i" (change)="setMultiSelect($event, i)">
+                  <label [for]="list[field.ListId]+''+i" class="custom-control-label">{{list.UserName ? list.UserName : list.DescriptionEn ? list.DescriptionEn : list.FullNameEn ? list.FullNameEn : list.Code ? list.Code : list[field.ListId]}}</label>
+                </div>
+            }
+        }@else if(optionslist().length > 0 && multiSelectOption()){
+           <mat-select multiple class="border p-1" [(value)]="lookupSelected">
+              <mat-optgroup >
+                <div class="position-relative w-100 border-bottom">
+                  <input type="text" class="form-control w-75 border-0" autocomplete="off" placeholder="Search" matInput [(ngModel)]="searchText" (input)="filterSearch()">
+                  @if(searchText()){<button matSuffix mat-icon-button aria-label="Clear" class="btn" style="position: absolute; right: 0; top:0" (click)="clearSearch($event)"><i class="fa fa-times"></i></button>}
+                </div>
+              </mat-optgroup>
+                @if(optionslist().length === 0){
+                  <mat-optgroup>
+                    <div>No results found!</div>
+                  </mat-optgroup>
+                }
+                @for (list of optionslist(); track list;let i = $index) {
+                  <mat-option [value]="list[field.ListId]" (click)="setMatMultiSelect()">{{list.UserName ? list.UserName : list.DescriptionEn ? list.DescriptionEn : list.FullNameEn ? list.FullNameEn : list.Code}}</mat-option>
+                }
+            </mat-select>
+        }
+}
+@else if(field.FieldType === "CheckBox"){
+  <div class="d-flex flex-column">
+    <div class="custom-control custom-control-sm custom-radio mb-2"><input class="custom-control-input" name="filterChecbox" type="radio" value="true" [id]="field.FieldName+'true'+field.ID" (change)="setInputVal($event)" [(ngModel)]="field.FieldVal"><label class="custom-control-label" [for]="field.FieldName+'true'+field.ID">{{field.FieldVal === 'true' ? 'True':'False'}}</label></div>
+    <div class="custom-control custom-control-sm custom-radio mb-2"><input class="custom-control-input" name="filterChecbox" type="radio" value="null" [id]="field.FieldName+'null'+field.ID" (change)="setInputVal($event)" [(ngModel)]="field.FieldVal"><label class="custom-control-label" [for]="field.FieldName+'null'+field.ID">Null</label></div>
+    <div class="custom-control custom-control-sm custom-radio mb-2"><input class="custom-control-input" name="filterChecbox" type="radio" value="not null" [id]="field.FieldName+'notnull'+field.ID" (change)="setInputVal($event)" [(ngModel)]="field.FieldVal"><label class="custom-control-label" [for]="field.FieldName+'notnull'+field.ID">Not Null</label></div>
+    <div class="custom-control custom-control-sm custom-radio mb-2"><input class="custom-control-input" name="filterChecbox" type="radio" value="" [id]="field.FieldName+field.ID" (change)="setInputVal($event)" [(ngModel)]="field.FieldVal"><label class="custom-control-label" [for]="field.FieldName+field.ID">All</label></div>
+  </div>
+}
+@else if(field.FieldType === "DateTime"){
+  
+    <div class="input-group add-field">  
+        <filter-operator [type]="field.FieldType" (operatorEmit)="operatorEvent($event)"></filter-operator>
+        <input class="form-control" matInput placeholder="dd/MM/yyyy" [matDatepicker]="dp" readonly (dateChange)="addEvent('change', $event)"  [disabled]="filteroperator === 'null' || filteroperator === 'notnull'"/>
+        <span class="position-absolute bg-white px-1" style="top: 16%; margin-right: 48px; right: 0;">
+            @if(field.FieldVal){<i class="fa fa-circle-xmark text-danger" (click)="clearDtLookUp()"></i>}
+        </span>
+        <span class="border bg-white bgcursor-pointer">
+         <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker #dp></mat-datepicker>
+        </span>
+    </div>
+}
+@else if(field.LinkedMenuId){
+  <u class="mt-2 cursor-pointer" (click)="openSub(field)"><small>Open Filter <i class="fa fa-filter"></i></small></u>
+  @if(subQuery()){<p class="p-1 small">Query Added</p>}
+}
+
+@if(modalid()){
+<div class="modal custom-modal fade" [id]="'subfilter'+modalid()">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-body mb-3 overflow-auto">
+        <ng-container #filterBox></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+@if(field.FieldName+recordStamp){
+<div class="modal custom-modal fade" [id]="field.FieldName+recordStamp">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div class="form-header modal-header-title text-start mb-0">
+            <h6 class="mb-0">{{field.FieldCaption}}</h6>
+          </div>
+          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+            
+          </button>
+        </div>
+        <div class="modal-body mb-3 overflow-auto">
+          @if(noData()){
+            <h5 class="text-center py-5">No Data</h5>
+          }
+          @else if(totalPages() > 1 || (totalPages() === 1 && !noData())){
+            @if(totalPages() > 1){
+              <div class="nk-block-between-md g-3 mb-2">
+                <div class="g">
+                  <ul class="pagination justify-content-center justify-content-md-start">
+                    <li class="page-item">
+                      @if(currentPage() === 1){
+                        <span class="page-link disabled">Prev</span>
+                      }
+                      @else {
+                        <a class="page-link" (click)="goToPage(currentPage() - 1)">Prev</a>
+                      }
+                    </li>
+                    @for(page of [1, 2]; track page){
+                    <li class="page-item">
+                      <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{page}}</a>
+                    </li>
+                    }
+                    @if(currentPage() > 4){
+                    <li class="page-item">
+                      <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                    </li>
+                    }
+                    @for(page of [currentPage() - 1, currentPage(), currentPage() + 1]; track page){
+                      @if(page > 2 && page < (totalPages() - 1)){
+                      <li class="page-item">
+                        <a class="page-link"[class.active]="currentPage() === page" (click)="goToPage(page)">{{ page }}</a>
+                      </li>
+                      }
+                    }
+                    <!-- Ellipsis before last -->
+                    @if(currentPage() < totalPages() - 3){
+                    <li class="page-item">
+                      <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                    </li>
+                    }
+                    @for(page of [totalPages() - 1, totalPages()]; track page){
+                      @if(page > 2){
+                      <li class="page-item">
+                        <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{ page }}</a>
+                      </li>
+                      }
+                    }
+                    <li class="page-item">
+                                                        @if(currentPage() === totalPages()){
+                                                            <span class="page-link disabled">Next</span>
+                                                        }
+                                                        @else{
+                                                            <a class="page-link" (click)="goToPage(currentPage() + 1)">Next</a>
+                                                        }
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                  <div class="">
+                                    Items per page : 
+                                    <div class="ms-1">
+                                      <select class="form-select" [(ngModel)]="pageSize" (change)="sizeChange()">
+                                        @for(item of itemsOptions; track item){
+                                          <option [value]="item">{{item}}</option>
+                                        }
+                                      </select>
+                                    </div>
+                                  </div>
+                                            <div class="g">
+                                                            <!-- Page Dropdown -->
+                                                <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                                                    <div>Page</div>
+                                                    <div>
+                                                        @if(totalPages()){
+                                                            <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
+                                                        }
+                                                    </div>
+                                                    <div>of {{ totalPages() }}</div>
+                                                    <div>
+                                                        <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary text-white btn-outline-light">Go</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+            <div class="border demo-table">
+                <table class="table table-tranx">
+                                <thead>
+                                    <tr>
+                                        <th class="fixed-top"></th>
+                                        @for(item of columns; track item){
+                                            <th class="py-2 fixed-top">
+                                              <div class="text-truncate">{{item.header}}</div>
+                                              <div class="mt-2">
+                                              
+                                                  <input class="filter-control px-2 py-1 filterftSearch" autocomplete="off" [id]="item.header" type="text" (keyup.enter)="applyFilter($event, item.header, 'enter')" (blur)="applyFilter($event, item.header, 'blur')">
+                                                
+                                              </div>
+                                            </th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(noData()){
+                                        <td>&nbsp;</td>
+                                        @for(ikey of columns; track ikey){
+                                            <td>&nbsp;</td>
+                                        }
+                                        <td>&nbsp;</td>
+                                    }
+                                    @else{
+                                        @for(item of dataSource(); track item; let index = $index){
+                                            <tr>
+                                                <td>
+                                                  <div class="py-1">
+                                                    <button class="btn btn-sm border border-secondary-subtle px-1" (click)="setVal(item.sno)"><i class="fa-solid fa-check"></i></button>
+                                                  </div>
+                                                </td>
+                                                @for(ikey of columns; track ikey){
+                                                <td>
+                                                  <div class="text-truncate py-1 w-150">
+                                                    @if(item.header !== 'RowNum'){
+                                                      {{item[ikey.name]}}  
+                                                    }
+                                                  </div>
+                                                </td>
+                                          }
+                                            </tr>
+                                                        
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+            </div>
+          }   
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}

@@ -1,0 +1,34 @@
+<div class="border filters" [matMenuTriggerFor]="tfilter">
+    <span class="px-2 pt-3 rounded-0">
+        @if(filteroption === 'like'){<i class="fa fa-percent text-success"></i>}
+        @if(filteroption === 'notlike'){<i class="fa fa-percent text-danger"></i>}
+        @if(filteroption === 'beignswith'){<i class="fa fa-arrow-down-a-z"></i>}
+        @if(filteroption === 'endswith'){<i class="fa fa-arrow-up-a-z"></i>}
+        @if(filteroption === 'equals'){<i class="fa fa-equals"></i>}
+        @if(filteroption === 'notequals'){<i class="fa fa-not-equal"></i>}
+        @if(filteroption === 'greaterthan'){<i class="fa fa-greater-than"></i>}
+        @if(filteroption === 'greaterthanequal'){<i class="fa fa-greater-than-equal"></i>}
+        @if(filteroption === 'lesserthan'){<i class="fa fa-less-than"></i>}
+        @if(filteroption === 'lesserthanequal'){<i class="fa fa-less-than-equal"></i>}
+        @if(filteroption === 'in'){<i class="fa fa-circle-arrow-right"></i>}
+        @if(filteroption === 'null'){<span class="small">null</span>}
+        @if(filteroption === 'notnull'){<span class="small">not null</span>}
+    </span>
+</div>
+<mat-menu #tfilter="matMenu" yPosition="below">
+            @if(type !== 'DateTime'){
+            <button mat-menu-item (click)="filterOptions('like','like')"><i class="fa fa-percent text-success me-1"></i> <span class="small">Like</span></button>
+            <button mat-menu-item (click)="filterOptions('notlike','not like')"><i class="fa fa-percent text-danger me-1"></i> <span class="small">Not Like</span></button>
+            <button mat-menu-item (click)="filterOptions('beignswith','begins')"><i class="fa fa-arrow-down-a-z me-1"></i> <span class="small">Begins With</span></button>
+            <button mat-menu-item (click)="filterOptions('endswith','ends')"><i class="fa fa-arrow-up-a-z me-1"></i> <span class="small">Ends With</span></button>
+            }
+            <button mat-menu-item (click)="filterOptions('equals','=')"><i class="fa fa-equals me-1"></i> <span class="small">Equals</span></button>
+            <button mat-menu-item (click)="filterOptions('notequals','<>')"><i class="fa fa-not-equal me-1"></i> <span class="small">Not Equals</span></button>
+            <button mat-menu-item (click)="filterOptions('greaterthan','>')"><i class="fa fa-greater-than me-1"></i> <span class="small">Greater Than</span></button>
+            <button mat-menu-item (click)="filterOptions('greaterthanequal','>=')"><i class="fa fa-greater-than-equal me-1"></i> <span class="small">Greater Than or Equals</span></button>
+            <button mat-menu-item (click)="filterOptions('lesserthan','<')"><i class="fa fa-less-than me-1"></i> <span class="small">Lesser Than</span></button>
+            <button mat-menu-item (click)="filterOptions('lesserthanequal','<=')"><i class="fa fa-less-than-equal me-1"></i> <span class="small">Lesser Than or Equals</span></button>
+            @if(type !== 'DateTime'){<button mat-menu-item (click)="filterOptions('in','in')"><i class="fa fa-circle-arrow-right me-1"></i> <span class="small">In </span></button>}
+            <button mat-menu-item (click)="filterOptions('null','null')"> <span class="small me-1">Is Null</span></button>
+            <button mat-menu-item (click)="filterOptions('notnull','notnull')"> <span class="small me-1">Is Not Null</span></button>
+</mat-menu>

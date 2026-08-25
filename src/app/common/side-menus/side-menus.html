@@ -1,0 +1,73 @@
+   
+            <div class="nk-sidebar-element nk-sidebar-head">
+                    <div class="nk-menu-trigger">
+                        <a href="javascript:void(0)" class="nk-nav-toggle nk-quick-nav-icon d-xl-none" (click)="sidebar.mtoggle()"><em class="icon ni ni-arrow-left"></em></a>
+                        <a href="javascript:void(0)" class="nk-nav-compact nk-quick-nav-icon d-none d-xl-inline-flex" (click)="sidebar.toggle()"><em class="icon ni ni-menu"></em></a>
+                    </div>
+                    <div class="nk-sidebar-brand">
+                      <app-company-list></app-company-list>
+                    </div>
+                </div><!-- .nk-sidebar-element -->
+                <div class="nk-sidebar-element nk-sidebar-body">
+                    <div class="pt-3">
+                      <ul class="nk-menu">
+                        <li class="nk-menu-item">
+                          <div class="cursor-pointer nk-menu-link" (click)="openPage('dashboard', '')">
+                            <em class="icon ni ni-home-new"></em> 
+                            <span class="text-break menu-item">Dashboard</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="nk-sidebar-content" (mouseenter)="onHover()" (mouseleave)="onLeave()">
+                  
+                        @if(isDataLoded()){
+                          <ul class="nav nav-tabs nav-tabs-s2">
+                              <li class="nav-item cursor-pointer">
+                                  <a class="nav-link pt-0 pb-1" [ngClass]="activeTab() === 'all' ? 'active':''" (click)="setTabs('all')">All</a>
+                              </li>
+                              <li class="nav-item cursor-pointer">
+                                  <a class="nav-link pt-0 pb-1" [ngClass]="activeTab() === 'fav' ? 'active':''" (click)="setTabs('fav')">Favourite</a>
+                              </li>
+                          </ul>
+                          }
+                          @if(activeTab() === 'all' && isDataLoded()){
+                              <div class="form-group px-5 mt-3 mb-0 pb-2  search-menu">
+                                  <div class="form-control-wrap">
+                                      @if(searchMenu()){
+                                          <div class="form-icon form-icon-right cursor-pointer" (click)="clearSearch()">
+                                              <em class="icon ni ni-cross-circle-fill"></em>
+                                          </div>
+                                      }
+                                      <input type="text" class="form-control" placeholder="Search" aria-label="Search" [(ngModel)]="searchMenu" (input)="applyFilter(searchMenu())">
+                                  </div>
+                              </div>
+                              <div class="nk-sidebar-menu" data-simplebar>
+                                <ul class="nk-menu">
+                                      @for (item of dataSource(); track $index) {
+                                          <app-menu-item [item]="item" (addfav)="addfavEvt($event)" (openmenu)="openmenuEvt($event)"></app-menu-item>
+                                      }        
+                                </ul>
+                            </div><!-- .nk-sidebar-menu -->
+                          }
+                          @else if(activeTab() === 'fav') {
+                              <div class="nk-sidebar-menu" data-simplebar>
+                                @if(isFavDataLoded()){
+                                  <ul class="nk-menu mt-4">
+                                    @for (item of favdataSource(); track $index) {
+                                      <app-fav-item [item]="item" (removeitem)="removeitemevt($event)" (openpage)="openfavpageEvt($event)"></app-fav-item>
+                                    }
+                                  </ul> 
+                                }
+                                @else{
+                                  <h6 class="text-center my-5 pt-5"><i>Favourites is Loading...</i></h6>
+                                }
+                              </div>
+                          }
+                          @else {
+                            <h6 class="text-center my-5 pt-5"><i>Menu is Loading...</i></h6>
+                          }
+                      
+                  
+                    </div><!-- .nk-sidebar-content -->
+                </div><!-- .nk-sidebar-element -->

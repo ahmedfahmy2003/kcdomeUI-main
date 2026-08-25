@@ -1,0 +1,244 @@
+<div class="card card-bordered card-stretch tms py-4">
+            <div class="row text-center">
+                <div class="col-2">
+                    <div class="custom-control custom-control-sm custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="approve" [(ngModel)]="approvedChbx" (change)="emplDetailsOptions(selectdEmployee, empIndex)">
+                        <label class="custom-control-label bg-primary text-white px-3 py-1" for="approve">Approved</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-control-sm custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="reject" [(ngModel)]="rejectedChbx" (change)="emplDetailsOptions(selectdEmployee, empIndex)">
+                        <label class="custom-control-label bg-danger text-white px-3 py-1" for="reject">Rejected</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-control-sm custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="justified" [(ngModel)]="justifiedChbx" (change)="emplDetailsOptions(selectdEmployee, empIndex)">
+                        <label class="custom-control-label bg-warning text-white px-3 py-1" for="justified">Justified</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-control-sm custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="ontime" [(ngModel)]="ontimeChbx" (change)="emplDetailsOptions(selectdEmployee, empIndex)">
+                        <label class="custom-control-label bg-success text-white px-3 py-1" for="ontime">On Time</label>
+                    </div>
+                </div><div class="col-2">
+                    <div class="custom-control custom-control-sm custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="lateearly" [(ngModel)]="lateEarlyChbx" (change)="emplDetailsOptions(selectdEmployee, empIndex)">
+                        <label class="custom-control-label bg-warning text-white px-3 py-1" for="lateearly">Late/Early</label>
+                    </div>
+                </div><div class="col-2">
+                    <div class="custom-control custom-control-sm custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="absent" [(ngModel)]="absentChbx" (change)="emplDetailsOptions(selectdEmployee, empIndex)">
+                        <label class="custom-control-label bg-danger text-white px-3 py-1" for="absent">Absent</label>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light text-white px-3 py-2 my-2">
+                <div class="d-flex justify-content-center">
+                    <div class="">
+                        <button type="button" class="btn btn-secondary me-3" (click)="prevMonth()">Previous Month</button>
+                    </div>
+                    <div class="">
+                        <div class="input-group add-field">  
+                            <span class="btn border border-secondary-subtle bg-white ms-3">{{startDate()  | date: dateFormat}}</span>
+                            <!--<input class="form-control" matInput placeholder="dd/MM/yyyy" [matDatepicker]="dpf" readonly [(ngModel)]="startDate" [value]="date.value" (dateChange)="addEvent('change', $event)" />
+                            <span class="input-group-text cursor-pointer">
+                              <mat-datepicker-toggle matIconSuffix [for]="dpf" [tabIndex]="-1"></mat-datepicker-toggle>
+                              <mat-datepicker #dpf [tabIndex]="-1"></mat-datepicker>
+                            </span>-->
+                        </div>
+                    </div>
+                    <div class="mx-2 mt-2"><strong class="text-secondary">__</strong></div>
+                    <div class="">
+                        <div class="input-group add-field">  
+                            <span class="btn border border-secondary-subtle bg-white me-3">{{endDate()  | date: dateFormat}}</span>
+                            <!--<input class="form-control" matInput placeholder="dd/MM/yyyy" [matDatepicker]="dpt" readonly [(ngModel)]="endDate" [value]="date.value" (dateChange)="addToEvent('change', $event)" />
+                            <span class="input-group-text cursor-pointer">
+                              <mat-datepicker-toggle matIconSuffix [for]="dpt" [tabIndex]="-1"></mat-datepicker-toggle>
+                              <mat-datepicker #dpt [tabIndex]="-1"></mat-datepicker>
+                            </span>-->
+                          </div>
+                    </div>
+                    <div class="">
+                        <button type="button" class="btn btn-secondary ms-3" (click)="nextMonth()">Next Month</button>
+                    </div>
+                </div>
+            </div>  
+
+            <div>
+                <div class="d-flex flex-row">
+                        <span class="ms-2 me-4 mt-1 text-secondary"><strong> <i class="fa fa-users fa-1x me-1 text-secondary"></i> Team Members</strong></span> 
+                        <div class="custom-control custom-control-sm custom-checkbox">
+                            <input id="terminated" class="custom-control-input" type="checkbox" [(ngModel)]="emplTerminated" (change)="getEmployeeList()">
+                            <label for="terminated" class="custom-control-label py-1">Terminated</label>
+                        </div>
+                </div>
+            </div>
+            <div class="d-flex p-2">     
+                <div class="form-group">
+                    
+                    <!--<div class="input-group my-2 positon-relative">
+                        <input type="text" class="form-control searchbox py-1 border-dark-subtle" placeholder="Search Employee" aria-label="Search Employee" [(ngModel)]="searchEmployee" (keyup)="applyFilter(searchEmployee)">
+                        <span class="input-group-text position-absolute right-pos cursor-pointer border border-dark-subtle" *ngIf="searchEmployee" (click)="clearSearch()"><i class="fa fa-times small"></i></span>
+                    </div>-->
+                     <div class="form-control-wrap">
+                        <select class="form-select" (change)="emplDetails(this.employeeList[empIndex], empIndex)" [(ngModel)]="empIndex">
+                            
+                                <option value="-1">All Employees</option>
+                            
+                           @for (empl of employeeList; track empl; let i = $index) {
+                                <option [value]="i">{{empl.FullNameEn}} - {{empl.Code}}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <!--@if(empAttendanceList){
+                    <div class="mb-2">
+                        <mat-paginator [length]="resultsLength" [pageSizeOptions]="[10,30,100,500,1000]" [pageSize]="pageSize" showFirstLastButtons [pageIndex]="currentPage" (page)="handlePage($event)"></mat-paginator>
+                    </div>
+                }-->
+            </div>
+          
+            
+            <div class="table-div" [ngClass]="empAttendanceList() ? ' table':''">
+                @if(empAttendanceList()){   
+                    <table class="table table-tranx">
+                        <thead class="table-light">   
+                            <tr>
+                                <th> Number </th>
+                                <th>Date</th>
+                                <th>Log Time</th>
+                                <th>Calendar Time</th>
+                                <th>Late Status</th>
+                                <th>Late Minutes</th>
+                                <th>Late Justification</th>
+                                <th>Late Justify</th>
+                                <th>Late Note</th>
+                                <th>Paid Late Approval</th>
+                                <th>Non-Paid Late Approval</th>
+                                <th> Late Rejection </th>
+                                <th> Approved Late Minute </th>
+                                <th> Early Leave Status </th>
+                                <th> Early Minutes </th>
+                                <th> Early Leave Justification </th>
+                                <th> Early Leave Note </th>
+                                <th> Paid Early Approval </th>
+                                <th> Non Paid Early Approval </th>
+                                <th> Approved Early Minutes </th>
+                                <th> Early Rejection </th>
+                                <th> Attachments </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(item of empAttendance(); track index; let index = $index){
+                                <tr>
+                                    <td class="td-date"> {{item.Code}} </td>
+                                    <td class="td-date"> {{item.TransactionDate | date: dateFormat}} </td>
+                                    <td> <p>{{item.StartTime | date: dateTimeFormat}}</p> - <p>{{item.EndTime | date: dateTimeFormat}}</p></td>
+                                    <td> <p>{{item.ActualStartTime | date: dateTimeFormat}}</p> - <p>{{item.ActualEndTime | date: dateTimeFormat}}</p></td>
+                                    <td> {{item.OrginalStatusID}} {{item.StatusID ? '/ '+item.StatusID : ''}} </td>
+                                    <td> {{item.LateHours < 0 ? (item.LateHours * - 60 | number:'1.0-0') : 0}} </td>
+                                    <td> {{item.JustificationType}} </td>
+                                    <td> 
+                                        @if((item.OrginalStatusID !== 'On Time' && item.StatusID !== 'Approved')){
+                                            <div><i class="fa-solid fa-file-pen" (click)="openBox(item)"></i></div>
+                                        }    
+                                    </td>
+                                    <td> {{item.JustificationNote ? item.JustificationNote : "N/A"}} </td>                
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> {{item.ApproveLateHours > 0 ? (item.ApproveLateHours * 60 | number:'1.0-0') : 0}} </td>
+                                    <td> {{item.EarlyStatusID}} </td>
+                                    <td> {{item.EarlyHours < 0 ? (item.EarlyHours * 60 | number:'1.0-0') : 0}} </td>
+                                    <td> {{item.EarlyJustificationType}} </td>
+                                    <td>{{item.EarlyJustificationNote ? item.EarlyJustificationNote : "N/A"}} </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td>  </td>
+                                    <td> {{item.ApprovedEarlyHours < 0 ? (item.ApprovedEarlyHours * -60 | number:'1.0-0') : 0}} </td>
+                                    <td> N/A </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>  
+</div>
+@if(modal.isOpen('tms')){
+<div class="modal custom-modal" [class.show]="modal.isOpen('tms')">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" *ngIf="recordStatus">
+        <div class="modal-header border-bottom py-3">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">Add {{recordStatus.OrginalStatusID}} Justification</h6>
+            </div>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+              
+            </button>
+        </div>
+        <div class="modal-body overflow-auto">
+           <div class="row mx-0">
+                <div class="col-4 border-top py-2">
+                    Status
+                </div>
+                <div class="col-8 border-top py-2">
+                    {{recordStatus.OrginalStatusID}} {{recordStatus.StatusID ? '/ '+recordStatus.StatusID : ''}}
+                </div>
+                <div class="col-4 border-top py-2">
+                    Name
+                </div>
+                <div class="col-8 border-top py-2">
+                    {{recordStatus.FullNameEn}}
+                </div>
+                <div class="col-4 border-top py-2">
+                    Late Minutes
+                </div>
+                <div class="col-8 border-top py-2">
+                    {{recordStatus.LateHours < 0 ? (recordStatus.LateHours * - 60 | number:'1.0-0') : 0}}
+                </div>
+                <div class="col-4 border-top py-2">
+                    Justification Reason
+                </div>
+                <div class="col-8 border-top py-2">
+                    <select class="form-select" [(ngModel)]="justTypes">
+                        @for(list of justTypesList; track list){
+                            <option [value]="list.ID">{{list.DescriptionEn}}</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-4 border-top py-2">
+                    Time
+                </div>
+                <div class="col-8 border-top py-2">
+                    -
+                </div>
+                <div class="col-4 border-top py-2">
+                    Manager Note
+                </div>
+                <div class="col-8 border-top py-2">
+                    
+                </div>
+                <div class="col-4 border-top py-2">
+                    Choose File
+                </div>
+                <div class="col-8 border-top py-2">
+                    
+                </div>
+           </div>
+        </div>
+        <div class="row mx-0 pb-3">
+            <div class="col pe-1 text-end">
+                <button type="button" class="btn border border-secondary-subtle btn-success" [disabled]="loader.isLoading()" (click)="closeModal()">Save</button>
+            </div>
+            <div class="col ps-1">
+                <button type="button" class="btn border border-secondary-subtle btn-danger" [disabled]="loader.isLoading()" (click)="closeModal()">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
+</div> 
+}

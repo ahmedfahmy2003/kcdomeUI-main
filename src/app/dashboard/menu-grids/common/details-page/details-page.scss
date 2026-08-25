@@ -1,0 +1,145 @@
+.show.disable{
+    cursor: not-allowed !important;
+    li{
+        color: #999;
+    }
+}
+
+.table > :not(caption) > * > *, td, th{
+    border: none !important;
+}
+.pos{
+    position: absolute;
+    bottom: -2px;
+    right: -12px;
+}
+.tab-item{
+    a{
+        text-align: left;
+        color: #2f3093;
+        i{
+            display: none;
+        }
+    }
+}
+
+.tab-item.active{
+    background: #364a63;
+    a{
+        color: #fff;
+        i{
+            display: inline;
+        }
+    }
+}
+
+.main-tab-table{
+    max-width: 98%;
+    width: calc(400px * var(--tdcol));
+    min-width: 400px;
+    margin: 0 1%;
+    td.tdcol{
+        vertical-align: top;
+       /* min-width: 10%;*/
+        width: calc(100% / var(--tdcol));
+       /* max-width: 10%;*/
+        padding-right: 0.5rem;
+    }
+
+    td.lookup{
+        vertical-align: top;
+       /* min-width: 10%;*/
+        min-width: calc(100% / var(--tdcol));
+       /* max-width: 10%;*/
+        padding-right: 0.5rem;
+    }
+}
+
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+   }
+   
+   .mat-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    display: table;
+    border-collapse: collapse;
+    margin: 0px;
+   }
+   
+   .mat-row,
+   .mat-header-row {
+    display: table-row;
+   }
+   
+   .mat-cell,
+   .mat-header-cell {
+    word-wrap: initial;
+    display: table-cell;
+    padding: 0px 5px;
+    line-break: unset;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
+   }
+   .mdc-button{
+    min-width: 40px !important;
+   }
+   .mat-mdc-row, .mat-mdc-header-row{
+    height: 32px;
+   }
+
+   .mat-mdc-menu-item{
+    min-height: 30px;
+  }
+  
+  .small{
+    font-size: 12px;
+  }
+.modal-xl {
+    --bs-modal-width: 98%;
+    height: 94%;
+    .modal-content{
+    height: 94%;
+    }   
+
+}
+
+.file-input{
+    opacity: 0;
+    width: 100%;
+    margin: 0;
+    cursor: default;
+    padding: 7px 0;
+}
+
+.form-select{
+    background-image: none !important;
+}
+.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+.notif{
+    height: 34px;
+}
+
+button{
+    i.fa-solid{
+        font-size: 10px;
+    }
+}
+
+.b-value{
+    border-left: 2px solid red ;
+}

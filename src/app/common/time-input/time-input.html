@@ -1,0 +1,11 @@
+@if(((!field().Enabled || readOnly) && !field().wfEnabled )|| rreadonly || field().mrEnabled === false){
+    <input class="form-control" disabled [value]="field().FieldVal" placeholder="dd/MM/yyyy" [ngClass]="field().Mandatory ? 'rounded-0 b-value':''" />
+}
+@else{
+<div class="input-group add-field">
+    <input class="form-control" [ngxTimepicker]="picker" readonly [(ngModel)]="field().FieldVal" [format]="24" [ngClass]="field().Mandatory ? 'rounded-0 b-value':''"/>
+    <ngx-material-timepicker #picker (closed)="addEvent($event)"></ngx-material-timepicker>
+    <span class="input-group-text cursor-pointer" (click)="clearTime()"><i class="fa fa-circle-xmark small text-warning"></i></span>
+    <ngx-material-timepicker-toggle class="input-group-text cursor-pointer small py-0" [for]="picker"></ngx-material-timepicker-toggle>
+</div>
+}

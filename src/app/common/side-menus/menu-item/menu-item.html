@@ -1,0 +1,48 @@
+<li class="nk-menu-item" [ngClass]="editableItem().children.length > 0 ? (editableItem().expand ? 'has-sub active' : 'has-sub'):''">
+    <div class="cursor-pointer d-flex" [ngClass]="editableItem().children.length > 0 ? 'nk-menu-toggle':''">
+        <div class="nk-menu-link d-flex flex-grow-1" (click)="openPage(editableItem(), '')">
+            <span class="nk-menu-icon">
+                @if(editableItem().icon){
+                    <!-- @if((editableItem().icon).startsWith('iVBORw0KGgo')){
+                        <img src="data:image/png;base64,{{editableItem().icon}}" />
+                    }
+                    @else{
+                        <img src="data:image/svg+xml;base64,{{editableItem().icon}}" />
+                    } -->
+                        <em class="icon ni ni-pie"></em>
+                }
+                @else {
+                    @if(editableItem().children.length > 0){
+                        <em class="icon ni ni-folder"></em>
+                    }@else {
+                        <em class="icon ni ni-grid"></em>
+                    }
+                }
+            </span>
+            <span class="text-break menu-item cursor-pointer">{{editableItem().name}}</span>
+        </div>
+        @if(editableItem().children.length === 0){
+        <div class="kc-dropdown">
+            <em class="kc-dropdown-toggle icon ni ni-more-v text-end cursor-pointer" (click)="toggle()"></em>
+              @if (isOpen()) {
+            <div class="kc-dropdown-menu">
+                <div class="dropdown-body px-2 pt-1">
+                    @if(editableItem().menuType !== 'View'){
+                        <a class="py-1" (click)="openMenu(editableItem(), 'add')"><em class="icon ni ni-plus-circle-fill"></em> <span class="small cursor-pointer"><strong>Add Record</strong></span></a>
+                    }
+                    <a class="py-1" (click)="addFav(editableItem())"><em class="icon ni ni-star-fill"></em> <span class="small cursor-pointer"><strong>Favourite</strong></span></a>
+                </div>
+            </div>
+        }
+        </div>
+        }
+    </div>
+    @if(editableItem().children.length > 0){
+        <ul class="nk-menu-sub">
+            @for(subitem of editableItem().children; track subitem.id) {
+                <app-menu-item [item]="subitem" (addfav)="addfav.emit($event)" (openmenu)="openmenu.emit($event)"></app-menu-item>
+            }
+        </ul>
+    }
+    
+</li>

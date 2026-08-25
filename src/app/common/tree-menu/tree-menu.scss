@@ -1,0 +1,10 @@
+::ng-deep #tasks{
+    td{
+        height: 40px;
+        vertical-align: middle;
+    }
+}
+
+::ng-deep .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused).dx-column-lines > td, .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused).dx-column-lines > tr > td, .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused):hover.dx-column-lines > td, .dx-treelist-rowsview .dx-selection.dx-row:not(.dx-row-focused):hover.dx-column-lines > tr > td{
+    background-color: #ebf3fc;
+}

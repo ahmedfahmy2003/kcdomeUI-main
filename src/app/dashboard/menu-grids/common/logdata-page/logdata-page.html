@@ -1,0 +1,142 @@
+<div class="py-3 overflow-auto">
+    <table class="table table-tranx">
+        <thead class="table-light">
+            <tr>
+                <th>
+                   <i class="fa fa-arrows-rotate" (click)="getLogData()"></i>
+                </th>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Log Type
+                </th>
+                <th>
+                    Field Name
+                </th>
+                <th>
+                    Table Name
+                </th>
+                <th>
+                    Old Data
+                </th>
+                <th>
+                    New Data
+                </th>
+                <th>
+                    Created Date
+                </th>
+                <th>
+                    Created User
+                </th>
+                <th>
+                    User Log ID
+                </th>
+            </tr>
+        </thead>
+        <tbody #moreObtn>
+            @if(logResponse().length === 0){
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    </td>
+                </tr>
+            }
+            @else{
+                @for (item of logResponse(); track item.id; let i = $index) {
+                    <tr>
+                        <td class="text-wrap" (click)="offData()">
+                            &bull;
+                        </td>
+                        <td class="text-wrap" (click)="offData()">
+                            {{item.id}}
+                        </td>
+                        <td class="text-wrap" (click)="offData()">
+                            {{item.logType}}
+                        </td>
+                        <td class="text-wrap" (click)="offData()">
+                            {{item.fieldName}}
+                        </td>
+                        <td class="text-wrap" (click)="offData()">
+                            {{item.tableName}}
+                        </td>
+                        <td>
+                            <div class="d-flex">
+                                @if(item.showOldData){
+                                    <div class="me-4">
+                                        <textarea [value]="item.oldData" rows="6" disabled style="position: absolute; background: white;"></textarea>
+                                    </div>
+                                }
+                                @else{
+                                    <div class="text-truncate truncate me-4">
+                                        {{item.oldData}}
+                                    </div>
+                                }
+                                @if(item.oldData){
+                                <div class="text-end">
+                                    <a href="javascript:void(0)" class="text-primary" (click)="showOData(i)">more</a>
+                                </div>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex">
+                                @if(item.showNewData){
+                                    <div class="me-4">
+                                        <textarea [value]="item.newData" rows="6" disabled style="position: absolute; background: white;"></textarea>
+                                    </div>
+                                }
+                                @else{
+                                    <div class="text-truncate truncate me-4">
+                                        {{item.newData}}
+                                    </div>
+                                }
+                                @if(item.newData){
+                                <div class="text-end">
+                                    <a href="javascript:void(0)" class="text-primary" (click)="showNData(i)">more</a>
+                                </div>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-truncate" (click)="offData()">
+                            {{item.createdDate | date}}
+                        </td>
+                        <td class="text-wrap" (click)="offData()">
+                            {{item.createdUser}}
+                        </td>
+                        <td class="text-wrap" (click)="offData()">
+                            {{item.userLogId}}
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

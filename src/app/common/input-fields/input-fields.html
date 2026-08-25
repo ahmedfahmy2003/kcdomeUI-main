@@ -1,0 +1,362 @@
+@if(field().Visible){
+<div class="form-area-group">
+@if(rreadonly() || (readOnly() && !field().wfEnabled && pageType !== 'callingsubmenu') || field().mrEnabled === false){
+    @if(field().FieldType === "Memo"){
+      <textarea class="form-control" #input [style.background-color]="bgColor" [style.height]="field().RowSpan*56+'px'" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" [disabled]="readOnly() || rreadonly() || field().mrEnabled === false" [(ngModel)]="field().FieldVal"></textarea>
+    }
+    @else if(field().FieldType === "CheckBox"){
+      <div class="custom-control custom-control-sm custom-checkbox">
+      <input #input class="custom-control-input" type="checkbox" value="" disabled [id]="field().FieldName+recordId" [(ngModel)]="field().FieldVal">
+      <label class="custom-control-label" [for]="field().FieldName+recordId">&nbsp;</label>
+      </div>
+    }
+    @else if(field().FieldType === "Image"){
+      @if(field().FieldVal){
+        
+        <img src="data:image/png;base64,{{field().FieldVal}}" />
+      }
+      @else {
+        <i class="fa fa-image h1"></i>
+      }
+    }
+    @else if(field().FieldType === "LookUp" || field().FieldType === "Editor" || field().FieldType === "MultiCheckBox"){ 
+      @if(field().descEn && field().descEn !== field().FieldVal){
+        <input class="form-control" tabindex="-1" type="hidden" [(ngModel)]="field().FieldVal" />
+        <input class="form-control" #input [style.background-color]="bgColor" [matTooltip]="field().FieldVal +' | ' + field().descEn" [disabled]="readOnly() || rreadonly() || field().mrEnabled === false" [(ngModel)]="descEn" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+      }
+      @else{
+        <input class="form-control" #input [style.background-color]="bgColor" [matTooltip]="field().FieldVal" [disabled]="readOnly() || rreadonly() || field().mrEnabled === false" [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+      }
+    }
+    @else if(field().FieldType === "DateTime"){
+      <input class="form-control" #input [style.background-color]="bgColor" [disabled]="readOnly() || rreadonly() || field().mrEnabled === false" [value]="field().FieldVal | date: dateFormat" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+    }
+    @else if(field().FieldType === "Separator"){
+      <div class="border-bottom border-dark-subtle" style="height: 8px;;">
+      </div>
+    }
+    @else if(field().FieldType === "Number"){
+      <input class="form-control" #input [style.background-color]="bgColor" [matTooltip]="field().FieldVal" [disabled]="readOnly() || rreadonly() || field().mrEnabled === false" [ngModel]="field().FieldVal | number" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+    }
+    @else if(field().FieldType !== "GridTab"){
+      <input class="form-control" #input [style.background-color]="bgColor" [matTooltip]="field().FieldVal" [disabled]="readOnly() || rreadonly() || field().mrEnabled === false" [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+    }
+}
+@else {
+    @if(field().FieldType === "Memo"){
+      <!--actionStop-->
+      @if(inlineEdit()){
+        <textarea class="form-control" (focus)="inputKeypress($event)" #input [style.height]="'30px'" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" [disabled]="!field().Enabled && !field().wfEnabled" [(ngModel)]="field().FieldVal" (blur)="setInputVal($event)"></textarea>
+      }@else {
+        <textarea class="form-control" (focus)="inputKeypress($event)" #input [style.height]="field().RowSpan*56+'px'" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" [disabled]="!field().Enabled && !field().wfEnabled" [(ngModel)]="field().FieldVal" (blur)="setInputVal($event)"></textarea>
+      }
+    }
+    @else if(field().FieldType === "CheckBox"){
+      <!--actionStop-->
+      <div class="custom-control custom-control-sm custom-checkbox">
+        <input class="custom-control-input" (focus)="inputKeypress($event)" #input [id]="field().FieldName+recordId" type="checkbox" value="" [disabled]="!field().Enabled && !field().wfEnabled" (change)="setInputVal($event)" [(ngModel)]="field().FieldVal">
+        <label class="custom-control-label" [for]="field().FieldName+recordId">&nbsp;</label>
+      </div>
+    }@else if(field().FieldType === "Image"){
+      <div class="mb-3">
+        <!--actionStop-->
+        <input class="form-control" #input type="file" [id]="'formFile'+recordId" accept="image/*" (change)="handleFileInput($event)" [disabled]="!field().Enabled && !field().wfEnabled">
+      </div>
+      @if(field().FieldVal){
+        <img src="data:image/png;base64,{{field().FieldVal}}" width="200" height="auto" />
+      }
+    }
+    @else if((field().FieldType === "LookUp" || field().FieldType === "Editor" || field().FieldType === "MultiCheckBox")){
+        @if(field().Enabled || field().wfEnabled){
+            @if(!field().DefaultValue){
+              @if(field().SearchQuery || field().FieldType === "Editor"){
+                <div class="input-group">   
+                  <input class="form-control" type="hidden" tabindex="-1" [(ngModel)]="field().FieldVal" />
+                  <input class="form-control" (focus)="inputKeypress($event)" #input type="text" [matAutocomplete]="auto" [(ngModel)]="descEn" (input)="autoFilter($event)" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />          
+                  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="autoSelect($event.option.value)">
+                    @if(autooptionslist().length > 0 && !loader.isLoading()){
+                      @for (list of autooptionslist(); track index; let index = $index) {
+                        <mat-option [value]="index" class="px-1 small">{{list[field().ListId]}} | {{list.UserName ? list.UserName : list.DescriptionEn ? list.DescriptionEn : list.FullNameEn ? list.FullNameEn : list.Code}}</mat-option>
+                      }
+                    }
+                  
+                  </mat-autocomplete>
+                  <span class="input-group-text cursor-pointer" (click)="clearLookUp()"><i class="fa fa-circle-xmark text-warning"></i></span>
+                  <span class="input-group-text cursor-pointer" (click)="openLookUp(currentPage(), pageSize())"><i class="fa fa-search text-primary"></i></span>
+                  @if(field().LinkedMenuId){<span class="input-group-text cursor-pointer" [matMenuTriggerFor]="list"><i class="fa fa-ellipsis-v text-dark"></i></span>}
+                  <mat-menu #list="matMenu" yPosition="below">
+                    <button mat-menu-item (click)="openAdd()"><i class="fa fa-add me-2"></i> <span class="small">Add</span></button>
+                    <button mat-menu-item (click)="openPage(field())"><i class="fa fa-external-link me-2"></i> <span class="small">List</span></button>
+                    <button mat-menu-item><i class="fa fa-arrows-rotate me-2"></i> <span class="small">Refresh</span></button>
+                  </mat-menu>
+                </div>
+              }
+              @else{
+                <div class="input-group"> 
+                    <input class="form-control" type="hidden" tabindex="-1" [(ngModel)]="field().FieldVal" />
+                    <input class="form-control" #input readonly (focus)="inputKeypress($event)" [(ngModel)]="descEn" (click)="openLookUp(currentPage(), pageSize())" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+                    <span class="input-group-text cursor-pointer" (click)="clearLookUp()"><i class="fa fa-circle-xmark text-warning"></i></span>
+                    <span class="input-group-text cursor-pointer" (click)="openLookUp(currentPage(), pageSize())"><i class="fa fa-search text-primary"></i></span>
+                    @if(field().LinkedMenuId){<span class="input-group-text cursor-pointer" [matMenuTriggerFor]="list"><i class="fa fa-ellipsis-v text-dark"></i></span>}
+                    <mat-menu #list="matMenu" yPosition="below">
+                      <button mat-menu-item (click)="openAdd()"><i class="fa fa-add me-2"></i> <span class="small">Add</span></button>
+                      <button mat-menu-item (click)="openPage(field())"><i class="fa fa-external-link me-2"></i> <span class="small">List</span></button>
+                      <button mat-menu-item><i class="fa fa-arrows-rotate me-2"></i> <span class="small">Refresh</span></button>
+                    </mat-menu>
+                </div>
+              }
+            }
+            @else{
+              @if(largeRow() || field().FieldType === "Editor"){
+                <div class="input-group">   
+                  <input class="form-control" type="hidden" tabindex="-1" [(ngModel)]="field().FieldVal" />
+                  <input class="form-control" #input [style.background-color]="bgColor" type="text" [(ngModel)]="descEn" (focus)="inputKeypress($event)" (click)="openLookUp(currentPage(), pageSize())" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />          
+                  <span class="input-group-text cursor-pointer" (click)="clearLookUp()"><i class="fa fa-circle-xmark text-warning"></i></span>
+                  <span class="input-group-text cursor-pointer" (click)="openLookUp(currentPage(), pageSize())"><i class="fa fa-search text-primary"></i></span>
+                  @if(field().LinkedMenuId){<span class="input-group-text cursor-pointer" [matMenuTriggerFor]="list"><i class="fa fa-ellipsis-v text-dark"></i></span>}
+                  <mat-menu #list="matMenu" yPosition="below">
+                    <button mat-menu-item (click)="openAdd()"><i class="fa fa-add me-2"></i> <span class="small">Add</span></button>
+                    <button mat-menu-item (click)="openPage(field())"><i class="fa fa-external-link me-2"></i> <span class="small">List</span></button>
+                    <button mat-menu-item><i class="fa fa-arrows-rotate me-2"></i> <span class="small">Refresh</span></button>
+                  </mat-menu>
+                </div>
+              }
+              @else if(field().FieldType === "MultiCheckBox"){
+                <div class="input-group">   
+                  <input class="form-control" type="hidden" tabindex="-1" [(ngModel)]="field().FieldVal" />
+                  <input class="form-control" #input [style.background-color]="bgColor" type="text" [(ngModel)]="descEn" (focus)="inputKeypress($event)" (click)="openLookUp(currentPage(), pageSize())" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />          
+                  <span class="input-group-text cursor-pointer" (click)="clearLookUp()"><i class="fa fa-circle-xmark text-warning"></i></span>
+                  <span class="input-group-text cursor-pointer" (click)="openLookUp(currentPage(), pageSize())"><i class="fa fa-search text-primary"></i></span>
+                  @if(field().LinkedMenuId){<span class="input-group-text cursor-pointer" [matMenuTriggerFor]="list"><i class="fa fa-ellipsis-v text-dark"></i></span>}
+                  <mat-menu #list="matMenu" yPosition="below">
+                    <button mat-menu-item (click)="openAdd()"><i class="fa fa-add me-2"></i> <span class="small">Add</span></button>
+                    <button mat-menu-item (click)="openPage(field())"><i class="fa fa-external-link me-2"></i> <span class="small">List</span></button>
+                    <button mat-menu-item><i class="fa fa-arrows-rotate me-2"></i> <span class="small">Refresh</span></button>
+                  </mat-menu>
+                </div>
+              }
+              @else {
+               
+                  <div class="input-group">
+                    <!--[disabled]="actionStop"-->
+                    <select class="form-select" #input (change)="setInputVal($event)" (focus)="inputKeypress($event)" [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''">
+                      @if(!field().FieldVal){<option value="">--- Select ----</option>}
+                      @for(list of optionslist(); track list[field().ListId]){
+                        <option [value]="list[field().ListId]">{{list.UserName ? list.UserName : list.DescriptionEn ? list.DescriptionEn : list.FullNameEn ? list.FullNameEn : list.Code ? list.Code : list[field().ListId]}}</option>
+                      }
+                    </select>
+                    <span class="input-group-text cursor-pointer" (click)="clearLookUp()"><i class="fa fa-circle-xmark text-warning"></i></span>
+                    <span class="input-group-text cursor-pointer" (click)="openLookUp(currentPage(), pageSize())"><i class="fa fa-search text-primary"></i></span>
+                  </div>
+                
+              }
+            }
+        }
+        @else {
+          <input class="form-control" type="hidden" tabindex="-1" disabled [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+          <input class="form-control" #input [style.background-color]="bgColor" [matTooltip]="field().FieldVal && field().FieldVal !== field().descEn  ? field().FieldVal +' | ' + field().descEn  : ''" type="text" disabled [(ngModel)]="descEn" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" /> 
+        }
+    }
+    @else if(field().FieldType === "Number"){
+      @if(!field().Enabled && !field().wfEnabled){
+        <input type="text" #input numbersOnly class="form-control" (focus)="inputKeypress($event)" [style.background-color]="bgColor" (input)="inputVal($event)" (blur)="setInputVal($event)" [ngModel]="field().FieldVal | number" disabled [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+      }
+      @else {
+        <input type="text" #input numbersOnly class="form-control" (focus)="inputKeypress($event)"  [style.background-color]="bgColor" (input)="inputVal($event)" (blur)="setInputVal($event)" [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+      }
+    }
+    @else if(field().FieldType === "Separator"){
+      <div class="border-bottom border-dark-subtle" style="height: 8px;;">
+      </div>
+    }
+    @else{
+      <!--actionStop-->
+      <input type="text" #input class="form-control" [style.background-color]="bgColor" (input)="inputVal($event)" (focus)="inputKeypress($event)" (blur)="setInputVal($event)" [disabled]="!field().Enabled && !field().wfEnabled" [readOnly]="field().FieldType === 'LookUp'" [(ngModel)]="field().FieldVal" [ngClass]="field().Mandatory ? 'rounded-0 rounded-end-2 b-value':''" />
+    }
+}
+@if(modal.isOpen(field().FieldName+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen(field().FieldName+recordStamp)">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="mb-0">{{fieldname}}</h6>
+            </div>
+            <button tabindex="-1" type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+              
+            </button>
+          </div>
+          <div class="modal-body mb-3 overflow-auto">
+            @if(noData()){
+              <h5 class="text-center py-5">No Data</h5>
+            }
+            @else if(totalPages() > 1 || (totalPages() === 1 && !noData())){
+              @if(totalPages() > 1){
+                <div class="nk-block-between-md g-3 mb-2">
+                  <div class="g">
+                    <ul class="pagination justify-content-center justify-content-md-start">
+                      <li class="page-item">
+                        @if(currentPage() === 1){
+                          <span class="page-link disabled">Prev</span>
+                        }
+                        @else {
+                          <a class="page-link" (click)="goToPage(currentPage() - 1)">Prev</a>
+                        }
+                      </li>
+                      @for(page of [1, 2]; track page){
+                      <li class="page-item">
+                        <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{page}}</a>
+                      </li>
+                      }
+                      @if(currentPage() > 4){
+                      <li class="page-item">
+                        <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                      </li>
+                      }
+                      @for(page of [currentPage() - 1, currentPage(), currentPage() + 1]; track page){
+                        @if(page > 2 && page < (totalPages() - 1)){
+                        <li class="page-item">
+                          <a class="page-link"[class.active]="currentPage() === page" (click)="goToPage(page)">{{ page }}</a>
+                        </li>
+                        }
+                      }
+                      <!-- Ellipsis before last -->
+                      @if(currentPage() < totalPages() - 3){
+                      <li class="page-item">
+                        <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                      </li>
+                      }
+                      @for(page of [totalPages() - 1, totalPages()]; track page){
+                        @if(page > 2){
+                        <li class="page-item">
+                          <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{ page }}</a>
+                        </li>
+                        }
+                      }
+                      <li class="page-item">
+                                                          @if(currentPage() === totalPages()){
+                                                              <span class="page-link disabled">Next</span>
+                                                          }
+                                                          @else{
+                                                              <a class="page-link" (click)="goToPage(currentPage() + 1)">Next</a>
+                                                          }
+                                                      </li>
+                                                  </ul>
+                                              </div>
+                                    <div class="">
+                                      Items per page : 
+                                      <div class="ms-1">
+                                        <select class="form-select" [(ngModel)]="pageSize" (change)="sizeChange()">
+                                          @for(item of itemsOptions; track item){
+                                            <option [value]="item">{{item}}</option>
+                                          }
+                                        </select>
+                                      </div>
+                                    </div>
+                                              <div class="g">
+                                                              <!-- Page Dropdown -->
+                                                  <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                                                      <div>Page</div>
+                                                      <div>
+                                                          @if(totalPages()){
+                                                              <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
+                                                          }
+                                                      </div>
+                                                      <div>of {{ totalPages() }}</div>
+                                                      <div>
+                                                          <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary text-white btn-outline-light">Go</button>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+              }
+              <div class="border demo-table">
+                  <table class="table table-tranx">
+                                  <thead>
+                                      <tr>
+                                          <th class="fixed-top"></th>
+                                          @for(item of columns; track item.header){
+                                              <th class="py-2 fixed-top">
+                                                <div class="text-truncate">{{item.header}}</div>
+                                                <div class="mt-2">
+                                                  <input class="filter-control px-2 py-1 filtertSearch" type="text" (keyup.enter)="applyFilter($event, item.header, 'enter')" (blur)="applyFilter($event, item.header, 'blur')">
+                                                </div>
+                                              </th>
+                                          }
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      @if(noData()){
+                                          <td>&nbsp;</td>
+                                          @for(ikey of columns; track ikey){
+                                              <td>&nbsp;</td>
+                                          }
+                                          <td>&nbsp;</td>
+                                      }
+                                      @else{
+                                          @for(item of dataSource(); track item; let index = $index){
+                                              <tr>
+                                                  <td>
+                                                    <div class="py-1">
+                                                      @if(field().FieldType === "MultiCheckBox"){
+                                                        <button class="btn btn-sm border border-secondary-subtle px-1" (click)="setMultiSelect(index)"><i class="fa fa-check"></i></button>
+                                                      }
+                                                      @else{
+                                                        <button class="btn btn-sm border border-secondary-subtle px-1" (click)="setVal(index)"><i class="fa-solid fa-check"></i></button>
+                                                      }
+                                                    </div>
+                                                  </td>
+                                                  @for(ikey of columns; track ikey.name){
+                                                  <td>
+                                                      @if(item.header !== 'RowNum'){
+                                                        <div class="text-truncate py-1 w-150" [matTooltip]="item[ikey.name]">
+                                                            {{item[ikey.name]}}  
+                                                        </div>
+                                                      }
+                                                  </td>
+                                            }
+                                              </tr>
+                                                          
+                                          }
+                                      }
+                                  </tbody>
+                              </table>
+              </div>
+                @if(field().FieldType === 'MultiCheckBox' && mulitSelectList().length > 0){
+                  <p class="ps-3 mt-3"><strong>Selected:</strong></p>
+                  <div class="border border-secondary-subtle p-3 m-3 d-flex flex-wrap">
+                      @for(list of mulitSelectList(); track list; let index = $index){
+                        <div class="px-2 py-1 badge bg-outline-secondary rounded-pill me-2 mb-2">
+                          {{list.UserName ? list.UserName : list.DescriptionEn ? list.DescriptionEn : list.FullNameEn ? list.FullNameEn : list.Code}} <span class="ms-1 cursor-pointer" (click)="removeBadge(index)"><em class="icon ni ni-cross-circle text-danger"></em></span>
+                        </div>
+                      }
+                  </div>
+                }
+            }   
+          </div>
+          <div class="modal-footer">
+            @if(field().FieldType === 'MultiCheckBox' && mulitSelectList().length > 0){
+              <button type="button" class="btn border btn-success me-2" (click)="addBadge()">Add</button>
+              <button type="button" class="btn border btn-danger" (click)="closeModal()">Cancel</button>
+            }
+            @else{
+              <button type="button" class="btn border btn-danger" (click)="closeModal()">Close</button>
+            }
+          </div>
+        </div>
+      </div>
+  </div> 
+  }
+</div>
+  @if(field().Note){
+    <div class="position-relative">
+      <div class="position-absolute info-tooltip cursor-pointer">
+        <em class="icon ni ni-info-fill h6" [matTooltip]="field().Note"></em>
+      </div>
+    </div>
+  }
+
+@if(addNew()){<calling-menu [ids]="'menuModal'+field().LinkedMenuId" [readonly]="false" [recordList]="recordList" [companyID]="companyID()" [menuid]="field().LinkedMenuId" [type]="'addNew'" (modalEmit)="modalEmitEvent($event)"></calling-menu>}
+
+
+}

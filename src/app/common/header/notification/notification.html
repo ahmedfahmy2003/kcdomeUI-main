@@ -1,0 +1,34 @@
+<div class="kc-dropdown">
+    <div class="kc-dropdown-toggle nk-quick-nav-icon" (click)="toggle()">
+        <div class="icon-status icon-status-info">
+            <em class="icon ni ni-bell"></em>
+            <span class="badge small rounded-circle notif">{{!pendingCount() ? '': (pendingCount() > 99) ? '99+' : pendingCount()}}</span>
+        </div>
+    </div>
+    @if(isOpen()){
+        <div class="kc-dropdown-menu dropdown-menu-xl dropdown-menu-end dropdown-menu-s1">
+                                            <div class="dropdown-head">
+                                                <span class="sub-title nk-dropdown-title cursor-pointer border px-1 rounded" (click)="pendingWorkflow()"><em class="icon ni ni-reload"></em></span>
+                                                <span><label for="assoc">With Associates</label> <input id="assoc" type="checkbox" class="ms-2 form-check-input" [(ngModel)]="associates" (change)="ispendingWorkflow()"></span>
+                                            </div>
+                                            <div class="dropdown-body">
+                                                <div class="nk-notification">
+                                                  @for (items of pendingList; track items; let i = $index){
+                                                    <div class="nk-notification-item dropdown-inner">
+                                                      
+                                                      <div class="nk-notification-content cursor-pointer flex-grow-1" (click)="openMenu(items)">
+                                                        <div class="nk-notification-text"><strong>{{items.MenuName}} {{items.Description ? '-'+items.Description:''}}</strong></div>
+                                                      </div>
+                                                      <div class="nk-notification-icon">
+                                                        <span class="icon icon-circle bg-info">{{items.RecordCount}}</span>
+                                                      </div>
+                                                    </div>
+                                                  }
+                                                </div><!-- .nk-notification -->
+                                            </div><!-- .nk-dropdown-body -->
+                                            <div class="dropdown-foot center">
+                                                <strong>Pending Workflows</strong>
+                                            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,23 @@
+@if(dataSource().length > 0){
+<dx-tree-list [dataSource]="dataSource()" id="tasks" [selection]="{ mode: 'none' }" [rootValue]="-1" keyExpr="ID" parentIdExpr="ParentID" [showRowLines]="true" [showBorders]="false" [allowColumnReordering]="true" [allowColumnResizing]="true" [columnAutoWidth]="true" [columnMinWidth]="50">
+      <dxo-tree-list-search-panel
+    [visible]="true"
+    width="250"
+  ></dxo-tree-list-search-panel>
+  <dxo-tree-list-header-filter [visible]="true"></dxo-tree-list-header-filter>
+  <dxo-tree-list-selection mode="multiple"></dxo-tree-list-selection>
+ <dxo-tree-list-column-chooser [enabled]="true"></dxo-tree-list-column-chooser>
+    @for(col of dataKeys(); track col){
+        @if(col !== 'ID'){
+            <dxi-tree-list-column [minWidth]="50" [dataField]="col"></dxi-tree-list-column>
+        }
+        @else{
+            <dxi-tree-list-column [alignment]="'left'" [minWidth]="50" [dataField]="col"></dxi-tree-list-column>
+        }
+    }
+    <dxi-tree-list-column [fixed]="true" fixedPosition="right" type="buttons">
+        <dxi-tree-list-button icon="fa fa-eye text-secondary" [onClick]="okClicked"></dxi-tree-list-button>
+    </dxi-tree-list-column>
+    <dxo-tree-list-column-fixing [enabled]="true"></dxo-tree-list-column-fixing>
+</dx-tree-list>
+}

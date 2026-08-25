@@ -1,0 +1,110 @@
+<div  [ngClass]="(activeID() === page().id && (page().dtid === '' || (page().dtid && page().pageType === 'mainmenu') || page().pageType === 'prerequisitemenu')) || (activeID() === page().dtid && page().pageType === 'detailmenu') || (activeID() === page().id && (page().pageType === 'pendingwf' || page().pageType === 'menu')) ? 'nk-block-head nk-block-head-sm pb-2':'d-none'">
+                                    <div class="nk-block-between">
+                                        <div class="nk-block-head-content w-100 d-flex">
+                                            <h3 class="nk-block-title page-title flex-grow-1">{{page().name}} - {{page().pageType === 'pendingwf' ? page().pwfid.MenuID : page().pageType === 'mainmenu' && page().dtid ? page().dtid : page().pageType === 'menu' ? page().pwfid.MenuId : page().id}}</h3>
+                                            <div class="nk-block-des text-soft pt-2">
+                                               @if(totalRecords()){ <p class="text-dark">Total {{totalRecords()}} records</p>}
+                                            </div>
+                                        </div>
+                                    </div><!-- .nk-block-between -->
+                                </div>
+<div class="nk-block">
+  <div [ngClass]="(activeID() === page().id && (page().dtid === '' || (page().dtid && page().pageType === 'mainmenu') || page().pageType === 'prerequisitemenu')) || (activeID() === page().dtid && page().pageType === 'detailmenu') || (activeID() === page().id && (page().pageType === 'pendingwf' || page().pageType === 'menu')) ? '':'d-none'">
+    <div [ngClass]="page().pageType === 'prerequisitemenu' && prtype() !== 'grid' && !page().isJobEnable ? 'd-none':''">
+      @if(recordList.length > 0){
+        <div class="pb-1">
+        <ol class="breadcrumb text-muted mb-0">
+            <li class="breadcrumb-item"><span class="text-primary-emphasis text-underline" (click)="showGrid()"  [ngClass]="!detailsPage() && !detailsBtnGrid && !newRecordShow() ? 'fw-bold':'cursor-pointer'">Overview</span></li>
+            @for (record of recordList; track record.id; let pageIndex = $index) {
+            <li class="breadcrumb-item">
+                @if(record.id === 0){
+                <span (click)="closeNewRecord()"><em class="icon ni ni-cross-circle-fill cursor-pointer text-danger me-1"></em></span>
+                <span class="text-primary-emphasis" (click)="addRecord('mainmenu')" [ngClass]="activeRecord() === record.id && newRecordShow() && !detailsBtnGrid ? 'fw-bold':'cursor-pointer'">New Record</span>
+                }
+                @else{
+                @if(!record.disableClose){<span (click)="closeDetails(record.id)"><em class="icon ni ni-cross-circle-fill cursor-pointer text-danger me-1"></em></span>}
+                <span class="text-primary-emphasis" (click)="showRecord(record.id, pageIndex, '')" [ngClass]="activeRecord() === record.id && detailsPage() ? 'fw-bold':'cursor-pointer'">Record {{record.id}}</span>
+                  @for (menu of record.submenus; track menu.id; let subIndex = $index) {
+                    @if(menu.type === 'detailsBtnGrid'){
+                      <span class="mx-2 text-primary-emphasis" [ngClass]="activeRecord() === menu.id && detailsBtnGrid ? 'fw-bold':'cursor-pointer'" (click)="showDetailBtnGrid(menu.id, menu.parentid, record.id)"><i class="fa fa-caret-right me-2"></i> {{menu.desc}}<sup>*</sup> from Record {{menu.parentid}}</span>
+                    }
+                    @else if(menu.type === 'details'){
+                      <span class="mx-2 text-primary-emphasis" [ngClass]="activeRecord() === menu.id && detailsBtnGrid ? 'fw-bold':'cursor-pointer'"(click)="showDetailBtnRecord(menu.id, record.id, menu.parentid)"><i class="fa fa-caret-right me-2"></i> Record {{menu.id}} </span>
+                    }
+                    @else if(menu.type === 'detailsbtnnewrecord'){
+                      <span class="text-primary-emphasis" (click)="addRecord('detailsBtnGrid')" [ngClass]="activeRecord() === menu.id && detailsBtnGrid? 'fw-bold':''">
+                        <i class="fa fa-caret-right me-2"></i>  @if(!newrecordid){New Record}@else{ Record {{newrecordid}} }</span>
+                    }
+                  }
+                }
+            </li>
+            }
+        </ol> 
+        </div>
+      }
+    </div>
+
+    @if(preRequisiteOption() && !page().isJobEnable){
+      <div class="d-flex bg-white p-3">
+        <div class="custom-control custom-control-sm custom-radio">
+          <input class="custom-control-input" value="prerequisites" type="radio" [name]="'prerequisitestype'+recordStamp" [id]="'prerequisites'+recordStamp" (change)="requisiteType('prerequisites')">
+          <label class="custom-control-label" [for]="'prerequisites'+recordStamp">
+              Prerequisites
+          </label>
+        </div>
+        <div class="ms-4 custom-control custom-control-sm custom-radio">
+          <input class="custom-control-input" value="grid" type="radio" checked [name]="'prerequisitestype'+recordStamp"  [id]="'grid'+recordStamp" (change)="requisiteType('grid')">
+          <label class="custom-control-label" [for]="'grid'+recordStamp">
+            @if(page().menuType === "Dashboard"){
+              Dashboard
+            }
+            @else if(page().menuType === "CrystalReport"){
+              Report
+            }
+            @else{
+              Grid
+            }
+          </label>
+        </div>
+      </div>
+    }
+
+    @if(prtype() === 'prerequisites' && page().pageType === 'prerequisitemenu' && page().menuType === 'CrystalReport'){
+      <div class="d-flex bg-white p-3">
+        <div class="custom-control custom-control-sm custom-radio">
+          <input class="custom-control-input" type="radio" value="excel" [name]="'reporttype'+recordStamp"  [id]="'excel'+recordStamp" [(ngModel)]="reportType">
+          <label class="custom-control-label" [for]="'excel'+recordStamp">
+              Excel
+          </label>
+        </div>
+        <div class="ms-4 custom-control custom-control-sm custom-radio">
+          <input class="custom-control-input" type="radio" checked value="pdf" [name]="'reporttype'+recordStamp" [id]="'pdf'+recordStamp" [(ngModel)]="reportType">
+          <label class="custom-control-label" [for]="'pdf'+recordStamp">
+            Pdf
+          </label>
+        </div>
+      </div>
+    }
+    
+    @if(page().pageType === 'prerequisitemenu' && !page().isJobEnable){ 
+      <grid-tabs [ngClass]="prtype() !== 'grid' ? '':'d-none'" [_menuId]="page().dtid"  [prerequisitesType]="prtype()" [page]="page()" [companyID]="companyID()" [_pageType]="page().pageType" [(detailsPage)]="detailsPage" [recordList]="recordList" [preReqIndex]="preReqIndex" (prerequisiteType)="prerequisiteTypeEvent($event)" (prType)="prTypeEvent($event)"></grid-tabs>
+      @if(preRequisiteOption() && page().menuType !== 'Dashboard'){
+      <menu-grid-tabs [pageIndex]="pIndex()" [pageIndex]="pIndex()" (totalRecords)="totalRecordsEvt($event)" [ngClass]="prtype() === 'grid' && !detailsPage() && !newRecordShow() ? '':'d-none'" (menuaccessemit)="menuaccessevent($event)" (resCompanyIDemit)="resCompanyIDEvt($event)" (addRecordemit)="addRecordEvt($event)" [companyID]="companyID()" [recordDeleted]="recorddeleted" [newRecordAdded]="newRecordAdded()" [newRecordID]="newrecordid" [_pageType]="page().pageType" [preReqIndex]="preReqIndex" [_reportType]="reportType()" [recordList]="recordList" [queryData]="queryDatagrid" [subRecordId]="gridrecordId()" [page]="page()" [pageAdd]="pageAdd()" [activeId]="menuactiveid" [(detailsPage)]="detailsPage" [(newRecordShow)]="newRecordShow" (tabnameChange)="tabName($event)" (menusChange)="menusEvent($event)" [_activeRecord]="activeRecord()" [_refreshTable]="updateTable" (activeRecordChange)="activeRecordEvent($event)"></menu-grid-tabs>  
+      }
+      @if(preRequisiteOption() && page().menuType === 'Dashboard'){
+        <menu-dashboard [ngClass]="prtype() === 'grid' ? '':'d-none'" [endpoint]="endpoint" [page]="page()" [companyID]="companyID()" [preid]="preid"></menu-dashboard>
+      }
+    }
+    @else if(page().pageType === 'prerequisitemenu' && page().isJobEnable){
+      <menu-grid-tabs [pageIndex]="pIndex()" [page]="page()" [companyID]="companyID()" [newRecordAdded]="newRecordAdded()" [_getmenuFieldsto]="getmenuFieldsto" [recordDeleted]="recorddeleted" (menuaccessemit)="menuaccessevent($event)" (useraccessemit)="useraccessevent($event)" (totalRecords)="totalRecordsEvt($event)" (resCompanyIDemit)="resCompanyIDEvt($event)" (addRecordemit)="addRecordEvt($event)" [newRecordID]="newrecordid" [ngClass]="detailsBtnGrid || detailsPage() || newRecordShow() ? 'd-none':''" [_pageType]="page().pageType" [recordList]="recordList" [pageAdd]="pageAdd()" [activeId]="page().dtid" [(detailsPage)]="detailsPage" [(newRecordShow)]="newRecordShow" (tabnameChange)="tabName($event)" (menusChange)="menusEvent($event)" [_activeRecord]="activeRecord()" (activeRecordChange)="activeRecordEvent($event)" [_refreshTable]="updateTable" (prType)="prTypeEvent($event)" (procedureJob)="procedureJobEvt($event)" (jobProgress)="jobProgressEvt($event)" [genrpt]="genReport()"></menu-grid-tabs>  
+    }
+    @else if(companyID()){
+      <menu-grid-tabs [pageIndex]="pIndex()" [page]="page()" [companyID]="companyID()" [newRecordAdded]="newRecordAdded()" [_getmenuFieldsto]="getmenuFieldsto" [recordDeleted]="recorddeleted" (menuaccessemit)="menuaccessevent($event)" (useraccessemit)="useraccessevent($event)" (totalRecords)="totalRecordsEvt($event)" (resCompanyIDemit)="resCompanyIDEvt($event)" (addRecordemit)="addRecordEvt($event)" [newRecordID]="newrecordid" [ngClass]="detailsBtnGrid || detailsPage() || newRecordShow() ? 'd-none':''" [_pageType]="page().pageType" [recordList]="recordList" [pageAdd]="pageAdd()" [activeId]="menuactiveid" [(detailsPage)]="detailsPage" [(newRecordShow)]="newRecordShow" (tabnameChange)="tabName($event)" (menusChange)="menusEvent($event)" [_activeRecord]="activeRecord()" (activeRecordChange)="activeRecordEvent($event)" [_refreshTable]="updateTable"></menu-grid-tabs>  
+    }
+
+    <ng-container #container></ng-container>
+    <ng-container #containerGrid></ng-container>
+    <ng-container #containerGD></ng-container>
+    <ng-container #containerGDN></ng-container>   
+  </div>
+</div>

@@ -1,0 +1,56 @@
+    <div class="input-group row mx-0 pt-4">
+        <div class="col-3">
+        @if(selectData().length > 0){
+            <select class="form-select rounded" [(ngModel)]="selectedID" (change)="onValueChanged($event)">
+                @if(!selectedID()){<option value="">--- Select ---</option>}
+                @for(list of selectData(); track list.Id){
+                    @if(!list.PrivateFlag || (list.PrivateFlag && (list.CreatedBy === userid()))){
+                        <option [value]="list.Id">{{list.LayoutName}}</option>
+                    }
+                }
+            </select>
+        }
+        @else{
+            <select class="form-select">
+                <option value="">No Layout</option>
+            </select>
+        }
+        </div>
+        <div class="col-9 d-flex">
+                <span class="ms-2 input-group-text bg-secondary rounded cursor-pointer text-white" (click)="createLayout()"><em class="icon ni ni-plus text-white me-2"></em> Create Layout</span>
+            @if((showLayout() && pivotLayout()) || newLayout()){
+                <span class="ms-2 input-group-text bg-secondary rounded cursor-pointer text-white" (click)="saveLayout()"><em class="icon ni ni-save text-white me-2"></em> Save Layout</span>
+                @if(!newLayout() && enableDelete()){
+                    <span class="ms-2 input-group-text bg-secondary rounded cursor-pointer text-white" (click)="deleteLayout()"><em class="icon ni ni-trash text-white me-2"></em> Delete Layout</span>
+                }
+            }
+        </div>
+    </div>
+
+    @if(newLayout()){
+        <div class="row mx-0 my-3">
+            <div class="col-3">
+                <div class="form-group">
+                    <label class="form-label" for="default-01">Layout Name</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" id="default-01" [(ngModel)]="newLayoutName" placeholder="Input placeholder">
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="custom-control custom-control-sm custom-checkbox mt-5">
+                    <input type="checkbox" class="custom-control-input" name="isprivate" [(ngModel)]="newLayoutPrivate" id="isprivate">
+                    <label class="custom-control-label" for="isprivate">Is Private</label>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if((showLayout() && pivotLayout()) || newLayout()){
+        <div class="mt-3">
+            <dx-pivot-grid #pivot [dataSource]="pivotLayout()" (onExporting)="onExporting($event)" [allowSorting]="true" [allowFiltering]="true" [allowExpandAll]="true" [allowSortingBySummary]="true" [showBorders]="true" [fieldChooser]="{ enabled: true, allowSearch: true }" (onContextMenuPreparing)="contextMenuPreparing($event)">
+                <dxo-field-chooser [enabled]="true" [allowSearch]="true"></dxo-field-chooser>
+                <dxo-pivot-grid-export [enabled]="true"></dxo-pivot-grid-export>
+            </dx-pivot-grid>  
+        </div>
+    }

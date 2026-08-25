@@ -1,0 +1,58 @@
+<span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="visibilityPopup('visibilityModal'+ids())">
+    <em class="icon ni ni-masonry-fill"></em>
+</span>
+@if(modal.isOpen('visibilityModal'+ids())){
+        <div class="modal custom-modal" [class.show]="modal.isOpen('visibilityModal'+ids())">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5"><i class="fa fa-braille fa-lg"></i> Visibility & Layout</h5>
+                    <button type="button" class="btn-close" (click)="closeModal()"></button>
+                </div>
+                <div class="modal-body overflow-auto">
+                    <div style="height: 400px; overflow-y: auto; overflow-x: hidden;">
+                        <div class="table table-responsive">
+                            
+                            <div cdkDropList class="visibility-list" (cdkDropListDropped)="drop($event)">
+                                <div class="d-flex border-bottom">
+                                    <div class="px-2 border-end"><input type="checkbox" [(ngModel)]="selectAll" (change)="selecEvent()" class="form-check-input border-dark" /></div>
+                                    <div>&nbsp;</div>
+                                </div>
+                                @for(list of vList(); track list){
+                                    <div class="d-flex visible-box" cdkDrag>
+                                        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                                        <div class="px-2 border-end"><input type="checkbox" [(ngModel)]="list.hide" class="form-check-input border-dark" /></div>
+                                        <div class="text-start ms-2 px-2" [ngClass]="list.hide ? 'text-secondary':'fw-bold'">{{list.name}} @if(list.hide){<span><i class="fa fa-eye-slash fa-xs ms-4"></i></span>}</div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-start small"><span class="text-danger">N.B.</span>Drag & Drop to reorder</p>
+                    <p class="text-end">
+                        <button class="btn border border-secondary-subtle me-3" (click)="closeModal()">Cancel</button>
+                        <button class="btn border border-success-subtle btn-success" (click)="updateModal()">OK</button>
+                    </p>
+                </div>
+            </div>
+            </div>
+        </div>
+}
+
+@if(modal.isOpen('errorModal'+ids())){
+<div class="modal custom-modal" [class.show]="modal.isOpen('errorModal'+ids())">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header pb-0 border-0">
+            <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body overflow-auto">
+            <p class="text-start pb-4"><span class="text-danger">{{errorMsg()}}</span></p>
+            <p class="text-end">
+                <button class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">OK</button>
+            </p>
+        </div>
+      </div>
+    </div>
+</div> 
+}

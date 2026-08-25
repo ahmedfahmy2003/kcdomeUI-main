@@ -1,0 +1,586 @@
+<div class="py-3" [ngClass]="pageType() !== 'dimensions' ? 'px-2':'px-1'">
+    <div class="row">
+        <div class="col-12">
+            @if(pageType() !== 'callingmenu'){
+                @if((!rreadonly() && !readonly() && !disabelbtns()) || enableSavebtn()){<button [disabled]="loader.isLoading() || (jobProgress() && jobProgress().status === 'inprogress')" class="btn btn-sm btn-trigger btn-icon cursor-pointer" (click)="createModel('save')" [matTooltip]="'Save'"><em class="icon ni ni-save"></em></button>}
+                @if(menuaccess && menuaccess.InsertFlag && ((prerequisitesType !== 'prerequisites' &&!rreadonly() && !readonly() && !disabelbtns()) || enableSavebtn())){<button [disabled]="loader.isLoading() || (jobProgress() && jobProgress().status === 'inprogress')" class="btn btn-sm btn-trigger btn-icon cursor-pointer position-relative me-1" (click)="createModel('saveadd')" [matTooltip]="'Save and Add'"><em class="icon ni ni-save"></em><em class="icon ni ni-plus-sm text-success pos"></em></button>}
+                @if((!rreadonly() && !readonly() && !disabelbtns()) || enableSavebtn()){<button [disabled]="loader.isLoading() || (jobProgress() && jobProgress().status === 'inprogress')" class="btn btn-sm btn-trigger btn-icon cursor-pointer position-relative me-1" (click)="createModel('saveclose')" [matTooltip]="'Save and Close'"><em class="icon ni ni-save"></em><em class="icon ni ni-cross-sm text-danger pos"></em></button>}
+            }
+            @else {
+                <button [disabled]="loader.isLoading() || (jobProgress() && jobProgress().status === 'inprogress')" class="btn btn-sm btn-trigger btn-icon cursor-pointer" (click)="createModel('save')" [matTooltip]="'Save'"><em class="icon ni ni-save"></em></button>
+                <button [disabled]="loader.isLoading() || (jobProgress() && jobProgress().status === 'inprogress')" class="btn btn-sm btn-trigger btn-icon cursor-pointer" (click)="createModel('saveclose')" [matTooltip]="'Save and Add'"><em class="icon ni ni-save"></em> <em class="fa fa-times text-danger"></em></button>
+            }
+            @if(newRecord()){
+                <button class="btn btn-sm btn-trigger btn-icon cursor-pointer ms-1" (click)="resetAll()" [matTooltip]="'Refresh'"><em class="icon ni ni-reload"></em></button>
+            }
+            @else {
+                <button class="btn btn-sm btn-trigger btn-icon cursor-pointer ms-1" [disabled]="(jobProgress() && jobProgress().status === 'inprogress')" (click)="afterinit()" [matTooltip]="'Refresh'"><em class="icon ni ni-reload"></em></button>
+                @if(prerequisitesType !== 'prerequisites' && allowDelete() === true && pageType() !== 'dimensions' && (!subwfstatus || (subwfstatus !== 'Approved' && subwfstatus !== 'Rejected'))){
+                    @if(((useraccess() && useraccess().DeleteFlag) || pageType() === 'callingsubmenu') && ((!rreadonly() && !readonly() && !disabelbtns()) || enableSavebtn())){
+                        <button class="btn btn-sm btn-trigger btn-icon" [disabled]="(jobProgress() && jobProgress().status === 'inprogress')" (click)="deleteRecord()" [matTooltip]="'Delete'"><em class="icon ni ni-trash text-danger"></em></button>
+                    }
+                }
+            }
+
+            @if(recordId() && (prerequisitesType === 'prerequisites' || (pageType() && pageType() === 'prerequisitemenu'))){
+                <button [disabled]="loader.isLoading() || (jobProgress() && jobProgress().status === 'inprogress')" class="btn btn-sm btn-trigger btn-icon" (click)="genReport(recordData().ID)"><em class="icon ni ni-caret-right-fill text-danger"></em></button>
+            }
+        
+            @if(!newRecord() && printBTN().length > 0){
+                <div class="btn-group mx-1">
+                    <button class="dropdown-toggle btn btn-sm btn-trigger btn-icon" [disabled]="(jobProgress() && jobProgress().status === 'inprogress')" [matMenuTriggerFor]="settings">
+                        <em class="icon ni ni-printer-fill"></em>
+                    </button>
+                    <mat-menu #settings="matMenu" yPosition="below">
+                        @for(btn of printBTN(); track btn.FieldCaption){
+                            @if(btn.mrEnabled === false){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(btn.mrEnabled === true){
+                                <button mat-menu-item class="cursor-pointer" [disabled]="loader.isLoading()" (click)="actionClick(btn, 'print')"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(rreadonly()){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(btn.wfEnabled){
+                                <button mat-menu-item class="cursor-pointer" [disabled]="loader.isLoading()" (click)="actionClick(btn, 'print')"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(readonly() || !btn.Enabled){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else {
+                                <button mat-menu-item class="cursor-pointer" [disabled]="loader.isLoading()" (click)="actionClick(btn, 'print')"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                        }
+                    </mat-menu>
+                </div>
+            }
+
+            @if(drillDown().length > 0){
+                <div class="btn-group mx-1">
+                    <button class="dropdown-toggle btn btn-sm btn-trigger btn-icon" [matMenuTriggerFor]="settings" [disabled]="(jobProgress() && jobProgress().status === 'inprogress')">
+                        Details
+                    </button>
+                    <mat-menu #settings="matMenu" yPosition="below">
+                        @for(btn of drillDown(); track btn){
+                            @if(btn.Active){
+                                <button mat-menu-item (click)="detailsOpen(btn)"><span class="small">{{btn.Description ? btn.Description : btn.LabelID}}</span></button>
+                            }
+                        }
+                    </mat-menu>
+                </div>
+            }
+
+            @if(!newRecord() && actionBTN().length > 0){
+                <div class="btn-group mx-1">
+                   <button class="dropdown-toggle btn btn-icon btn-trigger" [disabled]="(jobProgress() && jobProgress().status === 'inprogress')" [ngClass]="actionBTNDisabled() ? 'disable': ''" [matMenuTriggerFor]="actions">
+                        Actions
+                    </button>
+                    <mat-menu #actions="matMenu" yPosition="below">
+                        @for(btn of actionBTN(); track btn.FieldCaption){
+                            
+                            @if(btn.mrEnabled === false){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(btn.mrEnabled === true){
+                                <button mat-menu-item class="cursor-pointer" (click)="actionClick(btn, 'action')"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(rreadonly()){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}} </span></button>
+                            }
+                            @else if(wfstatus() === 'Approved' || wfstatus() === 'Rejected'){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}} </span></button>
+                            }
+                            @else if(btn.wfEnabled){
+                                <button mat-menu-item class="cursor-pointer" (click)="actionClick(btn, 'action')"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else if(readonly() || !btn.Enabled){
+                                <button mat-menu-item disabled class="disable"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                            @else {
+                                <button mat-menu-item class="cursor-pointer" (click)="actionClick(btn, 'action')"><span class="small">{{btn.FieldCaption}}</span></button>
+                            }
+                        }
+                    </mat-menu>
+                </div>
+            }
+            
+            @if(!newRecord() && (pageType() === 'mainmenu' || pageType() === 'detailsBtnGrid') && menuAccess && menuAccess.ApplyWorkflow){
+                <div class="btn border rounded-0 bg-warning-subtle border-warning fw-normal ms-3 py-1">
+                    WF: <i class="fa fa-circle text-danger mx-1"></i> <span class="text-danger">{{wfstatus()}}</span> @if(otherUser()){<span class="ms-2 text-danger">@if(wfstatus() !== '-----' && wfstatus() !== 'Approved' && wfstatus() !== 'Rejected'){<span>*</span>}</span>}
+                </div>
+                @if(wfstatus() !== 'Approved' && wfstatus() !== 'Rejected'){
+                <button class="btn btn-icon rounded-0 fw-normal p-1 ps-2 border-0" (click)="openApproveModal('Approve')" [disabled]="disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')">
+                    <i class="fa fa-thumbs-up text-success"></i> Approve
+                </button>
+                <button class="btn btn-icon rounded-0 fw-normal p-1 ps-2 border-0" (click)="openApproveModal('Reject')" [disabled]="disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')">
+                    <i class="fa fa-thumbs-down" [ngClass]="!allowReject() ? 'text-danger-emphasis':'text-danger'"></i> Reject</button>
+                }
+                <button class="btn btn-icon rounded-0 fw-normal p-1 notif" [matMenuTriggerFor]="settings" [disabled]="(jobProgress() && jobProgress().status === 'inprogress')">
+                    <i class="fa fa-fast-forward"></i>
+                </button>
+                    <mat-menu #settings="matMenu" yPosition="below">
+                        <button mat-menu-item [disabled]="disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')" (click)="openApproveModal('Notify')"><i class="fa-solid fa-flag me-1 text-danger"></i> <span class="small">Notify</span></button>
+                        <button mat-menu-item [disabled]="(wfstatus() === 'Created' && !menuAccess.AllowSwap && !disableWfBtn()) || (wfstatus() !== 'Created' && !allowPass() || disableWfBtn())" (click)="openApproveModal('Swap')"><i class="fa-solid fa-right-left me-1"></i> <span class="small">Swap</span></button>
+                        <button mat-menu-item [disabled]="!allowReturn() || disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')" (click)="openApproveModal('Return')"><i class="fa-solid fa-reply me-1"></i> <span class="small">Return</span></button>
+                        <button mat-menu-item [disabled]="!allowRevoke() || disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')" (click)="openApproveModal('Revoke')"><i class="fa-solid fa-backward-fast me-1"></i> <span class="small">Revoke</span></button>
+                        <button mat-menu-item [disabled]="!allowReverse() || disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')" (click)="openApproveModal('Reverse')"><i class="fa-solid fa-arrow-rotate-left me-1"></i> <span class="small">Reverse</span></button>
+                        <button mat-menu-item [disabled]="!allowRecall() || disableWfBtn() || (jobProgress() && jobProgress().status === 'inprogress')" (click)="openApproveModal('Recall')"><i class="fa-solid fa-reply-all me-1"></i> <span class="small">Recall</span></button>
+                    </mat-menu>
+            }
+        </div>
+    </div>
+    
+    <div class="row mt-3 mx-0">
+        @if(pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'){
+            <div class="col-2 px-0">
+                <div class="border-bottom tab-item" [ngClass]="activeTab() === 'Main' ? 'active':''">
+                    <a (click)="openTab('Main', 0)" class="btn ps-1 pe-0 small">
+                        <em class="icon ni ni-caret-right-fill"></em> Main
+                    </a>
+                </div>
+                @for (tab of detailsTab(); track tab.Caption){
+                    @if(tab.Caption){
+                        <div class="border-bottom tab-item" [ngClass]="activeTab() === tab.ContainerName ? 'active':''">
+                            <a (click)="openTab(tab, 0)" class="btn ps-1 pe-0 small">
+                                <em class="icon ni ni-caret-right-fill"></em> {{tab.Caption}} 
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        }
+        <div class="subemenu" [ngClass]="pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'? 'col-10 pe-0':'col-12 px-0'">
+            @if(pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'){
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true" [disabled]="true">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          <strong>{{activeTab()}}</strong>
+                        </mat-panel-title>
+                      </mat-expansion-panel-header>
+                     @if(activeTab() === 'Main'){
+                            <div class="table table-responsive mb-2">
+                                @if(trTab().length > 0){
+                                <table class="main-tab-table">
+                                    <tbody>
+                                    <tr>
+                                        @for(t of trlen; track t;){
+                                            <td></td>
+                                        }
+                                    </tr>
+                                    
+                                    @if(page && page.isKeyManualInput && !recordId()){
+                                        <tr>
+                                            <td>
+                                                <label class="form-label mt-3 mb-1">ID</label>
+                                                <div class="form-area-group">
+                                                    <input type="text" class="form-control rounded-0 rounded-end-2 b-value" [(ngModel)]="manualID">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                    @for(row of trTab(); track row.col; let rowIndex = $index){
+                                        <tr>
+                                            @if(row.col.length > 0){
+                                                @for(col of row.col; track col; let colIndex = $index){
+                                                    @if(col.hideCol === 'false' && col.RowLocation){
+                                                        <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan : '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
+                                                            @if(col.Id){
+                                                                <label class="form-label mt-3 mb-1">{{col.FieldCaption}} </label>
+                                                                @if(col.FieldType === 'DateTime') {<!--1readonly-->    
+                                                                    <date-input [menuId]="col.MenuId" [pageType]="pageType()" [recordId]="recordId()" [precordid]="precordid()" [companyID]="companyID()" [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" [recordList]="recordList" [fieldActionBody]="fieldActionBody()" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()" (actionfieldVal)="actionfieldVal($event)"></date-input>
+                                                                }
+                                                                @else if(col.FieldType === 'Time') {<!--1readonly-->
+                                                                    <time-input [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()"></time-input>
+                                                                }
+                                                                @else{
+                                                                    <input-fields [ids]="ids" [menuId]="col.MenuId" [pmenuid]="pmenuid()" [recordList]="recordList" [companyID]="companyID()" [recordId]="recordId()" [precordid]="precordid()" [pageType]="pageType()" [fieldActionBody]="fieldActionBody()" [_field]="col" [fieldname]="col.FieldCaption" [readOnly]="readonly()" [rreadonly]="rreadonly()" [actionStop]="actionStop()" (setfieldVal)="getmainval($event, col.FieldName)" (actionfieldVal)="actionfieldVal($event)" (callActionField)="callActionFieldEvent($event)" (setUpdateList)="setUpdate($event, col.FieldName)"></input-fields>
+                                                                }
+                                                            }
+                                                        </td>
+                                                    }
+                                                }
+                                            }
+                                        </tr>   
+                                    }
+                                    </tbody>
+                                </table>
+                                }
+                            </div>
+
+                            @if(trTabGrid().length > 0 && !hideGrid()){
+                                @for(item of trTabGrid(); track item.ID){
+                                    @if(item.FieldType === 'GridTab'){
+                                        <div class="mx-1">
+                                        <grid-tabs [_pageType]="'callingsubmenu'" [_editablefielddetails]="editablefielddetails" [associateUser]="associateUser()" [mrEnabledStatus]="submrEnabledStatus()" [wfEnabledStatus]="subwfEnabledStatus()" [wfStatus]="wfstatus()" [_otherUser]="otherUser()" [readOnly]="subreadonly" [disabelbtns]="disabelbtns()" [page]="page" [companyID]="companyID()" [_menuId]="item.LinkedMenuId" [fieldQuery]="fieldQuery()" [_recordId]="recordId()" [precordid]="recordId()" [_filterKey]="filterKey()" [pmenuid]="cmenuId()" [recordList]="recordList"></grid-tabs>
+                                        </div>
+                                    }
+                                }
+                            }
+                      }
+                      @else if((otherTrTab().length > 0 || (otherTrTabGrid().length > 0))){
+                        <div class="table table-responsive">
+                            <table class="main-tab-table">
+                                <tr>
+                                    <td class="p-0 tdcol"></td><td class="p-0 tdcol"></td><td class="p-0 tdcol"></td>
+                                </tr>
+                                @for(row of otherTrTab(); track row; let rowIndex = $index){
+                                    <tr>
+                                        @if(row.col.length > 0){
+                                            @for(col of row.col; track col; let colIndex = $index){
+                                                @if(col.hideCol === 'false' && col.RowLocation){
+                                                <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan: '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
+                                                    @if(col.Id){
+                                                        <label class="form-label mt-3 mb-1">{{col.FieldCaption}}</label>
+                                                        @if(col.FieldType === 'DateTime') {<!--1readonly-->
+                                                            
+                                                            <date-input [menuId]="col.MenuId" [recordId]="recordId()" [pageType]="pageType()" [companyID]="companyID()" [precordid]="precordid()" [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" [recordList]="recordList" [fieldActionBody]="fieldActionBody()" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()" (actionfieldVal)="actionfieldVal($event)"></date-input>
+                                                        }
+                                                        @else if(col.FieldType === 'Time') {<!--1readonly-->
+                                                            <time-input [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()"></time-input>
+                                                        }
+                                                        @else{
+                                                            <input-fields [ids]="ids" [menuId]="col.MenuId" [pmenuid]="pmenuid()" [recordList]="recordList" [companyID]="companyID()" [recordId]="recordId()" [precordid]="precordid()" [pageType]="pageType()" [fieldActionBody]="fieldActionBody()" [_field]="col" [fieldname]="col.FieldCaption" [readOnly]="readonly()" [rreadonly]="rreadonly()" [actionStop]="actionStop()" (setfieldVal)="getmainval($event, col.FieldName)" (actionfieldVal)="actionfieldVal($event)" (callActionField)="callActionFieldEvent($event)" (setUpdateList)="setUpdate($event, col.FieldName)"></input-fields>
+                                                        }
+                                                    }
+                                                </td>
+                                                }
+                                            }
+                                        }
+                                    </tr>   
+                                }
+                            </table>
+                        </div>
+
+                        @if(otherTrTabGrid().length > 0){
+                            @for(row of otherTrTabGrid(); track row.ID; let rowIndex = $index){
+                                @if((row.FieldType === 'GridTab' || row.FieldType === 'TabPage') && !newRecord()){
+                                    <div class="mx-1">
+                                    @if(filterKey()){<grid-tabs [_pageType]="'submenu'" [_editablefielddetails]="editablefielddetails" [associateUser]="associateUser()" [mrEnabledStatus]="mrEnabledStatus()" [wfEnabledStatus]="wfEnabledStatus()" [wfStatus]="wfstatus()" [_otherUser]="otherUser()" [readOnly]="readonly()" [disabelbtns]="disabelbtns()" [page]="page" [companyID]="companyID()" [_menuId]="row.LinkedMenuId" [fieldQuery]="fieldQuery()" [_recordId]="recordId()" [_filterKey]="filterKey()" [precordid]="recordId()" [pmenuid]="cmenuId()" [recordList]="recordList"></grid-tabs>}
+                                    </div>
+                                }
+                                @else if(row.FieldType === 'GridView' && !newRecord()){
+                                    <menu-grid-views [companyID]="companyID()" [recordData]="recordData()" [_menuid]="menuId()" [fieldQuery]="fieldQuery()" [_recordId]="viewid()" [_filterKey]="filterKey()"></menu-grid-views>
+                                }
+                            }
+                        }
+                      }
+                     
+                      @else if(fieldType() === 'GridView' && !newRecord()){
+                        <menu-grid-views [companyID]="companyID()" [recordData]="recordData()" [_menuid]="menuId()" [fieldQuery]="fieldQuery()" [_recordId]="viewid()" [_filterKey]="filterKey()"></menu-grid-views>
+                      }
+                     </mat-expansion-panel>
+                </mat-accordion>  
+            }
+            @else {
+                <mat-accordion>
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header (click)="openTab('Main', 0)">
+                            <mat-panel-title>
+                                <strong>Main</strong>
+                              </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="table table-responsive pb-3">
+                            
+                         @if(trTab().length > 0){
+                            <table class="main-tab-table submenu">
+                                <tr>
+                                    <td class="p-0 tdcol"></td><td class="p-0 tdcol"></td><td class="p-0 tdcol"></td>
+                                </tr>
+                                @for(row of trTab(); track row; let rowIndex = $index){
+                                    <tr>
+                                        @if(row.col.length > 0){
+                                            @for(col of row.col; track col; let colIndex = $index){
+                                                @if(col.hideCol === 'false' && col.RowLocation){
+                                                <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan : '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
+                                                    @if(col.Id){
+                                                        <label class="form-label mt-3 mb-1">{{col.FieldCaption}}</label>
+                                                        @if(col.FieldType === 'DateTime') {<!--1readonly-->
+                                                            
+                                                            <date-input [menuId]="col.MenuId" [recordId]="recordId()" [pageType]="pageType()" [companyID]="companyID()" [_readOnly]="readonly()" [precordid]="precordid()" [rreadonly]="rreadonly()" [_field]="col" [recordList]="recordList" [fieldActionBody]="fieldActionBody()" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()" (actionfieldVal)="actionfieldVal($event)"></date-input>
+                                                        }
+                                                        @else if(col.FieldType === 'Time') {<!--1readonly-->
+                                                            <time-input [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()"></time-input>
+                                                        }
+                                                        @else{
+                                                            <input-fields [ids]="ids" [menuId]="col.MenuId" [pmenuid]="pmenuid()" [recordList]="recordList" [companyID]="companyID()" [recordId]="recordId()" [precordid]="precordid()" [pageType]="pageType()" [fieldActionBody]="fieldActionBody()" [_field]="col" [fieldname]="col.FieldCaption" [readOnly]="readonly()" [rreadonly]="rreadonly()" [actionStop]="actionStop()" (setfieldVal)="getmainval($event, col.FieldName)" (actionfieldVal)="actionfieldVal($event)" (callActionField)="callActionFieldEvent($event)" (setUpdateList)="setUpdate($event, col.FieldName)"></input-fields>
+                                                        }
+                                                    }
+                                                </td>
+                                                }
+                                            }
+                                        }
+                                    </tr>   
+                                }
+                            </table>
+                            }
+                        </div>
+                        @if(trTabGrid().length > 0){
+                            @for(item of trTabGrid(); track item){
+                                @if(item.FieldType === 'GridTab'){
+                                    <div class="mx-1">
+                                    <grid-tabs [_pageType]="'callingsubmenu'" [_editablefielddetails]="editablefielddetails" [associateUser]="associateUser()" [mrEnabledStatus]="mrEnabledStatus()" [wfEnabledStatus]="wfEnabledStatus()" [wfStatus]="wfstatus()" [_otherUser]="otherUser()" [readOnly]="subreadonly" [disabelbtns]="disabelbtns()" [page]="page" [companyID]="companyID()" [_menuId]="item.LinkedMenuId" [fieldQuery]="fieldQuery()" [_recordId]="recordId()" [_filterKey]="filterKey()" [precordid]="recordId()" [pmenuid]="cmenuId()" [recordList]="recordList"></grid-tabs>
+                                    </div>
+                                }
+                            }
+                        }
+                    </mat-expansion-panel>
+                    @for (tab of detailsTab(); track tab.Caption; let index = $index){
+                        @if(tab.Caption){
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header (click)="openTab(tab, index)">
+                                <mat-panel-title>
+                                    <strong>{{tab.Caption}}</strong>
+                                  </mat-panel-title>
+                                </mat-expansion-panel-header>
+                            
+                              @if((tab.FieldType === 'GridTab' || fieldType() === 'TabPage') && index === subindex){
+                                <div class="mx-1">
+                                <grid-tabs [_pageType]="'submenu'" [_editablefielddetails]="editablefielddetails" [associateUser]="associateUser()" [mrEnabledStatus]="mrEnabledStatus()" [wfEnabledStatus]="wfEnabledStatus()" [wfStatus]="subwfstatus" [_otherUser]="subotherUser()" [readOnly]="readonly()" [page]="page" [companyID]="companyID()" [_menuId]="gridmenuId" [fieldType]="tab.FieldCaption" [fieldQuery]="tab.FilterQuery" [_recordId]="recordId()" [_filterKey]="filterKey()" [precordid]="recordId()" [pmenuid]="cmenuId()" [recordList]="recordList"></grid-tabs>
+                                </div>
+                              }
+                              @else if(tab.FieldType === 'GridView' && index === subindex){
+                                <menu-grid-views  [companyID]="companyID()" [recordData]="recordData()" [_menuid]="menuId()" [fieldQuery]="tab.FilterQuery" [_recordId]="viewid()" [_filterKey]="filterKey()"></menu-grid-views>
+                              }
+                              @else {
+                                @if(otherTrTab().length > 0){
+                                    <div class="table table-responsive pb-3">
+                                        <table class="main-tab-table submenu">
+                                            <tr>
+                                                <td class="p-0 tdcol"></td><td class="p-0 tdcol"></td><td class="p-0 tdcol"></td>
+                                            </tr>
+                                            @for(row of otherTrTab(); track row; let rowIndex = $index){
+                                                <tr>
+                                                    @if(row.col.length > 0){
+                                                        @for(col of row.col; track col; let colIndex = $index){
+                                                            @if(col.hideCol === 'false' && col.RowLocation){
+                                                            <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan : '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
+                                                                @if(col.Id){
+                                                                    <label class="form-label  mt-2">{{col.FieldCaption}}</label>
+                                                                    @if(col.FieldType === 'DateTime') {<!--1readonly-->
+                                                                        
+                                                                        <date-input [menuId]="col.MenuId" [recordId]="recordId()" [pageType]="pageType()" [companyID]="companyID()" [precordid]="precordid()" [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" [recordList]="recordList" [fieldActionBody]="fieldActionBody()" [recordList]="recordList" [fieldActionBody]="fieldActionBody()" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()" (actionfieldVal)="actionfieldVal($event)"></date-input>
+                                                                    }
+                                                                    @else if(col.FieldType === 'Time') {<!--1readonly-->
+                                                                        <time-input [_readOnly]="readonly()" [rreadonly]="rreadonly()" [_field]="col" (setfieldVal)="getmainval($event, col.FieldName)" [actionStop]="actionStop()"></time-input>
+                                                                    }
+                                                                    @else{
+                                                                        <input-fields [ids]="ids" [menuId]="col.MenuId" [pmenuid]="pmenuid()" [recordList]="recordList" [companyID]="companyID()" [recordId]="recordId()" [precordid]="precordid()" [pageType]="pageType()" [fieldActionBody]="fieldActionBody()" [_field]="col" [fieldname]="col.FieldCaption" [readOnly]="readonly()" [rreadonly]="rreadonly()" [actionStop]="actionStop()" (setfieldVal)="getmainval($event, col.FieldName)" (actionfieldVal)="actionfieldVal($event)" (callActionField)="callActionFieldEvent($event)" (setUpdateList)="setUpdate($event, col.FieldName)"></input-fields>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>   
+                                            }
+                                        </table>
+                                    </div>
+
+                                    @if(otherTrTabGrid().length > 0){
+                                        @for(row of otherTrTabGrid(); track row; let rowIndex = $index){
+                                            @if((row.FieldType === 'GridTab' || row.FieldType === 'TabPage') && !newRecord()){
+                                                <div class="mx-1">
+                                                <grid-tabs [_pageType]="'submenu'" [_editablefielddetails]="editablefielddetails" [associateUser]="associateUser()" [mrEnabledStatus]="mrEnabledStatus()" [wfEnabledStatus]="wfEnabledStatus()" [wfStatus]="subwfstatus" [_otherUser]="subotherUser()" [readOnly]="readonly()" [disabelbtns]="disabelbtns()" [page]="page" [companyID]="companyID()" [_menuId]="row.LinkedMenuId" [fieldQuery]="fieldQuery()" [_recordId]="recordId()" [precordid]="recordId()" [_filterKey]="filterKey()" [pmenuid]="cmenuId()" [recordList]="recordList"></grid-tabs>
+                                                </div>
+                                            }
+                                            @else if(row.FieldType === 'GridView' && !newRecord()){
+                                                <menu-grid-views [companyID]="companyID()" [recordData]="recordData()" [_menuid]="menuId()" [fieldQuery]="fieldQuery()" [_recordId]="viewid()" [_filterKey]="filterKey()"></menu-grid-views>
+                                            }
+                                        }
+                                    }
+                                }
+                              }
+                            </mat-expansion-panel>
+                        }
+                    }
+                </mat-accordion>
+            }   
+        </div>
+    </div>
+</div>
+
+@if(modal.isOpen('myModal'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('myModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h5 class="text-center py-5" [ngClass]="createError() ? 'text-danger': ''">{{modalMessage}}</h5>
+            @if(newModelID && !modalErrorMessage && !createError()){<p class="text-center mb-3"><i class="fa fa-check-circle text-success display-4"></i></p>}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('actionModal'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('actionModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h5 class="text-center py-5">{{modalMessage}}</h5>
+        </div>
+        <div class="modal-footer">
+            @if(!hideProceed()){<button type="button" class="btn btn-success me-2" (click)="proceedAction('action')">OK</button>}
+            <button type="button" class="btn btn-danger" (click)="closeModal()">{{!hideProceed() ? 'Cancel':'OK'}}</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('errModal'+this.recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('errModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h5 class="text-center py-5" [innerHTML]="modalErrorMessage"></h5>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="closeModal()">OK</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('deleteModal'+this.recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('deleteModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h4 class="text-center mb-3">Are you sure you want to delete the record: {{recordId()}}?</h4>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-success me-2" (click)="deleteConfirm()">Ok</button>
+            <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+@if(modal.isOpen('approveModal'+this.recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('approveModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header border-bottom py-3">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">{{wfType}}</h6>
+            </div>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+              
+            </button>
+        </div>
+        <div class="modal-body overflow-auto">
+            @if(wfType !== 'Revoke' && wfType !== 'Return' && wfType !== 'Approve' && wfType !== 'Reject'){
+                <label>Employee</label>
+                <div>
+                    <form class="example-form">
+                        <mat-form-field class="w-100">
+                            <input type="text" class="form-control px-2 py-1" placeholder="Pick User" matInput [formControl]="wfUser" [matAutocomplete]="auto">
+                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                            @for (list of filtereduserlist | async; track list) {
+                                <mat-option [value]="list.userName">{{list.id}} - {{list.userName}}</mat-option>
+                            }
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </form>
+                 
+                </div>
+            }
+            <label>Note</label>
+            <p>
+                <textarea class="form-control" rows="3" [(ngModel)]="workflownote"></textarea>
+            </p>
+        </div>
+        <div class="row mx-0" [ngClass]="wfType === 'Approve' ? '':'mb-2'">
+            <div class="col pe-1">
+                <button type="button" class="btn border border-secondary-subtle btn-success w-100" [disabled]="loader.isLoading()" (click)="approveFlow(wfType)">{{wfType}}</button>
+            </div>
+            <div class="col ps-1">
+                <button type="button" class="btn border border-secondary-subtle btn-danger w-100" [disabled]="loader.isLoading()" (click)="closeModal()">Cancel</button>
+            </div>
+        </div>
+        @if(wfType === 'Approve'){<div class="row mx-0 my-2">
+            <div class="col">
+                <button type="button" class="btn border border-secondary-subtle btn-success me-2 w-100" [disabled]="loader.isLoading()" (click)="approveFlow('approveclose')">Approve & Close</button>
+            </div>
+        </div>}
+      </div>
+    </div>
+</div> 
+}
+@if(modal.isOpen('pdfModal'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('pdfModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      @if(reportURL()){<div class="modal-content">
+        <div class="modal-body">
+            <embed [src]='reportURL()' height="100%" width="100%">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="mt-3 btn border border-secondary-subtle btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>}
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('xlModal'+this.recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('xlModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-bottom py-3">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">{{actionbtnname}}</h6>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-6">
+                    <em class="icon ni ni-caret-right-fill"></em> <strong>RecordID: </strong> {{recordId() ? recordId() : ''}}
+                </div>
+                <div class="col-6">
+                    <em class="icon ni ni-caret-right-fill"></em> <strong>Target Table: </strong> {{targetTable}}
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <p>If you don't have MS Excel template, please generate one</p>
+                <button type="button" class="mt-3 btn border border-secondary-subtle" (click)="dnldTemplate()"><i class="fa fa-download text-success me-3"></i> Generate Template</button>
+            </div>
+            <div class="mt-4">
+                <p>Import MS Excel data to the target table</p>
+                <div class="mt-2">
+                    <label class="btn border border-secondary-subtle" [for]="'selectxlsFile'+recordStamp"><i class="fa fa-upload text-success me-3"></i> Import MS Excel</label>
+                </div>
+                <!--<button type="button" class="mt-3 btn border border-secondary-subtle"><i class="fa fa-upload text-success me-3"></i> Import MS Excel</button>-->
+                <div class="input-group d-none">
+                    <input type="file" [id]="'selectxlsFile'+recordStamp" class="file-input" (change)="handleFileInput($event)" accept=".xls, .xlsx">
+                </div>
+            </div>
+
+            @if(fileName){
+                <div class="mt-3">
+                    <p><strong>{{fileName}}</strong></p>
+                </div>
+                <div class="mt-3">
+                    <input type="checkbox" id="clearFile" [(ngModel)]="deleteXlFile" class="form-check-input ms-0 ps-0"> <label for="clearFile" class="ms-2 form-check-label cursor-pointer text-dark fw-bolder">Clear table data before import</label>
+                </div>
+            }
+            
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="mt-3 btn btn-success me-3" [disabled]="exceltype && !xlOk" (click)="contProcedure()">Ok</button>
+            <button type="button" class="mt-3 btn btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(callingMenu()){<calling-menu [ids]="'menuModal'+stringID" [type]="'callingMenu'" [mrEnabledStatus]="submrEnabledStatus()" [_wfEnabledStatus]="subwfEnabledStatus()" [_wfStatus]="subwfstatus" [stringID]="stringID" [readonly]="readonly()" [pmenuid]="menuId()" [callingMenuData]="callingMenuData" [recordList]="recordList" [companyID]="companyID()" [page]="page" (modalEmit)="modalEmitEvent($event)" (deletedRecord)="deletedRecordEvent($event)"></calling-menu>}

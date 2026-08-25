@@ -1,0 +1,120 @@
+<div>
+    <header class="p-2 d-flex border-bottom">
+        <div>
+            <i class="fa fa-filter"></i> Filter @if(isPrivate()){<em class="icon ni ni-eye-off text-danger ms-1"></em>}
+        </div>
+        <div class="ms-auto">
+            <a (click)="closeFilter()" title="Close" aria-label="Close"><i class="fa cursor-pointer fa-times fa-lg"></i></a>
+        </div>
+    </header>
+    <div class="p-2 position-relative">
+        
+            <div class="input-group">
+                @if(filterType().length > 0){
+                    <select class="form-select" [(ngModel)]="filterTypeVal" (change)="getFilterList(filterTypeVal)">
+                        @for(list of filterType(); track list.ID){
+                            <option [value]="list.ID">{{list.SearchName}}</option>
+                        }
+                    </select>
+                }
+                @else{
+                    <select class="form-select">
+                        <option value="">Default Filter</option>
+                    </select>
+                }
+                <span class="input-group-text bg-secondary cursor-pointer fsetting" (click)="toggle('fsettings')"><em class="icon ni ni-setting-fill text-white"></em></span>
+            </div>
+            @if(openSettingId() === 'fsettings'){
+                <div class="kc-dropdown-menu py-2 d-flex flex-column">
+                    <div class="me-2 ms-1 cursor-pointer" (click)="addView()"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-plus-round"></em></span><span class="small">Add View</span></div>
+                    <div class="me-2 ms-1 cursor-pointer" (click)="duplicateView()"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-copy-fill"></em></span><span class="small">Duplicate View</span></div>
+                    <div class="me-2 ms-1 cursor-pointer" (click)="editView()"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-edit"></em></span><span class="small">Edit</span></div>
+                    <div class="me-2 ms-1 cursor-pointer" (click)="saveCriteria()"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-save"></em></span><span class="small">Save Criteria Values</span></div>
+                    @if((userid === viewCreator) && !isPrivate()){<div class="me-2 ms-1 cursor-pointer" (click)="setAsPrivate(true)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-eye-off"></em></span><span class="small">Set as Private</span></div>}
+                    @if((userid === viewCreator) && isPrivate()){<div class="me-2 ms-1 cursor-pointer" (click)="setAsPrivate(false)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-eye"></em></span><span class="small">Set as Public</span></div>}
+                    @if(!viewDefault){<div class="me-2 ms-1 cursor-pointer" (click)="setAsDefault(true)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-check"></em></span><span class="small">Set as Default</span></div>}
+                    @else{<div class="me-2 ms-1 cursor-pointer" (click)="setAsDefault(false)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-check"></em></span><span class="small">Remove Default</span></div>}
+                    <hr class="my-1" />
+                    <div class="me-2 ms-1 cursor-pointer" (click)="deleteView()"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-trash text-danger"></em></span><span class="small">Delete</span></div>
+                </div>
+            }
+
+    </div>
+
+    @if(addViewSection){
+        <div class="mx-2">
+            <strong>ID:</strong>
+            <div class="mb-3">
+                <input class="form-control" type="text" [disabled]="addViewSection" [(ngModel)]="viewID" />
+            </div>
+            <strong>View Name:</strong>
+            <div class="mb-3">
+                <input class="form-control" type="text" [(ngModel)]="viewName" />
+            </div>
+            <div class="mb-3">
+                <p><input class="form-check-input me-1 mb-2" name="filterChecbox" type="checkbox" [(ngModel)]="isPrivate"> Private</p>
+            </div>
+            <strong>Created Date:</strong>
+            <div class="mb-3">
+                <input class="form-control" type="text" [value]="viewDate |  date:'medium'" [disabled]="addViewSection"/>
+            </div>
+            <div class="text-center mb-3">
+                @if(viewEdit){
+                    <button class="btn border border-secondary-subtle me-2" (click)="saveEditView()">Save</button>
+                }
+                @else {
+                    <button class="btn border border-secondary-subtle me-2" (click)="saveAddView()">Save</button>
+                }
+                <button class="btn border border-secondary-subtle" (click)="cancelView()">Cancel</button>
+            </div>
+        </div>
+    }
+    @else{
+        <div class="px-1 mb-2">
+            @if(sysList().length > 0){
+                <select class="form-select" [(ngModel)]="sysListModel" (change)="addField(sysListModel)">
+                    <option value="">Add Criteria...</option>
+                    @for(list of sysList(); track list; let i = $index){
+                        @if(list.FieldType !== "BTN" && list.FieldType !== "GridView" && list.FieldType !== "TabPage" && list.FieldType !== "Image"){
+                             @if(pageType() === 'mainmenu'){
+                                @if((list.FieldType !== "GridTab") || (list.FieldType === "GridTab" && list.LinkedMenuId)){
+                                    <option [value]="i">{{list.FieldCaption}} ({{list.FieldType}})</option>
+                                }
+                            }
+                            @else{
+                                @if(list.FieldType !== "GridTab"){
+                                    <option [value]="i">{{list.FieldCaption}} ({{list.FieldType}})</option>
+                                }
+                            }
+                        }
+                    }
+                </select>
+            }
+        </div>
+                @if(filterFieldList().length > 0){
+                    <div class="mt-2 p-2 text-center">
+                        <button class="btn btn-success me-2" (click)="applyFilter($event)">Apply</button>
+                        <button class="btn btn-danger" (click)="clearFilter()">Clear</button>
+                    </div>
+                        <div style=" height: 100%; max-height: calc(100vh - 520px); overflow-y: auto;" class="slimScroll">
+                    @for(list of filterFieldList(); track list; let i = $index){
+                        <div class="p-2">
+                            <div class="d-flex">
+                                <div class="col-10"><strong>{{list.FieldCaption}}</strong></div>
+                                <div class="ms-auto"><em class="icon ni ni-trash text-danger cursor-pointer" (click)="deleteField(list.ID, i)"></em></div>
+                            </div>
+                            <div class="position-relative mt-1">
+                                <filter-input-fields [recordList]="recordList" [_field]="list" [companyID]="companyID()" [menuid]="menuid" (setEnterPress)="applyFilter($event);" (setfieldVal)="getVal($event, list, i)" (subQueryEmit)="subQueryEmitEvt($event, list, i)"></filter-input-fields>
+                            </div>
+                        </div>
+                    }
+                </div>
+          
+            <div class="mt-2 p-2 text-center">
+                <button class="btn btn-success me-2" (click)="applyFilter($event)">Apply</button>
+                <button class="btn btn-danger" (click)="clearFilter()">Clear</button>
+            </div>
+                }
+  
+    }
+</div>

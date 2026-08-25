@@ -1,0 +1,21 @@
+.small{
+    font-size: 85% !important;
+}
+.nav-tabs{ .nav-link{
+    padding-bottom: 0.5rem;
+    cursor: pointer;
+}
+.active{
+    cursor: default;
+}
+}
+
+.nav-tabs{ .nav-item{
+    padding-right: 0 !important;
+}
+}
+
+.badge.bg-warning{
+    background-color: #09c2de!important;
+    border-color: #09c2de!important;
+}

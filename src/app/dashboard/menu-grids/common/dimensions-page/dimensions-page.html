@@ -1,0 +1,84 @@
+<div class="p-1">
+    <div class="row mx-0 border-bottom">
+        <div class="col-4 px-0">
+          <ul class="nav nav-tabs border-bottom-0">
+            <li class="nav-item">
+              <a class="nav-link px-1 py-1 small" [ngClass]="activeSubTab === 'grid' ? 'active':''" (click)="setTabs('grid')"><i class="feather icon-grid me-1"></i> Grid <i class="fa fa-refresh ms-1" (click)="onRefresh()"></i></a>
+            </li>
+            @if(showSubDetails){
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeSubTab === 'rdetails' ? 'active':''" (click)="setTabs('rdetails')">Record ID: {{subRecordId}}</a>
+              </li>
+            }
+          </ul>
+        </div>
+        <div class="col-8 px-0">
+          @if(showSubDetails && activeSubTab === 'rdetails'){
+            <ul class="nav nav-tabs float-end border-bottom-0">
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'details' ? 'active':''" (click)="setGridTabs('details')"><i class="fa fa-file-text me-1"></i> Details</a>
+              </li>
+           <!-- @if(menuaccess && menuaccess.ApplyDimensions){
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'dimensions' ? 'active':''" (click)="setGridTabs('dimensions')"><i class="fa fa-cubes me-1"></i> Dimensions</a>
+              </li>
+            }
+            @if(menuaccess && menuaccess.ApplyWorkflow){
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'workflow' ? 'active':''" (click)="setGridTabs('workflow')"><i class="fa fa-fast-forward me-1"></i> Workflow</a>
+              </li>
+            }
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'notes' ? 'active':''" (click)="setGridTabs('notes')"><i class="fa fa-pencil-alt me-1"></i> Notes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small"  [ngClass]="activeGridTab === 'attachments' ? 'active':''" (click)="setGridTabs('attachments')"><i class="fa fa-paperclip me-1"></i> Attachments</a>
+              </li>  
+              @if(menuaccess && menuaccess.AllowComments){
+                <li class="nav-item">
+                  <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'comments' ? 'active':''" (click)="setTabs('comments')"><i class="fa fa-comment me-1"></i> Comments</a>
+                </li>
+              }
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'notifications' ? 'active':''" (click)="setGridTabs('notifications')"><i class="fa fa-bullhorn me-1"></i> Notifications</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link px-1 py-1 small" [ngClass]="activeGridTab === 'logdata' ? 'active':''" (click)="setGridTabs('logdata')"><i class="fa fa-database me-1"></i> Log Data</a>
+              </li>-->
+            </ul>
+          }
+        </div>
+      </div>
+      <div class="mb-0">
+        @if(activeSubTab === 'grid' && !isaLoading()){
+          <div [ngClass]="activeSubTab === 'grid' ? '':'d-none'" class="border border-top-0">
+            <editable-grid-tabs (deletedSubRecord)="deletedRecordEvent($event)" [recordList]="recordList" [_readOnly]="readOnly" [_menuaccess]="menuaccess" [_wfstatus]="wfstatus()" [companyID]="companyID()" [pageType]="'dimensions'" [recordDeleted]="recorddeleted" [_subMenuId]="menuId" [subRecordId]="recordId" (subRecordDetail)="subRecordDetail($event)" [recordList]="recordList"></editable-grid-tabs>          </div>
+        }
+        @if(activeSubTab === 'newrecord'){
+          <div [ngClass]="activeSubTab === 'newrecord' ? '':'d-none'" class="border border-top-0">
+            <details-page [companyID]="companyID()" [_pageType]="'dimensions'" [subreadonly]="readOnly" [_subotherUser]="otheruser"  (newSubRecordId)="newSubRecordIdEvent($event)" [mainMenuId]="menuId" [menulabel]="menulabel" [_newRecord]="true" [recordList]="recordList"></details-page>      
+          </div>  
+        }
+        @if(activeSubTab === 'rdetails'){
+          <details-page [companyID]="companyID()" [_subotherUser]="otheruser" [submrEnabledStatus]="submrEnabledStatus()" [_subwfEnabledStatus]="subwfEnabledStatus" [mainMenuId]="menuId" [subwfstatus]="wfstatus()" [ngClass]="activeGridTab === 'details' ? '':'d-none'" [_pageType]="'dimensions'" [recordList]="recordList" [_recordId]="recordId" [subRecordId]="subRecordId" [subreadonly]="readOnly" [menulabel]="menulabel" [_newRecord]="false"></details-page>      
+          @if(activeGridTab === 'workflow'){
+            <workflow-page></workflow-page> 
+          }
+          @else if(activeGridTab === 'notes'){
+            <notes-page></notes-page>
+          }
+          @else if(activeGridTab === 'attachments'){
+            <attachments-page [menuId]="menuId" [recordId]="recordId" [_itemlist]="itemlist" [totalCount]="filecount" (fileCountNew)="fileCountEvent($event)" (getallAttachments)="getallAttachmentsEvt($event)"></attachments-page>
+          }
+          @else if(activeGridTab === 'commemnts'){
+            <comments-page></comments-page>
+          }
+          @else if(activeGridTab === 'notifications'){
+            <notification-page></notification-page>
+          }
+          @else if(activeGridTab === 'logdata'){
+            <logdata-page [recordId]="recordId" [menuid]="menuId"></logdata-page>
+          }
+        }
+      </div>
+    </div>

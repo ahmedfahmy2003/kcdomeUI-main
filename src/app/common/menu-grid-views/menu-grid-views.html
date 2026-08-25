@@ -1,0 +1,95 @@
+<div class="card">
+    @if(resultsLength()){
+        <div class="card-title-group pb-1">
+            <div class="card-tools flex-grow-1 px-1">
+                <ul class="btn-toolbar gx-1">
+                    <li>
+                        <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" [matMenuTriggerFor]="exportMenu">
+                                                    <em class="icon ni ni-download-cloud"></em>
+                                                </span>
+                                                <mat-menu #exportMenu="matMenu" yPosition="below">
+                                                    <div mat-menu-item (click)="$event.stopPropagation()"><span class="small"> Export All Fields <input (click)="$event.stopPropagation()" class="form-check-input border border-dark ms-2" [(ngModel)]="exportAll" type="checkbox" value=""></span></div>
+                                                    <hr class="my-2" />
+                                                    <div mat-menu-item (click)="exportData(currentPage(), pageSize())"><span class="small">Export Current Page</span></div>
+                                                    <div mat-menu-item (click)="exportData(1, resultsLength())"><span class="small">Export All Data</span></div>
+                                                </mat-menu>
+                    </li>
+                </ul>
+            </div>
+            @if(totalPages() > 1){
+                <div class="card-tools pe-1 ms-2">
+                    <div class="nk-block-between-md g-3 px-3 mb-1">
+                        <div class="g pt-1 pb-0 small">
+                            @if(resultsLength()){ {{((currentPage() - 1) * pageSize()) + 1}} - {{dataSource().length === pageSize() ? pageSize() * currentPage() : ((currentPage() - 1) * pageSize()) + dataSource().length}} of {{resultsLength()}} Records}
+                        </div>
+                        @if(totalPages() > 1){
+                                                                        <div class="g flex-grow-1">
+                                                                            <ul class="pagination justify-content-center justify-content-md-start">
+                                                                                <li class="page-item" [class.disabled]="currentPage() === 1">
+                                                                                    @if(currentPage() === 1){
+                                                                                        <span class="page-link">Prev</span>
+                                                                                    }
+                                                                                    @else {
+                                                                                        <a class="page-link cursor-pointer" (click)="goToPage(currentPage() - 1)">Prev</a>
+                                                                                    }
+                                                                                                
+                                                                                </li>
+                                                                                <li class="page-item">
+                                                                                        <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                                                                                </li>
+                                                                                <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+                                                                                    @if(currentPage() === totalPages()){
+                                                                                        <span class="page-link">Next</span>
+                                                                                    }
+                                                                                    @else{
+                                                                                        <a class="page-link cursor-pointer" (click)="goToPage(currentPage() + 1)">Next</a>
+                                                                                    }
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <div class="g">
+                                                                            <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                                                                                <div>Page</div>
+                                                                                <div class="pe-0">
+                                                                                    @if(totalPages()){
+                                                                                        <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
+                                                                                    }
+                                                                                </div>
+                                                                                <div class="ps-0">/ {{ totalPages() }}</div>
+                                                                                <div>
+                                                                                    <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary btn-sm text-white btn-outline-light">Go</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="overflow-auto mx-height card">
+            <table class="table table-tranx">
+                <thead class="table-light">
+                    @for(item of columns; track item){
+                        <th (click)="sortData(item.name)"><div class="text-truncate cursor-pointer border-0">{{item.header}}</div></th>
+                    }
+                </thead>
+                <tbody>
+                    @for(item of dataSource(); track item; let index = $index){
+                        <tr>
+                            @for(ikey of columns; track ikey; let i = $index){
+                                <td>
+                                    <div class="text-truncate py-1 w-150" [class.text-id]="i === 0" [matTooltip]="item[ikey.name]">
+                                        {{item[ikey.name]}}  
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @else {
+        <h5 class="text-center py-4">No Data</h5>
+    }
+</div>

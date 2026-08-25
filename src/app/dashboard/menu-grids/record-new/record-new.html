@@ -1,0 +1,19 @@
+
+
+<div [hidden]="!visible()" class="card card-bordered card-stretch">
+      <div class="row mx-0">
+        <div class="col-3 pt-2 ps-3">
+          <h5>Record ID: </h5>
+        </div>
+        <div class="col-9">
+          <ul class="nav nav-tabs float-end">
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="activeTab === 'details' ? 'active':''" (click)="setTabs('details')"><i class="fa fa-file-text me-2"></i> Details</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    <div class="mb-3 border-top">
+      <details-page [recordList]="recordList()" [companyID]="companyID()" (closeNewRecord)="closeNewRecordEvent($event)" [mainMenuId]="menuId()" [ngClass]="activeTab === 'details' ? '':'d-none'" [menuaccess]="menuaccess()" [_pageType]="pageType()" [menulabel]="menulabel()" [_newRecord]="true"></details-page>      
+    </div>
+</div>

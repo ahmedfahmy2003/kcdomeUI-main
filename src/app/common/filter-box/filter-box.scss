@@ -1,0 +1,19 @@
+.small{
+    font-size: 12px;
+}
+
+.mat-mdc-menu-item{
+    min-height: 30px;
+}
+
+.custom-scrollbars {
+    background-color: rgb(117, 57, 255) !important;
+
+    &:hover, &:active {
+      background-color: rgb(117, 57, 255)!important;
+    }
+  }
+
+.kc-dropdown-menu{
+  top: 75%;
+}

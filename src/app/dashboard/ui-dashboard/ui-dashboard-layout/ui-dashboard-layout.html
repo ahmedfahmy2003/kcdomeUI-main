@@ -1,0 +1,103 @@
+
+<div class="data nk-store-statistics">
+@if(list().model === 'Loading...'){
+    <h4 class="text-center mt-5 text-secondary">Loading...</h4>
+}
+@else if(list().model || list().model.length > 0){
+    @if(list().widget.DashboardType === "Box"){
+        
+            @if(!noData() && toalValues[0]){
+                <div class="data-group">
+                    <div class="amount text-success">{{toalValues}}</div>
+                </div>
+                <div class="info">
+                    <span class="title">{{listValues}}</span>
+                </div>
+            }
+            @else {
+                <div class="data-group">
+                    <div class="amount text-warning">No Data</div>
+                </div>
+            }
+    }
+    @else if(list().widget.DashboardType === "Table"){
+        <div class="border demo-table overflow-x-auto my-3">
+            <table class="table table-tranx">
+                <thead>
+                    <tr>
+                        @for(item of columns; track item){
+                            <th class="py-2">
+                                <div class="text-truncate">{{item.header}}</div>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                     @if(noData()){
+                                          <td>&nbsp;</td>
+                                          @for(ikey of columns; track ikey){
+                                              <td>&nbsp;</td>
+                                          }
+                                          <td>&nbsp;</td>
+                                      }
+                                      @else{
+                                          @for(item of dataSource(); track item; let index = $index){
+                                              <tr>
+                                                  @for(ikey of columns; track ikey){
+                                                  <td>
+                                                        <div class="text-truncate py-1 w-150" [matTooltip]="item[ikey.name]">
+                                                            {{item[ikey.name]}}  
+                                                        </div>
+                                                      
+                                                  </td>
+                                            }
+                                                </tr>
+                                                          
+                                          }
+                                      }
+                </tbody>
+            </table>
+           <!--- <table mat-table [dataSource]="dataSource" matSort>
+                @for (column of columns; track column; let index = $index) {
+                  
+                  <ng-container [matColumnDef]="column.columnDef">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{column.header}}
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        {{column.cell(row)}}  
+                    </td>
+                  </ng-container>
+                  
+                }
+              
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell" colspan="4">No data</td>
+                </tr>
+            </table>-->
+        </div>
+    }
+    @else if(list().widget.DashboardType === "Chart"){
+        <dx-chart [dataSource]="dataSourceChart">
+            <dxi-series valueField="{{listValues}}" name="{{listValues}}" color="#1db2f5">
+            </dxi-series>
+            <dxo-common-series-settings #seriesSettings argumentField="{{listKeys}}" [type]="list().widget.ChartLayout"></dxo-common-series-settings>
+            <dxo-argument-axis [valueMarginsEnabled]="true" discreteAxisDivisionMode="crossLabels">
+                <dxo-grid [visible]="true"></dxo-grid>
+            </dxo-argument-axis>
+            <dxo-title text="{{listValues}}">
+                <dxo-subtitle text="by {{listKeys}}"> </dxo-subtitle>
+            </dxo-title>
+            <dxo-tooltip [enabled]="true"></dxo-tooltip>
+            <dxo-legend verticalAlignment="bottom" horizontalAlignment="center" itemTextPosition="bottom"></dxo-legend>
+        </dx-chart>
+    }
+}
+@else {
+    <div class="data-group">
+        <div class="amount">No Data</div>
+    </div>
+}
+</div>

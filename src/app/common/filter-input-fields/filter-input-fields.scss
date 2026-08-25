@@ -1,0 +1,98 @@
+.form-control, .form-select{
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 0;
+    width: 100px;
+}   
+
+
+.small{
+    font-size: .875em !important
+ }
+ 
+.fixed-top{
+    position: sticky;
+    background: #fff;
+    border-bottom: 1px solid #dbdfea !important;
+ }
+
+ .w-150{
+  max-width: 150px;
+ }
+ 
+ .table-responsive {
+     display: block;
+     width: 100%;
+     overflow-x: auto;
+    }
+    
+    .mat-column-sno{
+     flex: none;
+     width: 40px;
+     padding-left: 0.5em;
+     padding-right: 0.5em;
+    }
+ 
+ 
+    .mat-table {
+     width: 100%;
+     max-width: 100%;
+     margin-bottom: 1rem;
+     display: table;
+     border-collapse: collapse;
+     margin: 0px;
+    }
+    
+    .mat-row,
+    .mat-header-row {
+     display: table-row;
+    }
+    
+    .mat-cell,
+    .mat-header-cell {
+     word-wrap: initial;
+     display: table-cell;
+     padding: 0px 5px;
+     line-break: unset;
+     width: auto;
+     white-space: nowrap;
+     overflow: hidden;
+     vertical-align: middle;
+    }
+    .mdc-button{
+     min-width: 40px !important;
+    }
+    .mat-mdc-row, .mat-mdc-header-row{
+     height: 40px;
+     th{
+     background: #fafafa !important;
+     }
+    }
+ 
+    .demo-table {
+     height: 300px;
+     overflow: auto;
+   }
+   table {
+     width: 100%;
+   }
+   
+   .w-pgbox{
+     width: 48px !important;
+   }
+ 
+   .filter-control{
+     height: 24px;
+     border: 1px solid #ddd;
+     font-size: 12px !important;
+   }
+
+.open {
+  transform: rotate(180deg);
+}
+
+button.btn-sm{
+  height: 28px;
+}
+
+.disabled{color:#ddd;}

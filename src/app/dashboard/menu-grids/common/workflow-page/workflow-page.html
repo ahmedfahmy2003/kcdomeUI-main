@@ -1,0 +1,83 @@
+<div class="row p-3">
+    <div class="col-2">
+        <strong>WorkflowID:</strong> {{worflowid()}}
+    </div>
+    <div class="col-2">
+        <strong>Status:</strong> {{workflowstatus()}}
+    </div>
+    <div class="col-2">
+        <strong>Reference WorkflowID:</strong> {{referenceworkflowid()}}
+    </div>
+</div>
+
+<div class="px-3 pb-3">
+  <mat-accordion>
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <strong>Workflow Transactions</strong>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <span class="btn btn-sm btn-trigger btn-icon cursor-pointer ms-2"><em class="icon ni ni-reload" (click)="afterInit()"></em></span>
+          <div class="overflow-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        @for(item of columns; track item){
+                            <th><div class="text-truncate">{{item.header}}</div></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(item of dataSource(); track item; let index = $index){
+                        <tr>
+                            @for(ikey of columns; track ikey; let i = $index){
+                                <td>
+                                    <div class="py-1" [ngClass]="ikey.header ==='ID' ? '' : 'w-500'">
+                                        {{item[ikey.name]}}
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <strong>Complex Workflow Steps</strong>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <span class="btn btn-sm btn-trigger btn-icon cursor-pointer ms-2"><em class="icon ni ni-reload" (click)="getWorkflowSteps()"></em></span>
+            <div class="overflow-auto mt-2">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            @for (column of columnsWFSteps; track column; let index = $index) {
+                                <th>
+                                    {{column.header}}
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(item of dataSourceWFSteps(); track item; let index = $index){
+                            <tr>
+                                @for(ikey of columnsWFSteps; track ikey; let i = $index){
+                                <td>
+                                    <div class="py-1" [ngClass]="ikey.header ==='ID' ? '' : 'w-500'">
+                                        {{item[ikey.name]}}
+                                    </div>
+                                </td>
+                            }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

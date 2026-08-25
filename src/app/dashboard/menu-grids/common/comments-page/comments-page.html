@@ -1,0 +1,155 @@
+<div class="py-3 overflow-auto">
+    <div class="row mx-0 mb-3">
+        <div class="col-6">
+           
+        </div>
+        
+        @if((enableComment() || wfstatus() !== 'Approved') && (!page || (page && page.menuType !== 'View'))){<div class="col-6 text-end">
+            @if(!readOnly() || enableComment()){<button class="btn bg-white border border-secondary-subtle px-2 py-1" (click)="showHideNew()"><i class="fa me-2 text-secondary" [ngClass]="addNewSection() ? 'fa-circle-minus':'fa-circle-plus'"></i> <span class="small text-secondary">Add</span></button>}
+        </div>}
+    </div>
+    @if(addNewSection()){
+        <div class="my-3 bg-light border pt-2 pb-3">
+            <div class="row mx-0">
+                <div class="col-12 mt-3">
+                    <label class="form-label">Comment:</label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="description"></textarea>
+                </div>
+                <div class="col-12 text-end my-3">
+                    <button class="btn border border-secondary-subtle bg-danger text-white fw-normal" (click)="closeSection()">Cancel</button>
+                    <button class="btn border border-secondary-subtle ms-3 bg-primary text-white fw-normal" (click)="addComment()">Add</button>
+                </div>
+            </div> 
+        </div>
+    }
+    <div class="overflow-auto">
+    <table class="table table-tranx">
+        <thead class="border-top table-light">
+            <tr>
+                <th class="text-center" width="70">
+                   <i class="fa fa-arrows-rotate cursor-pointer border-0" (click)="getComments()"></i>
+                </th>
+                <th width="150">
+                    ID
+                </th>
+                    <th>
+                        Comment
+                    </th>
+                <th width="200">
+                    Created Date
+                </th>
+                <th width="150">
+                    Created By
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(commentsCount === 0){
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                </tr>
+            }
+            @else{
+                @for (item of _commentsList(); track item; let index = $index) {
+                    <tr>
+                        <td class="text-wrap">
+                            <!--<i class="text-danger fa fa-trash-can cursor-pointer" (click)="deleteRecord(item.ID)"></i>-->
+                            @if((enableComment() || wfstatus() !== 'Approved') && (!page || (page && page.menuType !== 'View'))){
+                                <div class="d-flex">
+                                @if(!readOnly() || enableComment()){<span class="ms-2 me-3 cursor-pointer" (click)="editComment(item, 'editModalComment')"><i class="fa fa-edit small text-primary cursor-pointer"></i></span>
+                                <span (click)="editComment(item, 'deleteModalComment')"><i class="fa fa-trash-can small text-danger cursor-pointer"></i></span>}
+                                </div>
+                            }
+                        </td>                
+                        <td>
+                            {{item.id}}
+                        </td>
+                        <td class="text-wrap">
+                            <div style="height:20px; overflow: hidden; cursor: pointer;" (click)="openDescription(item.description)">{{item.description}}</div>
+                        </td>
+                        <td class="text-wrap m-100">
+                             {{item.createdDate | date: dateTimeFormat}}
+                        </td>
+                        <td class="text-truncate m-100">
+                            {{item.createdUser}}
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    </div>
+</div>
+
+@if(modal.isOpen('deleteModalComment'+recordId)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('deleteModalComment'+recordId)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h4 class="text-center mb-3">Are you sure you want to delete the note?</h4>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-success me-2" (click)="deleteConfirm(itemid)">Ok</button>
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+@if(modal.isOpen('desc'+recordId)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('desc'+recordId)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <p style="max-height: 300px; overflow-y: auto;">{{descText()}}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('editModalComment'+recordId)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('editModalComment'+recordId)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">Edit Comment: {{itemid}}</h6>
+            </div>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+              
+            </button>
+          </div>
+        <div class="modal-body overflow-auto">
+            <div class="row mx-0">
+                <div class="col-12 mt-3">
+                    <label class="form-label">Comment:</label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="editdescription"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn border border-secondary-subtle ms-3 bg-primary text-white fw-normal" (click)="updateComment()">Save</button>
+            <button class="btn border border-secondary-subtle ms-3 bg-danger text-white fw-normal" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}

@@ -1,0 +1,30 @@
+<div class="kc-dropdown">
+    <a class="kc-dropdown-toggle" (click)="toggle()">
+        <div class="quick-icon border border-light">
+            @if(langid === 1){
+                <img class="icon" src="img/flags/us-one.png" alt="">
+            }
+            @else{
+                <img class="icon" src="img/flags/sa.png" alt="">
+            }
+        </div>
+    </a>
+    @if(isOpen()){
+        <div class="kc-dropdown-menu rounded">
+            <ul class="language-list">
+                <li>
+                    <a class="language-item cursor-pointer" (click)="setLang(1)">
+                        <img src="img/flags/us.png" alt="" class="language-flag">
+                        <span class="language-name">English</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="language-item cursor-pointer" (click)="setLang(2)">
+                        <img src="img/flags/sa.png" alt="" class="language-flag">
+                        <span class="language-name">العربية</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    }                 
+</div>

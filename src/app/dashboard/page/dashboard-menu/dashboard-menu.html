@@ -1,0 +1,9 @@
+<button [disabled]="editbtn()" class="btn btn-secondary text-white border-start rounded-0" (click)="toggle()"><em class="icon ni ni-caret-down-fill"></em></button>
+                                            @if(isOpen()){
+                                                <ul class="kc-dropdown-menu mh-360 bg-white">
+                                                    <li class="t-item py-1 px-2" (click)="selectTemplate(0)">Main Dashboard</li>
+                                                    @for(item of templateList(); track item; let i = $index){
+                                                        <li class="t-item py-1 px-2 border-top" (click)="selectTemplate(i+1)">{{item.description}}</li>
+                                                    }
+                                                </ul>
+                                            }

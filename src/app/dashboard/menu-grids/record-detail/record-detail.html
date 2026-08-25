@@ -1,0 +1,125 @@
+<div [hidden]="!visible()" class="card card-bordered card-stretch">
+      <div class="row mx-0">
+        <div class="col-3 pt-2 ps-3 d-flex">
+          @if(clogo()){<span><img src="data:image/png;base64,{{clogo()}}" class="logo-img bg-white me-2" style="max-height: 16px;" alt="Logo" /></span>}
+          <h6>Record ID: {{recordId() ? recordId() : ''}}</h6>
+        </div>
+        <div class="col-9">
+          <ul class="nav nav-tabs nav-tabs-s2 float-end">
+            @if(page().menuType !=='View'){<li class="nav-item">
+              <a class="nav-link" [ngClass]="activeTab() === 'details' ? 'active':''" (click)="setTabs('details')"><i class="fa fa-file-text me-1"></i> <span class="d-none d-lg-inline-block">Details</span></a>
+            </li>}
+            @if(page().pageType === 'prerequisitemenu' && page().isJobEnable && enableReport()){
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="activeTab() === 'report' ? 'active':''" (click)="setTabs('report')"><i class="fa fa-cubes me-1"></i> <span class="d-none d-lg-inline-block">Report Table</span></a>
+              </li>
+            }
+            @if(recordId() && page().pageType !== 'prerequisitemenu'){
+              @if(menuaccess() && menuaccess().ApplyDimensions && page().menuType !=='View'){
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="activeTab() === 'dimensions' ? 'active':''" (click)="setTabs('dimensions')"><i class="fa fa-cubes me-1"></i> <span class="d-none d-lg-inline-block">Dimensions</span></a>
+              </li>
+              }
+              @if(menuaccess() && menuaccess().ApplyWorkflow && page().menuType !=='View'){
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="activeTab() === 'workflow' ? 'active':''" (click)="setTabs('workflow')"><i class="fa fa-fast-forward me-1"></i> <span class="d-none d-lg-inline-block">Workflow</span></a>
+              </li>
+              }
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="activeTab() === 'notes' ? 'active':''" (click)="setTabs('notes')"><i class="fa fa-pencil-alt me-1"></i> <span class="d-none d-lg-inline-block">Notes @if(notesCount()){<span class="badge rounded-pill bg-warning">{{notesCount()}}</span>}</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link position-relative"  [ngClass]="activeTab() === 'attachments' ? 'active':''" (click)="setTabs('attachments')"><i class="fa fa-paperclip me-1"></i> <span class="d-none d-lg-inline-block">Attachments @if(filecount()){<span class="badge rounded-pill bg-warning">{{filecount()}}</span>}</span></a>
+              </li>  
+              @if(menuaccess() && menuaccess().AllowComments && page().menuType !=='View'){
+                <li class="nav-item">
+                  <a class="nav-link" [ngClass]="activeTab() === 'comments' ? 'active':''" (click)="setTabs('comments')"><i class="fa fa-comment me-1"></i> <span class="d-none d-lg-inline-block">Comments @if(commentsCount()){<span class="badge rounded-pill bg-warning">{{commentsCount()}}</span>}</span></a>
+                </li>
+              }
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="activeTab() === 'notifications' ? 'active':''" (click)="setTabs('notifications')"><i class="fa fa-bullhorn me-1"></i> <span class="d-none d-lg-inline-block">Notifications</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [ngClass]="activeTab() === 'logdata' ? 'active':''" (click)="setTabs('logdata')"><i class="fa fa-database me-1"></i> <span class="d-none d-lg-inline-block">Log Data</span></a>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    
+    <div class="mb-3 border-top">
+      @if(pageType() !== 'detailsBtnGrid'){<details-page (closeComponentDetailEmit)="closeComponentDetailEvt($event)" (otherUseremit)="otherUseremitEvt($event)" (otherReadonly)="otherReadonlyevent($event)" (deletedRecord)="deletedRecordEvent($event)" (wfstatusemit)="wfstatusEvent($event)" (disablerecordemit)="disablerecordEvent($event)" (enableAttachmentEmit)="enableAttachmentEvt($event)" (enableDimensionEmit)="enableDimensionEvt($event)" (enableNoteEmit)="enableNoteEvt($event)" (dcid)="dcidevt($event)" [page]="page()" [menuaccess]="menuaccess()" [companyID]="companyID()" (closeNewRecord)="closeNewRecordEvent($event)" [ngClass]="activeTab() === 'details' ? '':'d-none'" [activeRecords]="activeRecords()" (activeRecordsChange)="activeRecordEvent($event)" [_pageType]="pageType() ? pageType() : 'mainmenu'" [recordList]="recordList()" [_recordId]="recordId()" [mainMenuId]="menuId()" [menulabel]="menulabel()" [_newRecord]="recordId() ? false: true" (approveClose)="approveCloseEvent($event)" (wfStatusUpdate)="wfStatusUpdateEvt($event)" [prerequisitesType]="_prerequisitesType()" (prerequisiteType)="prerequisiteTypeEvent($event)" [jobProgress]="jobProgress()"></details-page>}
+      @if(pageType() === 'detailsBtnGrid' && menulabelbtn()){<details-page (closeComponentDetailEmit)="closeComponentDetailEvt($event)" (otherUseremit)="otherUseremitEvt($event)" (otherReadonly)="otherReadonlyevent($event)" (deletedRecord)="deletedRecordEvent($event)" (wfstatusemit)="wfstatusEvent($event)" (disablerecordemit)="disablerecordEvent($event)" (enableAttachmentEmit)="enableAttachmentEvt($event)" (enableDimensionEmit)="enableDimensionEvt($event)" (enableNoteEmit)="enableNoteEvt($event)" (dcid)="dcidevt($event)" [page]="page()" [menuaccess]="menuaccess()" [companyID]="companyID()" (closeNewRecord)="closeNewRecordEvent($event)" [ngClass]="activeTab() === 'details' ? '':'d-none'" [activeRecords]="activeRecords()" (activeRecordsChange)="activeRecordEvent($event)" [_pageType]="pageType() ? pageType() : 'mainmenu'" [recordList]="recordList()" [_recordId]="recordId()" [mainMenuId]="menuId()" [menulabel]="menulabelbtn()" [_newRecord]="recordId() ? false: true" (approveClose)="approveCloseEvent($event)" (wfStatusUpdate)="wfStatusUpdateEvt($event)" [prerequisitesType]="_prerequisitesType()" (prerequisiteType)="prerequisiteTypeEvent($event)" [jobProgress]="jobProgress()"></details-page>}
+      @if(recordId()){
+        @if(activeTab() === 'dimensions'){
+          @if(!wfstatus() && !disablerecord() && !enableDimension()){<dimensions-page [_otheruser]="otheruser" [_readOnly]="readOnly()" [wfstatus]="wfstatus()" [companyID]="companyID()" [menuId]="menuId()" [recordId]="recordId()" [recordList]="recordList()"></dimensions-page>}
+          @if(wfstatus() || disablerecord() || enableDimension()){<dimensions-page [_otheruser]="otheruser" [_readOnly]="readOnly()" [wfstatus]="wfstatus()" [disablerecord]="disablerecord()" [companyID]="companyID()" [menuId]="menuId()" [recordId]="recordId()" [recordList]="recordList()"></dimensions-page>}
+        }        
+        @else if(activeTab() === 'workflow'){
+          <workflow-page [menuId]="menuId()" [recordId]="recordId()"></workflow-page> 
+        }
+        @else if(activeTab() === 'notes'){
+          @if(!isaLoading() && !wfstatus() && !disablerecord() && !enableNote()){<notes-page [notesList]="notesList()" [readOnly]="readOnly()" [page]="page()" [notesCount]="notesCount()" [menuId]="menuId()" [companyID]="companyID()" [recordId]="recordId()" (fileCountNote)="fileCountNoteEvent($event)"></notes-page>}
+          @if(!isaLoading() && (wfstatus() || disablerecord() || enableNote())){<notes-page  [notesList]="notesList()" [readOnly]="readOnly()"  [enableNote]="enableNote()" [page]="page()" [wfstatus]="wfstatus()" [notesCount]="notesCount()" [menuId]="menuId()" [companyID]="companyID()" [recordId]="recordId()" (fileCountNote)="fileCountNoteEvent($event)"></notes-page>}
+        }
+        @else if(activeTab() === 'attachments'){
+          @if(!isaLoading() && !wfstatus() && !disablerecord() && !enableAttachment()){<attachments-page [readOnly]="readOnly()" [callAtt]="cAllatt()" [page]="page()" [companyID]="companyID()" [_itemlist]="itemlist" [totalCount]="filecount()" [menuId]="menuId()" (fileCountNew)="fileCountEvent($event)" (getallAttachments)="getallAttachmentsEvt($event)" [recordId]="recordId()"></attachments-page>}
+          @if(!isaLoading() && (wfstatus() || disablerecord() || enableAttachment())){ <attachments-page [readOnly]="readOnly()" [callAtt]="cAllatt()" [page]="page()" [companyID]="companyID()" [_itemlist]="itemlist" [totalCount]="filecount()" [menuId]="menuId()" [wfstatus]="wfstatus()" [disablerecord]="disablerecord()" [enableAttachment]="enableAttachment()" (fileCountNew)="fileCountEvent($event)" (getallAttachments)="getallAttachmentsEvt($event)" [recordId]="recordId()"></attachments-page>}
+        }
+        @else if(activeTab() === 'comments'){
+          @if(!isaLoading() && !wfstatus() && !disablerecord() && !enableComment()){<comments-page [wfstatus]="wfstatus()" [companyID]="companyID()" [readOnly]="readOnly()" [page]="page()" [recordId]="recordId()" [menuId]="menuId()" [commentsList]="commentsList()" [commentsCount]="commentsCount()" (fileCountComment)="fileCountCommentEvt($event)" [commentsCount]="commentsCount()" (enableCommentsEmit)="enableCommentEvt($event)"></comments-page>}
+          @if(!isaLoading() && (wfstatus() || disablerecord() || enableComment())){ <comments-page [wfstatus]="wfstatus()" [companyID]="companyID()" [readOnly]="readOnly()" [page]="page()" [recordId]="recordId()" [menuId]="menuId()" [commentsList]="commentsList()" [commentsCount]="commentsCount()" (fileCountComment)="fileCountCommentEvt($event)" [commentsCount]="commentsCount()" (enableCommentsEmit)="enableCommentEvt($event)" [enableComment]="enableComment()" ></comments-page>}
+        }
+        @else if(activeTab() === 'notifications'){
+          <notification-page></notification-page>
+        }
+        @else if(activeTab() === 'logdata'){
+          <logdata-page [recordId]="recordId()" [menuid]="menuId()"></logdata-page>
+        }
+        @else if(activeTab() === 'report'){  
+          @if(jobProgress().status === 'error'){
+              <div class="w-50 mx-auto my-4">
+                <div class="progress-wrapper">
+                  <div class="label text-danger">Report generation error.</div>
+                </div>
+              </div>
+          }
+          @else if(jobProgress().progress === 100){ 
+            @if (jobProgress().status === 'completed'){
+              <menu-grid-tabs [jobCompleted]="jobProgress().record" [companyID]="companyID()" [subRecordId]="recordId()"></menu-grid-tabs>
+            }
+          }
+          @else if(jobProgress().status === 'inprogress'){
+            <div class="w-50 mx-auto my-4">
+              <div class="progress-wrapper">
+                <div class="label">Report generation in progress...</div>
+
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width]="jobProgress().progress +  '%' "></div>
+
+                  <span class="progress-text">
+                    {{ jobProgress().progress }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+          @else{
+            <div class="w-50 mx-auto my-4">
+              <div class="progress-wrapper">
+                <div class="label">Report generation in progress...</div>
+
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width]="'0%'"></div>
+
+                  <span class="progress-text">
+                    {{ 0 }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      }
+    </div>
+  </div>

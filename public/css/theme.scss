@@ -1,0 +1,213 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+
+.toast-container{
+    width: auto !important;
+}
+
+.cursor-pointer, .btn{
+    cursor: pointer;
+}
+.nk-menu-link{
+ padding-top: 0;
+ padding-bottom: .4rem;
+}
+.simplebar-content{
+    padding-top: 0!important;
+}
+.is-compact .menu-item{
+    display: none;
+    opacity: 0;
+    overflow-wrap: unset !important;
+    word-break: unset !important;
+}
+
+.is-compact.has-hover .menu-item{
+    display: unset;
+    opacity: 1;
+    overflow-wrap: unset !important;
+    word-break: unset !important;
+}
+
+.is-compact .search-menu{
+    display: none;
+}
+
+.is-compact.has-hover .search-menu{
+    display: unset;
+}
+
+.is-compact .nk-sidebar-content .nav{
+    display: none;
+}
+
+.is-compact.has-hover .nk-sidebar-content .nav{
+    display: flex!important;
+}
+
+  .kc-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .kc-dropdown-toggle {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      min-width: 160px;
+      text-align: left;
+    }
+
+    .kc-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 5%;
+      z-index: 1000;
+      border-radius: 4px;
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 0;
+      background: #fff;
+      border: 1px solid #fff;
+      box-shadow: 0 3px 20px 1px rgba(0, 0, 0, 0.4);
+      border-top: 3px solid #6576ff;
+    }
+
+    .has-rtl  .kc-dropdown-menu {
+        right: auto;
+        left: 5%;
+    }
+
+    
+
+    .has-rtl .notif{
+        right: 8px !important;
+    }
+    
+
+    .menu-dark{
+        background: #18212d;
+        border-color: #263547;
+        border-top-color: #6576ff;
+    }
+
+.kc-dropdown-menu .nk-notification {
+    max-height: 239px;
+    overflow: auto;
+}
+
+.close-btn {
+      margin-top: 1rem;
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+}
+
+.modal-open{
+    overflow: hidden;
+    padding-right: 15px;
+}
+
+
+.modal-open .nk-header, .modal-open .nk-sidebar{
+  z-index: 1080;
+}
+
+.modal-open .nk-content{
+  z-index: 1080;
+}
+  
+.modal-open .modal.show{
+    display: block;
+    z-index: 1080;
+    background-color: rgb(54, 74, 99, 0.5);
+}
+
+.fixed-last, .fixed-first {
+      position: sticky;
+      right: 0;
+      background: #fff;
+      z-index: 4;
+      min-width: 96px;
+      padding-right: 2rem !important;
+      padding-left: 2rem !important;
+      font-weight: bold;
+      vertical-align: top;
+      text-align: right;
+      box-shadow: -6px 0 8px -6px rgba(0, 0, 0, 0.08);
+}
+:root {
+  @include mat.select-overrides((
+    panel-background-color: white,
+    enabled-trigger-text-color: #f5f6fa,
+  ));
+}
+
+svg {
+    height: auto;
+    max-width: none;
+}
+
+.mat-mdc-menu-panel, .mat-mdc-menu-item:not([disabled]).mat-mdc-menu-item-highlighted, .mat-mdc-menu-item:not([disabled]):hover{
+    background-color: #fff !important;
+}
+
+.mat-mdc-option:focus.mdc-list-item, .mat-mdc-option.mat-mdc-option-active.mdc-list-item, .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+    background-color: #f5f6fa !important;
+    outline: 0;
+}
+
+.mat-mdc-select{
+    color: #526484 !important;
+}
+
+.mat-datepicker-toggle-default-icon{
+    height: 14px !important;
+    width: 14px !important;
+}
+
+
+.mat-mdc-icon-button{
+  height: 34px !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+
+.cdk-overlay-container{
+    z-index: 1100;
+}
+
+.input-group-text{
+    background: white;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ngx-material-timepicker-toggle{
+svg {
+    height: 16px;
+}
+}
+.mat-expansion-panel-body{
+    padding: 0 !important;
+}
+
+.mat-expansion-panel-header{
+    padding: 0 12px !important;
+    height: 36px !important;
+}
+
+.modal-header .btn-close{
+    font-size: 10px;
+}

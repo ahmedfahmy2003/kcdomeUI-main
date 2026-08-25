@@ -1,0 +1,23 @@
+ <li class="nk-menu-item">
+    <div class="d-flex">
+        <div class="nk-menu-link flex-grow-1 d-flex">
+            <span class="nk-menu-icon">
+                <em class="icon ni ni-grid cursor-pointer" (click)="openFavPage(item(), '')"></em>
+            </span>
+            <span class="text-break cursor-pointer menu-item" (click)="openFavPage(item(), '')">{{item().MenuName}}</span>
+        </div>
+        <div class="kc-dropdown">
+                                            <em class="kc-dropdown-toggle icon ni ni-more-v text-end cursor-pointer" (click)="toggle()"></em>
+                                              @if (isOpen()) {
+                                                    <div class="kc-dropdown-menu">
+                                                        <div class="dropdown-body px-2 pt-1">
+                                                            @if(item().menuType !== 'View'){
+                                                                <a class="py-1" (click)="openFavPage(item(), 'add')"><em class="icon ni ni-plus-circle-fill"></em> <span class="small cursor-pointer"><strong>Add Record</strong></span></a>
+                                                            }
+                                                            <a class="py-1" (click)="removeFav(item().ID)"><del><em class="icon ni ni-star-fill"></em> <span class="small cursor-pointer"><strong>Favourite</strong></span></del></a>
+                                                        </div>
+                                                    </div>
+                                                }
+        </div>
+    </div>
+</li>

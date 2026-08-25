@@ -1,0 +1,135 @@
+
+<div class="mt-3 position-relative ui-board ui-rounder p-4" id="gridarea" [ngClass]="editBtn() ? 'grid-area':'grid-area-freeze'">
+@if(ismLoading()){
+    <h4 class="text-center mt-5 pt-5">Loading...</h4>
+}   
+@else if(editBtn()){
+        @for(list of dragWidget(); track list.id; let i = $index){
+            <div class="card position-absolute grid-box pb-4" (resized)="onResized($event, i)" cdkDragBoundary=".grid-area" [id]="'box'+i" cdkDrag [cdkDragDisabled]="false" [style]="{width: list.size.width, height: list.size.height}" [cdkDragFreeDragPosition]="list.position" (cdkDragEnded)="onDragEnd($event, i)">
+                <div cdkDragHandle>
+                <div class="d-flex p-4" [ngClass]="list.widget.DashboardType === 'Table' ? 'pb-2':'pb-0'">
+                            @if(list.title.length > 1){
+                                 <div class="card-title-group flex-grow-1">
+                                    <div class="card-title">
+                                        <h6 class="title">{{list.setTitle}}</h6>
+                                    </div>
+                                </div>
+                            }
+                            @else{
+                                 <div class="card-title-group flex-grow-1">
+                                    <div class="card-title">
+                                        <h6 class="title">{{list.title[0].value}}</h6>
+                                    </div>
+                                </div>
+                            }
+                            @if(list.title.length > 1){
+                                <div class="ps-2">
+                                    <a class="btn px-0 w-100 py-0" [matMenuTriggerFor]="titles"><em class="icon ni ni-more-h cursor-pointer"></em></a>
+                                    <mat-menu #titles="matMenu" yPosition="below">
+                                        @for(option of list.title; track option.id; let j = $index){
+                                            <div menu-item class="px-2 cursor-pointer text-truncate" [matTooltip]="option.value" [ngClass]="j === 0 ? '':'pt-1'" (click)="selectChange(option.value, i)"><span class="small">{{option.value}}</span></div>
+                                        }
+                                    </mat-menu>
+                                </div>
+                            }
+                            <div class="">
+                                <a class="btn btn-sm ps-2 w-100 py-0" (click)="clsoeWidget(list)"><i class="fa fa-times"></i></a>
+                            </div>
+                        </div>
+                <div class="nk-ecwg nk-ecwg6 h-auto overflow-y-auto">
+                    <div class="card-inner py-0">
+                       
+                    <ui-dashboard-layout [list]="list"></ui-dashboard-layout>
+                    </div>
+                </div>
+                </div>
+            </div>
+        }
+
+    <div class="control-btns d-flex flex-column">
+        <button class="btn btn-default bg-white btn-circle btn-xl" (click)="openPopUp()"><i class="fa fa-plus"></i></button>
+        <button class="btn btn-default bg-white btn-circle btn-xl" (click)="resetAll()"><i class="fa fa-undo text-danger"></i></button>
+        <button class="btn btn-danger btn-circle btn-xl" [disabled]="disableBtn()" (click)="saveDashboard()"><i class="fa fa-save text-white"></i></button>
+    </div>
+}
+@else {
+    @for(list of dragWidget(); track list.id; let i = $index){
+        <div class="card position-absolute pb-4" [id]="'databox'+i" [style]="{width: list.size.width, height: list.size.height}" [style.transform]="'translate3d('+ list.transform + ')'">
+            <div class="d-flex p-4" [ngClass]="list.widget.DashboardType === 'Table' ? 'pb-2':'pb-0'">
+                        @if(list.title.length > 1){
+                            <div class="card-title-group flex-grow-1">
+                                <div class="card-title">
+                                    <h6 class="title">{{list.setTitle}}</h6>
+                                </div>
+                            </div>
+                        }
+                        @else{
+                            <div class="card-title-group flex-grow-1">
+                                <div class="card-title">
+                                    <h6 class="title">{{list.title[0].value}}</h6>
+                                </div>
+                            </div>
+                        }
+                        @if(list.title.length > 1){
+                            <div class="ps-2">
+                                <a class="btn px-0 w-100 py-0" [matMenuTriggerFor]="titles"><em class="icon ni ni-more-h cursor-pointer"></em></a>
+                                <mat-menu #titles="matMenu" yPosition="below">
+                                    @for(option of list.title; track option.id; let j = $index){
+                                        <div menu-item class="px-2 cursor-pointer text-truncate" [matTooltip]="option.value" [ngClass]="j === 0 ? '':'pt-1'" (click)="selectChange(option.value, i)"><span class="small">{{option.value}}</span></div>
+                                    }
+                                </mat-menu>
+                            </div>
+                        }
+                        <div class="ps-2">
+                            <a class="btn px-0 w-100 py-0" (click)="refreshdataevt($event, list, i)"><i class="fa fa-refresh"></i></a>
+                        </div>
+                    </div>
+            <div class="nk-ecwg nk-ecwg6 h-auto overflow-y-auto">
+                <div class="card-inner py-0">
+                    
+                    
+                
+                @if(isLoading() && loadDiv() === i){
+                    <h4 class="text-center title mt-4">Loading...</h4>
+                }
+                @else{
+                    <ui-dashboard-layout [list]="list"></ui-dashboard-layout>
+                }
+                </div>
+            </div>
+        </div>
+    }
+}
+</div>
+
+@if(modal.isOpen('mlist')){
+<div class="modal custom-modal" [class.show]="modal.isOpen('mlist')">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-bottom py-3">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">Dashboards</h6>
+            </div>
+            <button tabindex="-1" type="button" class="btn-close" (click)="closeModal()">
+            </button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <input type="text" class="form-control searchbox py-1 small border-dark-subtle" placeholder="Search" [(ngModel)]="searchList" (keyup)="applyFilter(searchList)">
+            </div>
+            <div class="mh-470 border">
+                @for(list of moduleList(); track list.ID; let i = $index){
+                    <div class="d-flex py-3" [ngClass]="i % 2 === 0 ? 'bg-even':''">
+                        <input type="checkbox" (change)="setMultiSelect($event, i)" [id]="'list'+i" [value]="list.checked" [(ngModel)]="list.checked" class="form-check-input ps-0 mx-2 d-list"> <label [for]="'list'+i" class="ms-2 mb-0 form-check-label cursor-pointer text-dark">{{list.Description}} ({{list.DashboardType}})</label>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="mt-3 btn btn-success me-3" (click)="okModal()">Ok</button>
+            <button type="button" class="mt-3 btn btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}

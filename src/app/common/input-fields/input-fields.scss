@@ -1,0 +1,63 @@
+textarea{
+    height: 90px;
+    width: 100%;
+}
+
+.b-value{
+    border-left: 2px solid red ;
+}
+
+.small{
+   font-size: 12px !important
+}
+
+.mat-mdc-menu-item{
+  min-height: 30px;
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+   }
+
+  
+   .demo-table {
+    height: 300px;
+    overflow: auto;
+  }
+  table {
+    width: 100%;
+  }
+  
+  .w-pgbox{
+    width: 48px !important;
+  }
+
+  .filter-control{
+    height: 24px;
+    border: 1px solid #ddd;
+    font-size: 12px !important;
+  }
+
+  .g{
+    .form-control, .form-select{
+      width: 100px;
+    }
+  }
+.fixed-top{
+    position: sticky;
+    background: #fff;
+    border-bottom: 1px solid #dbdfea !important;
+    right: auto;
+    left: auto;
+ }
+ 
+ .w-150{
+  max-width: 200px;
+ }
+.disabled{color:#ddd;}
+.info-tooltip{
+  top: -4em;
+  right: .25em;
+}

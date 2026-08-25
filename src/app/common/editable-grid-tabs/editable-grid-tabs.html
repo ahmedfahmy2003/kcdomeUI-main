@@ -1,0 +1,595 @@
+@if(editMode()){<div class="layer-mask"></div>}
+<div class="row mx-0" [class.bg-lighter]="showFilter()" [class.m-height]="openMenuId() === 'rcount'">
+    <div class="col-3 bg-white" [ngClass]="!showFilter() ? 'd-none': pageType === 'submenu' ? 'px-0 border-end' : 'pe-0 border-end'">
+        @if(sysList().length > 0){<filter-box [recordList]="recordList" [companyID]="companyID()" (closefilter)="filterOff($event)" (setFilterValue)="setFilterValueEvent($event)" [menuid]="menuid()" [_sysList]="sysList()"></filter-box>}
+    </div>
+    <div [ngClass]="showFilter() ? 'col-9' : 'col-12 px-0' ">
+        @if(isLoading()){
+            <div class="text-center w-100">
+            <h5 class="text-center py-5">Loading....</h5>
+            </div>
+        }
+        @else{
+            @if(resultsLength() || (!resultsLength() && pageType !== 'dimensions')){      
+                            <div class="bg-white py-2" [ngClass]="{'position-relative edit-table': editMode()}">
+                                @if(!editMode()){
+                                   <div class="card-title-group pb-1">
+                                    
+                                        <!--    <div class="card-tools pe-1 mx-2">
+                                            <small class="text-primary-emphasis">Total {{resultsLength()}} records</small>
+                                        </div>-->
+                                        
+                                        <div class="card-tools flex-grow-1 px-1">
+                                            <ul class="btn-toolbar gx-1">
+                                                @if(totalPages() > 1){
+                                                    <li class="btn-toolbar-sep"></li>
+                                                }
+                                                @if(page && page.menuType !== 'View' &&  page.pageType !== 'prerequisitemenu' && useraccess() && useraccess().InsertFlag && menuaccess && menuaccess.InsertFlag && (pageType === 'mainmenu')){
+                                                    <li>
+                                                        <span class="btn btn-sm btn-trigger btn-icon cursor-pointer" (click)="addRecord()">
+                                                            <em class="icon ni ni-plus-round"></em>
+                                                        </span>
+                                                    </li>
+                                                }
+                                                <li>
+                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer">
+                                                        <em class="icon ni ni-filter-fill" (click)="filterToggle()"></em>
+                                                    </span>
+                                                </li>
+                                                @if(pageType !== 'mainmenu' && editBTN && dataSourceRaw.length > 0){
+                                                <li>
+                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer">
+                                                        <em class="icon ni ni-edit-fill" (click)="doubleClick()"></em>
+                                                    </span>
+                                                </li>
+                                                }
+                                                <li>
+                                                <div class="kc-dropdown-wrap">
+                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="toggleCount('rcount')">
+                                                        <em class="icon ni ni-setting"></em>
+                                                    </span>
+                                                    @if(openMenuId() === 'rcount'){
+                                                        <div class="kc-dropdown-menu rocount">
+                                                            <ul class="link-check">
+                                                                <li><span>Show</span></li>
+                                                                @for(list of pageSizeOption; track list){
+                                                                    <li [ngClass]="list === pageSize() ? 'active':''" (click)="sizeChange(list)"><a class="cursor-pointer">{{list}}</a></li>
+                                                                }
+                                                            </ul>
+                                                            <ul class="link-check">
+                                                                <li><span>Order</span></li>
+                                                                <li [ngClass]="_sortOrder() === 'desc' ? 'active':''" (click)="sortOrder('desc')"><a class="cursor-pointer">DESC</a></li>
+                                                                <li [ngClass]="_sortOrder() === 'asc' ? 'active':''" (click)="sortOrder('asc')"><a class="cursor-pointer">ASC</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" [matMenuTriggerFor]="exportMenu">
+                                                    <em class="icon ni ni-download-cloud"></em>
+                                                </span>
+                                                <mat-menu #exportMenu="matMenu" yPosition="below">
+                                                    <div mat-menu-item (click)="$event.stopPropagation()"><span class="small"> Export All Fields <input (click)="$event.stopPropagation()" class="form-check-input border border-dark ms-2" [(ngModel)]="exportAll" type="checkbox" value=""></span></div>
+                                                    <hr class="my-2" />
+                                                    <div mat-menu-item (click)="exportData(exportid, pageSize())"><span class="small">Export Current Page</span></div>
+                                                    <div mat-menu-item (click)="exportData(exportid, resultsLength())"><span class="small">Export All Data</span></div>
+                                                </mat-menu>
+                                            </li>
+                                                @if(exportid && vlist){
+                                                    <li>
+                                                        <visbility-grids [vlist]="vlist" [menuid]="exportid" [ids]="subMenuId()" [getDataResposne]="getDataResposne" [companyID]="companyID()" (refreshTable)="refreshTableEvt($event)"></visbility-grids>
+                                                    </li>
+                                                }
+                                            </ul>
+                                            
+                                        </div>
+                                        <div class="card-tools pe-1 ms-2">
+                                                <!--<div class="nk-block-between-md g-3">
+                                                    
+                                                </div>-->
+                                                @if(pageType === 'submenu' || pageType === 'callingsubmenu' || (pageType === 'dimensions' && resultsLength() > pageSize())){
+                                                            <div class="nk-block-between-md g-3">
+                                                                <div class="g pt-1 pb-0 small">
+                                                                   @if(resultsLength()){ {{((currentPage() - 1) * pageSize()) + 1}} - {{dataSource().length === pageSize() ? pageSize() * currentPage() : ((currentPage() - 1) * pageSize()) + dataSource().length}} of {{resultsLength()}} Records}
+                                                                </div>
+                                                                @if(totalPages() > 1){
+                                                                <div class="g flex-grow-1">
+                                                                    <ul class="pagination justify-content-center justify-content-md-start">
+                                                                        <li class="page-item" [class.disabled]="currentPage() === 1">
+                                                                            @if(currentPage() === 1){
+                                                                                <span class="page-link">Prev</span>
+                                                                            }
+                                                                            @else {
+                                                                                <a class="page-link cursor-pointer" (click)="goToPage(currentPage() - 1)">Prev</a>
+                                                                            }
+                                                                                        
+                                                                        </li>
+                                                                        <li class="page-item">
+                                                                                <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                                                                        </li>
+                                                                        <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+                                                                            @if(currentPage() === totalPages()){
+                                                                                <span class="page-link">Next</span>
+                                                                            }
+                                                                            @else{
+                                                                                <a class="page-link cursor-pointer" (click)="goToPage(currentPage() + 1)">Next</a>
+                                                                            }
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="g">
+                                                                    <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                                                                        <div>Page</div>
+                                                                        <div class="pe-0">
+                                                                            @if(totalPages()){
+                                                                                <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
+                                                                            }
+                                                                        </div>
+                                                                        <div class="ps-0">/ {{ totalPages() }}</div>
+                                                                        <div>
+                                                                            <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary btn-sm text-white btn-outline-light">Go</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                }
+                                                        </div>
+                                                }            
+                                        </div>
+                                    </div>
+                                }
+                                @else {
+                                    <div class="mb-2 px-2">
+                                        <button [disabled]="isLoading()" class="btn btn-sm btn-danger me-3 text-white-emphasis" (click)="closeEdit('save')"><i class="fa fa-save text-white me-2"></i> <span class="text-white">Save</span></button>
+                                        <button [disabled]="isLoading()" class="btn btn-sm btn-light me-3 text-primary-emphasis" (click)="closeEdit('close')"><i class="fa fa-undo text-danger me-2"></i> <span class="text-danger">Cancel</span></button>
+                                    </div>
+                                }
+                                
+                                <div class="overflow-auto mx-height card">
+                                   
+                                    <table class="table table-tranx">
+                                        <thead class="table-light border-top border-bottom">
+                                            <tr>
+                                            @if(page && page.pageType === 'prerequisitemenu' && !preReqIndex){
+                                                <th>&nbsp;</th>
+                                            }
+                                            @if((menuaccess && menuaccess.InsertFlag && (pageType !== 'mainmenu' && pageType !== 'prerequisitemenu' && pageType !== 'dimensions' && wfstatus() !== 'Approved' && wfstatus() !== 'Rejected' && !readOnly())) || (pageType === 'callingsubmenu' && wfEnabledStatus())){
+                                                <th class="sticky-left"><i class="fa fa-circle-plus text-success" (click)="addNew()"></i></th>
+                                            }
+                                            <th>&nbsp;</th>
+                                            <th (click)="sortData('ID')"><div class="text-truncate cursor-pointer border-0">ID</div></th>
+                                            @for(item of columns; track item){
+                                                <th (click)="sortData(item.name)"> <div class="text-truncate cursor-pointer border-0">{{item.header}}</div></th>
+                                            }
+                                            <th class="fixed-last">
+                            
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(noData() && !editMode()){
+                                                <tr>
+                                                <td>&nbsp;</td>
+                                                @for(ikey of columns; track ikey){
+                                                    <td>&nbsp;</td>
+                                                }
+                                                <td>&nbsp;</td>
+                                                </tr>
+                                            }
+                                            @else {
+                                                @for(item of dataSource(); track item; let index = $index){
+                                                    <tr>
+                                                        @if(page && page.pageType === 'prerequisitemenu' && !preReqIndex){
+                                                            <td>
+                                                                @if(item.ID){<span class="btn btn-sm btn-trigger btn-icon"><em class="icon ni ni-caret-right-fill text-danger" (click)="genReport(item.ID, item.SNO)"></em></span>}
+                                                            </td>
+                                                        }
+                                                         @if((menuaccess && menuaccess.InsertFlag && (pageType !== 'mainmenu' && pageType !== 'prerequisitemenu' && pageType !== 'dimensions' && wfstatus() !== 'Approved' && wfstatus() !== 'Rejected' && !readOnly())) || (pageType === 'callingsubmenu' && wfEnabledStatus())){
+                                                            <td class="sticky-left">
+                                                                @if(editMode()){
+                                                                    @if(item.ID){
+                                                                        @if(useraccess() && useraccess().DeleteFlag){
+                                                                            @if(item.isDelete){
+                                                                                <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="deleteCancel(item.ID, item.SNO - 1)"><i class="fa fa-ban text-danger"></i></span>
+                                                                            }
+                                                                            @else{
+                                                                                @if(wfStatus() !== 'Approved' && wfStatus() !== 'Rejected'){
+                                                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="deleteRecord(item.ID, item.SNO - 1)"><i class="fa fa-trash-can text-danger"></i></span>
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }@else {
+                                                                        <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="deleteNew(index)"><i class="fa fa-undo text-danger"></i></span>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                        }
+                                                        <td>{{item.SNO}}</td>
+                                                        <td><span class="text-id cursor-pointer" (click)="showSubRecord(item.ID, item.SNO, 'details', 'details')">{{item.ID}}</span></td>
+                                                        @for(ikey of columns; track ikey; let i = $index){
+                                                            <td [ngClass]="(ikey.fieldType === 'number' || typeof item[ikey.name] === 'number') ? 'td-num':'td-string'" (dblclick)="doubleClick()">
+                                                                @if(!editMode()){
+                                                                    <div class="text-truncate">
+                                                                        @if(ikey.fieldType === "Image"){
+                                                                            @if(item[ikey.name]){
+                                                                                <img src="data:image/png;base64,{{item[ikey.name]}}" class="mt-2 grid-img">
+                                                                            }
+                                                                            @else {
+                                                                                <em class="icon ni ni-img"></em>
+                                                                            }
+                                                                        }
+                                                                        @else if(ikey.fieldType === "DateTime"){
+                                                                            {{item[ikey.name] | date: dateFormat}}
+                                                                        }
+                                                                        @else if(ikey.fieldType === "Number"){
+                                                                            {{item[ikey.name] | number}}
+                                                                        }
+                                                                        @else if(ikey.fieldType === "Memo"){
+                                                                            <em class="icon ni ni-edit" (click)="openMemo(ikey.name, item[ikey.name])"></em>
+                                                                        }
+                                                                        @else if(ikey.fieldType === "CheckBox"){
+                                                                            @if(item[ikey.name] === 1 || item[ikey.name] === '1' || item[ikey.name] === true){
+                                                                                <div class="custom-control custom-control-sm custom-checkbox">
+                                                                                    <input class="custom-control-input" type="checkbox" [id]="ikey.name+index+i" [value]="item[ikey.name]" disabled checked>
+                                                                                    <label class="custom-control-label" [for]="ikey.name+index+i">&nbsp;</label>
+                                                                                </div>
+                                                                            }
+                                                                            @else{
+                                                                                <div class="custom-control custom-control-sm custom-checkbox">
+                                                                                        <input class="custom-control-input" type="checkbox" [id]="ikey.name+index+i" [value]="item[ikey.name]" disabled>
+                                                                                        <label class="custom-control-label" [for]="ikey.name+index+i">&nbsp;</label>
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                        @else{
+                                                                            <span>{{item[ikey.name]}}</span>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                                @else {
+                                                                    @if(fieldAction()[item.SNO - 1] && !item.ID && fieldAction()[item.SNO - 1].field[i].Visible) {
+                                                                        @if(fieldAction()[item.SNO - 1].field[i].internalFieldEdit){
+                                                                            @if(fieldAction()[item.SNO - 1].field[i].FieldType !== 'TabPage' && fieldAction()[item.SNO - 1].field[i].FieldType !== 'GridTab' && fieldAction()[item.SNO - 1].field[i].FieldType !== 'GridView' && fieldAction()[item.SNO - 1].field[i].FieldType !== 'BTN'){
+                                                                                <div tabindex="0" [ngClass]="ikey.fieldType === 'CheckBox' ? 'ps-3':'td-200'">
+                                                                                @if(ikey.fieldType === 'DateTime') {  
+                                                                                    <date-input [recordList]="recordList" [menuId]="menuid()" [recordId]="fieldAction()[(item.SNO - 1)].fieldActionBody.ID" [_keyTab]="fieldAction()[item.SNO - 1].field[i].keyTab" [companyID]="companyID()" [_readOnly]="readOnly()" [_field]="fieldAction()[item.SNO - 1].field[i]" [recordList]="recordList" [fieldActionBody]="fieldAction()[(item.SNO - 1)].fieldActionBody" (setfieldVal)="getmainval($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)" (actionfieldVal)="actionfieldVal($event, (item.SNO - 1))" (keypressevent)="keypresseventEvt($event, (item.SNO-1), i)"></date-input>
+                                                                                }
+                                                                                @else if(ikey.fieldType === 'Time') {
+                                                                                    <time-input [_readOnly]="readOnly()" [_field]="fieldAction()[item.SNO - 1].field[i]" [_keyTab]="fieldAction()[item.SNO - 1].field[i].keyTab" (setfieldVal)="getmainval($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)"></time-input>
+                                                                                }
+                                                                                @else{
+                                                                                    <input-fields [recordList]="recordList" [pmenuid]="pmenuid()" [inlineEdit]="true" [_keyTab]="fieldAction()[item.SNO - 1].field[i].keyTab" [menuId]="menuid()" [companyID]="companyID()" [recordId]="fieldAction()[(item.SNO - 1)].fieldActionBody.ID" [pageType]="pageType" [fieldActionBody]="fieldAction()[(item.SNO - 1)].fieldActionBody" [_field]="fieldAction()[item.SNO - 1].field[i]" [fieldname]="fieldAction()[item.SNO - 1].field[i].FieldCaption" [readOnly]="readOnly()" [precordid]="precordid" (setfieldVal)="getmainval($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)" (callActionField)="callActionFieldEvent($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)" (actionfieldVal)="actionfieldVal($event, (item.SNO - 1))" (keypressevent)="keypresseventEvt($event, (item.SNO-1), i)"></input-fields>
+                                                                                }
+                                                                            </div>}
+                                                                        }
+                                                                        @else{
+                                                                            <div tabindex="0" class="h-100 text-truncate" (click)="fieldEditClick(item.SNO - 1, i)" (focus)="fieldEditClick(item.SNO - 1, i)">
+                                                                                @if(ikey.fieldType === "CheckBox"){
+                                                                                    @if(fieldAction()[item.SNO - 1].field[i].FieldVal === '1' || fieldAction()[item.SNO - 1].field[i].FieldVal === 1 || fieldAction()[item.SNO - 1].field[i].FieldVal === true){
+                                                                                        <input class="form-check-input border border-secondary" type="checkbox" value="{{fieldAction()[item.SNO - 1].field[i].FieldVal}}" disabled checked>
+                                                                                    }
+                                                                                    @else{
+                                                                                        <input class="form-check-input border border-secondary" type="checkbox" value="{{fieldAction()[item.SNO - 1].field[i].FieldVal}}" disabled>
+                                                                                    }
+                                                                                    
+                                                                                }
+                                                                                @else if(ikey.fieldType === "Memo"){
+                                                                                    <i class="fa fa-edit"></i>
+                                                                                }
+                                                                                @else if(ikey.fieldType === "DateTime"){
+                                                                                    @if(fieldAction()[item.SNO - 1].field[i].FieldVal){
+                                                                                        {{fieldAction()[item.SNO - 1].field[i].FieldVal | date: dateFormat}}
+                                                                                    }
+                                                                                    @else{
+                                                                                        &nbsp;
+                                                                                    }
+                                                                                }
+                                                                                @else if(ikey.fieldType === "Number"){
+                                                                                    @if(fieldAction()[item.SNO - 1].field[i].FieldVal){
+                                                                                        <div class="text-end">{{fieldAction()[item.SNO - 1].field[i].FieldVal | number}}</div>
+                                                                                    }
+                                                                                    @else{
+                                                                                        &nbsp;
+                                                                                    }
+                                                                                }
+                                                                                @else{
+                                                                                    @if(fieldAction()[item.SNO - 1].field[i].FieldVal){
+                                                                                        {{fieldAction()[item.SNO - 1].field[i].FieldVal}}
+                                                                                    }
+                                                                                    @else{
+                                                                                        &nbsp;
+                                                                                    }
+                                                                                } 
+                                                                                
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                    @if(fieldAction()[item.SNO - 1]  && item.ID && fieldAction()[item.SNO - 1].field[i].Visible){
+
+                                                                        @if(fieldAction()[item.SNO - 1].field[i].internalFieldEdit){
+                                                                            @if(fieldAction()[item.SNO - 1].field[i].FieldType !== 'TabPage' && fieldAction()[item.SNO - 1].field[i].FieldType !== 'GridTab' && fieldAction()[item.SNO - 1].field[i].FieldType !== 'GridView' && fieldAction()[item.SNO - 1].field[i].FieldType !== 'BTN'){
+                                                                            <div tabindex="0" [ngClass]="ikey.fieldType === 'CheckBox' ? 'ps-3':'td-200'">
+                                                                                @if(ikey.fieldType === 'DateTime') { 
+                                                                                    <date-input [recordList]="recordList" [menuId]="menuid()" [recordId]="fieldAction()[(item.SNO - 1)].fieldActionBody.ID" [companyID]="companyID()" [_keyTab]="fieldAction()[item.SNO - 1].field[i].keyTab" [_readOnly]="readOnly()" [_field]="fieldAction()[item.SNO - 1].field[i]" [recordList]="recordList" [fieldActionBody]="fieldAction()[(item.SNO - 1)].fieldActionBody" (setfieldVal)="getmainval($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)" (actionfieldVal)="actionfieldVal($event, (item.SNO - 1))"></date-input>
+                                                                                }
+                                                                                @else if(ikey.fieldType === 'Time') {
+                                                                                    <time-input [_readOnly]="readOnly()" [_field]="fieldAction()[item.SNO - 1].field[i]" [_keyTab]="fieldAction()[item.SNO - 1].field[i].keyTab" (setfieldVal)="getmainval($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)"></time-input>
+                                                                                }
+                                                                                @else{
+                                                                                    <input-fields [recordList]="recordList" [pmenuid]="pmenuid()" [inlineEdit]="true" [_keyTab]="fieldAction()[item.SNO - 1].field[i].keyTab" [menuId]="menuid()" [companyID]="companyID()" [recordId]="fieldAction()[(item.SNO - 1)].fieldActionBody.ID" [pageType]="pageType" [fieldActionBody]="fieldAction()[(item.SNO - 1)].fieldActionBody" [_field]="fieldAction()[item.SNO - 1].field[i]" [fieldname]="fieldAction()[item.SNO - 1].field[i].FieldCaption" [readOnly]="readOnly()" [precordid]="precordid" (setfieldVal)="getmainval($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)" (callActionField)="callActionFieldEvent($event, (item.SNO - 1), fieldAction()[item.SNO - 1].field[i].FieldName)" (actionfieldVal)="actionfieldVal($event, (item.SNO - 1))"></input-fields>
+                                                                                }
+                                                                            </div>}
+                                                                        }
+                                                                        @else {
+                                                                            @if(ikey.fieldType === "Image"){
+                                                                                @if(item[ikey.name]){
+                                                                                <img src="data:image/png;base64,{{item[ikey.name]}}" height="24" class="mt-2">
+                                                                                }
+                                                                                @else {
+                                                                                <i class="fa fa-image"></i>
+                                                                                }
+                                                                            }
+                                                                            @else{
+                                                                                <div class="h-100 text-truncate" tabindex="0" (click)="fieldEditClick(item.SNO - 1, i)" (focus)="fieldEditClick(item.SNO - 1, i)">
+                                                                                    @if(ikey.fieldType === "CheckBox"){
+                                                                                        @if(fieldAction()[item.SNO - 1].field[i].FieldVal === '1' || fieldAction()[item.SNO - 1].field[i].FieldVal === 1 || fieldAction()[item.SNO - 1].field[i].FieldVal === true){
+                                                                                            <input class="form-check-input border border-secondary" type="checkbox" value="{{fieldAction()[item.SNO - 1].field[i].FieldVal}}" disabled checked>
+                                                                                        }
+                                                                                        @else{
+                                                                                            <input class="form-check-input border border-secondary" type="checkbox" value="{{fieldAction()[item.SNO - 1].field[i].FieldVal}}" disabled>
+                                                                                        }
+                                                                                        
+                                                                                    }
+                                                                                    @else if(ikey.fieldType === "Memo"){
+                                                                                        <i class="fa fa-edit"></i>
+                                                                                    }
+                                                                                    @else if(ikey.fieldType === "DateTime"){
+                                                                                        @if(fieldAction()[item.SNO - 1].field[i].FieldVal){
+                                                                                            {{fieldAction()[item.SNO - 1].field[i].FieldVal | date: dateFormat}}
+                                                                                        }
+                                                                                        @else{
+                                                                                            &nbsp;
+                                                                                        }
+                                                                                    }
+                                                                                    @else if(ikey.fieldType === "Number"){
+                                                                                        @if(fieldAction()[item.SNO - 1].field[i].FieldVal || fieldAction()[item.SNO - 1].field[i].FieldVal === 0){
+                                                                                            <div class="text-end">{{fieldAction()[item.SNO - 1].field[i].FieldVal | number}}</div>
+                                                                                        }
+                                                                                        @else{
+                                                                                            &nbsp;
+                                                                                        }
+                                                                                    }
+                                                                                    @else{
+                                                                                        @if(fieldAction()[item.SNO - 1].field[i].FieldVal){
+                                                                                            {{fieldAction()[item.SNO - 1].field[i].FieldVal}}
+                                                                                        }
+                                                                                        @else{
+                                                                                            &nbsp;
+                                                                                        }
+                                                                                    } 
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                        
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            
+                                                            }
+                                                        <td class="fixed-last">
+                                                            @if(!editMode()){
+                                                                <span class="btn btn-sm btn-icon btn-trigger cursor-pointer trwrap" (click)="checkStatus(item.ID)" [matMenuTriggerFor]="moreMenu">
+                                                                    <em class="icon ni ni-more-h cursor-pointer"></em>
+                                                                </span>
+                                                            }
+                                                           
+                                                                    <mat-menu #moreMenu="matMenu" yPosition="below">
+                                                                            <div class="d-flex">
+                                                                            <div class="px-2" mat-menu-item [matMenuTriggerFor]="morestting">
+                                                                                <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                    <em class="icon ni ni-setting-alt cursor-pointer"></em>
+                                                                                </span>
+                                                                            </div>
+                                                                            @if(menuaccess && menuaccess.ApplyDimensions && !noData()){
+                                                                                <div class="px-2" mat-menu-item (click)="modalRecord(item.ID)">
+                                                                                    <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                        <em class="icon ni ni-package-fill cursor-pointer"></em>
+                                                                                    </span>
+                                                                                </div>
+                                                                            }
+                                                                            @if(applyDrillDown && !noData()){
+                                                                                <div class="px-2" mat-menu-item [matMenuTriggerFor]="drilldown">
+                                                                                    <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                        <em class="icon ni ni-server cursor-pointer"></em>
+                                                                                    </span>
+                                                                                </div>
+                                                                            }
+                                                                            @if(!noData() && (printBTN().length > 0 || actionBTN().length > 0)){
+                                                                                <div class="px-2" mat-menu-item [matMenuTriggerFor]="rowaction">
+                                                                                    <span class="btn btn-sm btn-icon btn-trigger">
+                                                                                        <em class="icon ni ni-spark-fill cursor-pointer"></em>
+                                                                                    </span>
+                                                                                </div>
+                                                                            }
+                                                                            </div>
+                                                                    </mat-menu>
+                                                        
+                                        
+                                            <mat-menu #morestting="matMenu" yPosition="below" xPosition="before">
+                                                @if(menuaccess && menuaccess.ApplyDimensions && page.menuType !== 'View'){
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'dimensions')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-package-fill"></em></span><span class="small ms-1">Dimensions</span></div>
+                                                }
+                                                <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'notes')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-edit-fill"></em></span><span class="small ms-1">Notes</span></div>
+                                                <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'attachments')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-clip"></em></span><span class="small ms-1">Attachments</span></div>
+                                                @if(menuaccess && menuaccess.AllowComments && page.menuType !== 'View'){
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'comments')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-comments"></em></span><span class="small ms-1">Comments</span></div>
+                                                }
+                                                <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'notifications')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-bell"></em></span><span class="small ms-1">Notifications</span></div>
+                                                <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'logdata')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-db-fill"></em></span><span class="small ms-1">Log Data</span></div>
+                                                @if(page && page.menuType !== 'View'){
+                                                    <hr class="my-1" />
+                                                    <div class="me-2 ms-1 cursor-pointer" (click)="showRecord(item.ID, item.SNO, 'details', 'details')"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">Open</span></div>
+                                                }
+                                            </mat-menu>
+                                        
+                                        
+                                            <mat-menu #drilldown="matMenu">
+                                                @for(subitem of drillDown; track subitem){
+                                                    <div menu-item class="dropdown-inner my-1 pt-1 pb-0 ps-3 mb-0 cursor-pointer" (click)="detailsOpen(subitem, item.ID, item.SNO)"><span class="small">{{subitem.Description}}</span></div>
+                                                }
+                                            </mat-menu>
+                                        
+                                            <mat-menu #rowaction="matMenu" yPosition="below" xPosition="after">
+                                               @for(abtn of actionBTN(); track abtn){
+                                                    @if(abtn.mrEnabled === false){
+                                                        <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start disabled border-0">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(abtn.mrEnabled === true){
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(abtn, 'action', item.ID, index)"><span class="btn btn-sm btn-icon small">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(actionBTNDisabled()){
+                                                        <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start disabled border-0">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(wfstatus() === 'Approved' || wfstatus() === 'Rejected'){
+                                                        <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 text-start disabled border-0">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(abtn.wfEnabled){
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(abtn, 'action', item.ID, index)"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(readOnly() || !abtn.Enabled){
+                                                        <div class="me-2 ms-1 disabled"><span class="btn btn-sm btn-icon small ms-3 disabled border-0 text-start">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else {
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(abtn, 'action', item.ID, index)"><span class="btn btn-sm btn-icon small ms-3 text-start">{{abtn.FieldCaption}}</span></div>
+                                                    }
+                                                }
+                                                @if(printBTN().length > 0 && actionBTN().length > 0){
+                                                    <hr class="my-2" />
+                                                }
+                                                @for(pbtn of printBTN(); track pbtn){
+                                                    @if(pbtn.mrEnabled === false){
+                                                        <div class="me-2 ms-1"><span class="btn btn-sm btn-icon small ms-3 text-start"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(pbtn.mrEnabled === true){
+                                                       <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(pbtn, 'print', item.ID, index)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(actionBTNDisabled()){
+                                                        <div class="me-2 ms-1"><span class="btn btn-sm btn-icon"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(wfstatus() === 'Approved' || wfstatus() === 'Rejected'){
+                                                        <div class="me-2 ms-1"><span class="btn btn-sm btn-icon"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(pbtn.wfEnabled){
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(pbtn, 'print', item.ID, index)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else if(readOnly() || !pbtn.Enabled){
+                                                        <div class="me-2 ms-1"><span class="btn btn-sm btn-icon"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                    @else {
+                                                        <div class="me-2 ms-1 cursor-pointer" (click)="actionClick(pbtn, 'print', item.ID, index)"><span class="btn btn-sm btn-icon btn-trigger"><em class="icon ni ni-external"></em></span><span class="small ms-1">{{pbtn.FieldCaption}}</span></div>
+                                                    }
+                                                }
+                                            </mat-menu>
+                                        
+                                                </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                  
+                                </div>
+
+                                @if(editMode()){
+                                    <div class="mt-2">
+                                        <span class="text-danger">Ctrl+i:</span> Insert Record | <span class="text-danger">Ctrl+s:</span> Save | <span class="text-danger">Shift+Esc:</span> Cancel Editing
+                                    </div>
+                                }
+                            </div>
+                            
+                        
+            }@else {
+                <h5 class="text-center py-5">No Data</h5>
+            }
+
+        }
+    </div>
+</div>
+
+@if(modal.isOpen('modalBox'+exportid)){
+  <div class="modal custom-modal" [class.show]="modal.isOpen('modalBox'+exportid)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div class="form-header modal-header-title text-start mb-0" [ngClass]="memoNote ? '':'bg-danger'">
+            @if(memoNote){
+              {{modalTitle}}
+            }
+            @else{
+              &nbsp;
+            }
+          </div>
+          <button type="button" class="btn-close text-white" (click)="closeModal()" aria-label="Close">
+            
+          </button>
+        </div>
+        <div class="modal-body mb-3 overflow-auto">
+          @if(memoNote){
+            <textarea class="form-control" rows="8" disabled [(ngModel)]="modalMessage"></textarea>
+          }
+          @else {
+            <label>{{modalMessage}}</label>
+          }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+@if(modal.isOpen('modalDimension'+recordStamp)){
+  <div class="modal custom-modal" [class.show]="modal.isOpen('modalDimension'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <div class="form-header modal-header-title text-start mb-0">
+            Dimensions
+          </div>
+          <button type="button" class="btn-close text-white" (click)="closeModal()" aria-label="Close">
+            
+          </button>
+        </div>
+        <div class="modal-body mb-3 overflow-auto">
+            @if(openDimension){
+                <div class="pt-1" style="max-height: 400px; overflow: auto;">
+                    <dimensions-page [_readOnly]="readOnly()" [wfstatus]="wfStatus()" [companyID]="companyID()" [menuId]="menuid()" [recordId]="subRecordID" [recordList]="recordList" [_subwfEnabledStatus]="wfEnabledStatus()"></dimensions-page>
+                </div>
+            }
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if(modal.isOpen('actionModal'+recordStamp)){
+  <div class="modal custom-modal" [class.show]="modal.isOpen('actionModal'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h5 class="text-center py-5">{{modalMessage}}</h5>
+        </div>
+        <div class="modal-footer">
+            @if(!hideProceed()){<button type="button" class="btn border border-secondary-subtle btn-success me-2" (click)="proceedAction('action')">OK</button>}
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">{{!hideProceed() ? 'Cancel':'OK'}}</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(callingMenu()){<calling-menu [ids]="'menuModal'+stringID" [type]="'callingMenu'" [mrEnabledStatus]="submrEnabledStatus()" [pmenuid]="menuid()" [stringID]="stringID" [_wfEnabledStatus]="wfEnabledStatus()" [readonly]="readOnly()" [callingMenuData]="callingMenuData" [recordList]="recordList" [companyID]="companyID()" [page]="page" (modalEmit)="modalEmitEvent($event)" (deletedRecord)="deletedRecordEvent($event)"></calling-menu>}

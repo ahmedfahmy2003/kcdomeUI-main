@@ -1,0 +1,280 @@
+<div class="py-3 overflow-auto">
+    <div class="row mx-0 mb-3">
+        <div class="col-6">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchNote" checked>
+                <label class="form-check-label" for="flexSwitchNote">Current</label>
+            </div>
+        </div>
+        
+        @if((enableNote() || wfstatus() !== 'Approved') && (!page || (page && page.menuType !== 'View'))){<div class="col-6 text-end">
+            @if(!readOnly() || enableNote()){<button class="btn bg-white border border-secondary-subtle px-2 py-1" (click)="showHideNew()"><i class="fa me-2 text-secondary" [ngClass]="addNewSection() ? 'fa-circle-minus':'fa-circle-plus'"></i> <span class="small text-secondary">Add</span></button>}
+        </div>}
+    </div>
+    @if(addNewSection()){
+        <div class="my-3 bg-light border pt-2 pb-3">
+            <div class="row mx-0">
+                <div class="col-3">
+                    <label>Note Type:</label>
+                    <select class="form-select rounded-0 b-value" [(ngModel)]="noteCategory">
+                    @for(list of categoryList; track list){
+                      <option [value]="list.ID">{{list.Description}}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-3">
+                    <label>Followup Date:</label>
+                    <div class="input-group add-field">
+                        <input class="form-control" matInput [matDatepicker]="picker" readonly [(ngModel)]="followupDate" [value]="date.value" (dateChange)="addEvent('change', $event)" />
+                        <span class="input-group-text cursor-pointer">
+                          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <label class="form-label">Description:</label>
+                    <textarea class="form-control" rows="3" [(ngModel)]="description"></textarea>
+                </div>
+                <div class="col-12 text-end my-3">
+                    <button class="btn border border-secondary-subtle bg-danger text-white fw-normal" (click)="closeSection()">Cancel</button>
+                    <button class="btn border border-secondary-subtle ms-3 bg-primary text-white fw-normal" (click)="addNotes(false)">Add</button>
+                    <button class="btn border border-secondary-subtle ms-3 bg-success text-white fw-normal" (click)="addNotes(true)">Add (Private)</button>
+                </div>
+            </div> 
+        </div>
+    }
+    <div class="overflow-auto">
+    <table class="table table-tranx">
+        <thead class="border-top table-light">
+            <tr>
+                <th class="text-center">
+                   <i class="fa fa-arrows-rotate cursor-pointer border-0" (click)="getNotes()"></i>
+                </th>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Private
+                </th>
+                <th>
+                    Completed
+                </th>
+                <th>
+                    Note Type
+                </th>
+                @if(notesCount === 0){
+                    <th width="100">
+                        Description
+                    </th>
+                }
+                @else{
+                    <th width="300">
+                        Description
+                    </th>
+                }
+                <th>
+                    Created Date
+                </th>
+                <th>
+                    Created By
+                </th>
+                <th>
+                    Reminder Date
+                </th>
+                <th>
+                    Assigned To
+                </th>
+                <th>
+                    To Groups
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(notesCount === 0){
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                    
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            }
+            @else{
+                @for (item of _notesList(); track item; let index = $index) {
+                    <tr>
+                        <td class="text-wrap">
+                            <!--<i class="text-danger fa fa-trash-can cursor-pointer" (click)="deleteRecord(item.ID)"></i>-->
+                            @if((enableNote() || wfstatus() !== 'Approved') && (!page || (page && page.menuType !== 'View'))){
+                                <div class="d-flex">
+                                @if(!readOnly() || enableNote()){<span class="ms-2 me-3 cursor-pointer" (click)="editNote(item, 'editModalNote')"><i class="fa fa-edit small text-primary cursor-pointer"></i></span>
+                                <span (click)="editNote(item, 'deleteModalNote')"><i class="fa fa-trash-can small text-danger cursor-pointer"></i></span>}
+                                </div>
+                            }
+                        </td>                
+                        <td>
+                            {{item.ID}}
+                        </td>
+                        <td class="text-wrap">
+                            @if(item.PrivateFlag){
+                                <i class="fa fa-square-check fa-regular text-danger"></i>
+                            }
+                            @else{
+                                <i class="fa fa-square fa-regular text-secondary"></i>
+                            }
+                        </td>
+                        <td class="text-wrap">
+                            @if(item.Completed){
+                                <i class="fa fa-check fa-xl text-success"></i> at {{item.CompletedDate | date:  dateTimeFormat}}
+                            }
+                        </td>
+                        <td class="text-wrap m-100">
+                            {{item.NoteType}}
+                        </td>
+                        <td class="text-wrap">
+                            <div style="height:20px; overflow: hidden; cursor: pointer;" (click)="openDescription(item.Description)">{{item.Description}}</div>
+                        </td>
+                        <td class="text-wrap m-100">
+                             {{item.CreatedDate | date: dateTimeFormat}}
+                        </td>
+                        <td class="text-truncate m-100">
+                            {{item.CreatedBy}}
+                        </td>
+                        <td class="text-truncate m-100">
+                            {{item.ReminderDate | date: dateFormat}}
+                        </td>
+                        <td class="text-truncate m-100">
+                          {{item.AssignedToUsers}}
+                        </td>
+                        <td class="text-wrap m-100">
+                            {{item.AssignedToUserGroups}}
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    </div>
+</div>
+
+@if(modal.isOpen('deleteModalNote'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('deleteModalNote'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <h4 class="text-center mb-3">Are you sure you want to delete the note?</h4>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-success me-2" (click)="deleteConfirm(itemid)">Ok</button>
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+@if(modal.isOpen('desc'+recordStamp)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('desc'+recordStamp)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body overflow-auto">
+            <p style="height: 300px; overflow-y: auto;">{{descText}}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn border border-secondary-subtle btn-danger" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}
+
+@if(modal.isOpen('editModalNote'+recordId)){
+<div class="modal custom-modal" [class.show]="modal.isOpen('editModalNote'+recordId)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+            <div class="form-header modal-header-title text-start mb-0">
+              <h6 class="">Edit Note: {{itemid}}</h6>
+            </div>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">
+              
+            </button>
+          </div>
+        <div class="modal-body overflow-auto">
+            <div class="row mx-0">
+                <div class="col-6">
+
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6 d-flex justify-content-end form-check form-switch ps-3 ms-0" [ngClass]="editCompleted ? 'col-6':'col-12'">
+                            <input type="checkbox" role="switch" [disabled]="editCompleted" [(ngModel)]="editPrivateFlag" id="setas" class="form-check-input ms-0 ps-0"> <label for="setas" class="ms-2 form-check-label cursor-pointer text-dark fw-bolder">Private</label>
+                        </div>
+                        @if(editCompleted){<div class="col-6 d-flex justify-content-end form-check form-switch ps-3 ms-0">
+                            <input type="checkbox" role="switch" id="reopen" class="form-check-input ms-0 ps-0" (change)="updateNotes(false)"> <label for="reopen" class="ms-2 form-check-label cursor-pointer text-dark fw-bolder">Re-Open</label>
+                        </div>}
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label>Note Type:</label>
+                    <select class="form-select rounded-0 b-value" [disabled]="editCompleted" [(ngModel)]="editnoteCategory">
+                    @for(list of categoryList; track list){
+                      <option [value]="list.ID">{{list.Description}}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-4">
+                    <label>Followup Date:</label>
+                    <div class="input-group add-field">
+                        <input class="form-control" [disabled]="editCompleted" matInput [matDatepicker]="picker" readonly [(ngModel)]="editnoteDate" [value]="editnoteDate" (dateChange)="addEvent('edit', $event)" />
+                        <span class="input-group-text cursor-pointer">
+                          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                          <mat-datepicker #picker></mat-datepicker>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <label class="form-label">Description:</label>
+                    <textarea class="form-control" rows="3" [disabled]="editCompleted" [(ngModel)]="editdescription"></textarea>
+                </div>
+                <div class="col-12 mt-1 text-end">
+                    Created Date: {{editCreatedDate | date: dateTimeFormat}}, by {{editCreatedBy}}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            @if(!editCompleted){<button class="btn border border-secondary-subtle bg-success text-white fw-normal" (click)="updateNotes(true)">Set Completed</button>
+            <button class="btn border border-secondary-subtle ms-3 bg-primary text-white fw-normal" (click)="updateNotes(false)">Save</button>}
+            <button class="btn border border-secondary-subtle ms-3 bg-danger text-white fw-normal" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+</div> 
+}

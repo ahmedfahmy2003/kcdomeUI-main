@@ -1,0 +1,100 @@
+.control-btns{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    button{
+        margin: 15px 10px;
+        box-shadow: 0 0 6px 4px rgba(208, 215, 209, 1);
+    }
+}
+.btn-circle.btn-xl{
+    width: 70px;
+    height: 70px;
+    padding: 10px 15px;
+    font-size: 24px;
+    line-height: 50px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+}
+
+.card + .card:not(.card .card + .card) {
+    margin-top: 0;
+}
+
+.mh-470 {
+    max-height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.bg-even{
+    background-color: #f0f0f0;
+}
+
+.grid-area{
+    background-image: repeating-linear-gradient(0deg,transparent,transparent 70px,#5b5e6d 70px,#5b5e6d 71px),repeating-linear-gradient(-90deg,transparent,transparent 70px,#5b5e6d 70px,#5b5e6d 71px);
+    background-size: 71px 71px;
+    background-color: #fff;
+    outline: #5b5e6d dotted 2px;
+    position: relative;
+    min-width: 100%;
+    -webkit-transition: 2s;
+    transition: 2s;
+    min-height: 3100px;
+    display: flow-root;
+    direction: ltr;
+    overflow: auto;
+}
+
+.grid-area-freeze{
+    background-color: #fff;
+    position: relative;
+    min-width: 100%;
+    -webkit-transition: 2s;
+    transition: 2s;
+    min-height: 100vh;
+    display: flow-root;
+    direction: ltr;
+    overflow: auto;
+    border: 1px solid #dbdfea;
+}
+
+.grid-box {
+    width: 400px;
+    height: 200px;
+    border: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: move;
+    background: #fff;
+    border-radius: 4px;
+    margin-right: 25px;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    resize: both;
+    overflow: auto;
+  }
+  
+  .grid-box:active {
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  }
+
+
+  .grid-area-freeze{
+    .grid-box {
+        resize: none;
+        cursor: auto;
+    }
+  }
+
+  .d-list{
+    width: 24px;
+    height: 24px;
+  }
+.card{
+    border: 1px solid #dbdfea;
+}

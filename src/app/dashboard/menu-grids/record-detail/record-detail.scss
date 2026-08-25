@@ -1,0 +1,62 @@
+.nav-tabs .nav-link{
+    padding-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.nav-tabs .nav-item{
+    padding-right: 0.75rem;
+}
+
+.badge.bg-warning{
+    background-color: #09c2de!important;
+    border-color: #09c2de!important;
+}
+
+    .nav-tabs .nav-link {
+        font-size: 0.8rem;
+    }
+@media (max-width: 1200px) {
+     .nav-tabs .nav-link {
+        font-size: 0.7rem;
+    }
+}
+
+.progress-wrapper {
+  width: 100%;
+  max-width: 420px;
+  font-family: system-ui, sans-serif;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  background-color: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #22c55e;
+  border-radius: inherit;      /* ✅ important */
+  transition: width 0.3s ease; /* ✅ works now */
+}
+
+.progress-text {
+  position: absolute;          /* ✅ separate layer */
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+  pointer-events: none;
+}
