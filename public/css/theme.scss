@@ -208,6 +208,32 @@ svg {
     height: 36px !important;
 }
 
+body.dark-mode {
+    .mat-expansion-panel {
+        background: #101924 !important;
+        color: #dbdfea !important;
+        border: 1px solid #203247;
+        box-shadow: none;
+    }
+
+    .mat-expansion-panel-header,
+    .mat-expansion-panel-header.mat-expanded,
+    .mat-expansion-panel-header:hover {
+        background: #101924 !important;
+        color: #dbdfea !important;
+    }
+
+    .mat-expansion-panel-content,
+    .mat-expansion-panel-body {
+        background: #101924 !important;
+        color: #dbdfea !important;
+    }
+
+    .mat-expansion-indicator::after {
+        color: #dbdfea !important;
+    }
+}
+
 .modal-header .btn-close{
     font-size: 10px;
 }
