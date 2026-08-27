@@ -61,6 +61,11 @@
     border: 1px solid #dbdfea;
 }
 
+:host-context(body.dark-mode) .grid-area-freeze {
+    background-color: #101924;
+    border-color: #203247;
+}
+
 .grid-box {
     width: 400px;
     height: 200px;
