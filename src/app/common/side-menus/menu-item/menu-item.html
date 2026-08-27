@@ -3,13 +3,13 @@
         <div class="nk-menu-link d-flex flex-grow-1" (click)="openPage(editableItem(), '')">
             <span class="nk-menu-icon">
                 @if(editableItem().icon){
-                    <!-- @if((editableItem().icon).startsWith('iVBORw0KGgo')){
-                        <img src="data:image/png;base64,{{editableItem().icon}}" />
+                    @if((editableItem().icon).startsWith('iVBORw0KGgo')){
+                        <em class="{{editableItem().icon}}"></em>
                     }
                     @else{
-                        <img src="data:image/svg+xml;base64,{{editableItem().icon}}" />
-                    } -->
-                        <em class="icon ni ni-pie"></em>
+                        <!-- <img src="data:image/svg+xml;base64,{{editableItem().icon}}" /> -->
+                         <em class="{{editableItem().icon}}"></em>
+                    }
                 }
                 @else {
                     @if(editableItem().children.length > 0){
