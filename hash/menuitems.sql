@@ -15,7 +15,7 @@ WHERE MenuType = 'Menu' AND MenuName = 'Fixed Assets';
 
 UPDATE Sys_Menus
 SET IconFont = 'icon ni ni-users'
-WHERE MenuType = 'Menu' AND MenuName = 'Human Resources';
+WHERE MenuType = 'Menu' AND MenuName = 'Human Resource';
 
 UPDATE Sys_Menus
 SET IconFont = 'icon ni ni-user-check'
@@ -34,7 +34,7 @@ SET IconFont = 'icon ni ni-growth'
 WHERE MenuType = 'Menu' AND MenuName = 'Sales';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-shop'
+SET IconFont = 'icon ni ni-cart'
 WHERE MenuType = 'Menu' AND MenuName = 'Retail';
 
 UPDATE Sys_Menus
@@ -50,7 +50,7 @@ SET IconFont = 'icon ni ni-laptop'
 WHERE MenuType = 'Menu' AND MenuName = 'Information Technology';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-tools'
+SET IconFont = 'icon ni ni-building'
 WHERE MenuType = 'Menu' AND MenuName = 'Manufacturing';
 
 UPDATE Sys_Menus
@@ -58,12 +58,12 @@ SET IconFont = 'icon ni ni-users-fill'
 WHERE MenuType = 'Menu' AND MenuName = 'CRM';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-list-check'
-WHERE MenuType = 'Menu' AND MenuName = 'PM';
+SET IconFont = 'icon ni ni-briefcase'
+WHERE MenuType = 'Menu' AND MenuName = 'Projects';
 
 UPDATE Sys_Menus
 SET IconFont = 'icon ni ni-pie'
-WHERE MenuType = 'Menu' AND MenuName = 'Balanced Scorecard';
+WHERE MenuType = 'Menu' AND MenuName = 'BSC';
 
 UPDATE Sys_Menus
 SET IconFont = 'icon ni ni-upload-cloud'
@@ -79,7 +79,7 @@ WHERE MenuType = 'Menu' AND MenuName = 'Vendor Portal';
 
 UPDATE Sys_Menus
 SET IconFont = 'icon ni ni-percent'
-WHERE MenuType = 'Menu' AND MenuName = 'Taxes';
+WHERE MenuType = 'Menu' AND MenuName = 'Tax';
 
 UPDATE Sys_Menus
 SET IconFont = 'icon ni ni-reports'
