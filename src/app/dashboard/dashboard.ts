@@ -5,6 +5,7 @@ import { SidebarService } from '../services/sidebar/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { Page } from './page/page';
 import { StorageService } from '../services/auth/storage.service';
+import { ThemeService } from '../services/common/theme.service';
 
 
 @Component({
@@ -16,6 +17,8 @@ import { StorageService } from '../services/auth/storage.service';
 })
 export class Dashboard {
   hasHover = signal(false);
+  readonly themeService = inject(ThemeService);
+
   constructor(public sidebar: SidebarService){
     
   }

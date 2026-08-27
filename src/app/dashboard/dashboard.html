@@ -1,6 +1,15 @@
 
         <div class="nk-main bg-lighter">
-            <div class="nk-sidebar nk-sidebar-fixed is-dark" [ngClass]="sidebar.isExpanded() ? (hasHover() ? 'is-compact has-hover' : 'is-compact') : sidebar.isExpandedm() ? 'nk-sidebar-active':''">
+            <div
+                class="nk-sidebar nk-sidebar-fixed"
+                [ngClass]="{
+                    'is-dark': themeService.mode() === 'dark',
+                    'is-light': themeService.mode() !== 'dark',
+                    'is-compact': sidebar.isExpanded(),
+                    'has-hover': sidebar.isExpanded() && hasHover(),
+                    'nk-sidebar-active': sidebar.isExpandedm()
+                }"
+            >
                 <app-side-menus (hoverin)="hoverEvt($event)"></app-side-menus>
             </div>
             <div class="nk-wrap">
