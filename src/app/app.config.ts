@@ -9,12 +9,17 @@ import { provideToastr } from 'ngx-toastr';
 import { httpInterceptor } from './http.interceptor';
 import { AppService } from './services/common/common.service';
 import { cancelInterceptor } from './cancel.interceptor';
+import { ThemeService } from './services/common/theme.service';
 
 function initApp() {
   const appService = inject(AppService);
   return appService.loadConfig(); // <-- ensures config is loaded before app runs
 }
 
+function initTheme() {
+  const themeService = inject(ThemeService);
+  return () => themeService.initializeTheme();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,6 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideAppInitializer(initApp),
+    provideAppInitializer(initTheme),
     provideHttpClient(withInterceptors([httpInterceptor, cancelInterceptor])),
     provideRouter(routes),
     provideStore(reducers, { metaReducers }),
@@ -32,4 +38,3 @@ export const appConfig: ApplicationConfig = {
     })
   ]
 };
-

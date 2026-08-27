@@ -10,12 +10,14 @@ export class ThemeService {
   private readonly document = inject(DOCUMENT);
   private readonly storageKey = 'kc-theme-mode';
 
-  readonly mode = signal<ThemeMode>('light');
+  readonly mode = signal<ThemeMode>(this.resolveInitialMode());
+
+  constructor() {
+    this.syncThemeToDom(this.mode());
+  }
 
   initializeTheme(): void {
-    const storedMode = this.readStoredMode();
-    const preferredMode = storedMode ?? this.getSystemPreference();
-    this.applyTheme(preferredMode);
+    this.syncThemeToDom(this.mode());
   }
 
   toggleTheme(): void {
@@ -23,14 +25,22 @@ export class ThemeService {
   }
 
   private applyTheme(mode: ThemeMode): void {
+    this.mode.set(mode);
+    this.syncThemeToDom(mode);
+    this.document.defaultView?.localStorage.setItem(this.storageKey, mode);
+  }
+
+  private syncThemeToDom(mode: ThemeMode): void {
     const body = this.document.body;
     const html = this.document.documentElement;
 
-    this.mode.set(mode);
-    body.classList.toggle('dark-mode', mode === 'dark');
-    body.setAttribute('data-bs-theme', mode);
+    body?.classList.toggle('dark-mode', mode === 'dark');
+    body?.setAttribute('data-bs-theme', mode);
     html.setAttribute('data-bs-theme', mode);
-    this.document.defaultView?.localStorage.setItem(this.storageKey, mode);
+  }
+
+  private resolveInitialMode(): ThemeMode {
+    return this.readStoredMode() ?? this.getSystemPreference();
   }
 
   private readStoredMode(): ThemeMode | null {
