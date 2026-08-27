@@ -18,7 +18,7 @@ function initApp() {
 
 function initTheme() {
   const themeService = inject(ThemeService);
-  return () => themeService.initializeTheme();
+  themeService.initializeTheme();
 }
 
 export const appConfig: ApplicationConfig = {

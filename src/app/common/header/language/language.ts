@@ -33,15 +33,15 @@ export class Language{
         const theme = document.getElementById('theme');
         const kcdome = document.getElementById('kcdome');
         this.langid = id;
+        kcdome?.classList.add('nk-body');
         if(id === 2){
             theme?.setAttribute('href','css/dashlite.rtl.css');
             kcdome?.setAttribute('dir','rtl');
-            kcdome?.setAttribute('class','has-rtl nk-body');
+            kcdome?.classList.add('has-rtl');
         }else{
             theme?.setAttribute('href','css/dashlite.css');
             kcdome?.removeAttribute('dir');
-            kcdome?.removeAttribute('class');
-            kcdome?.setAttribute('class','nk-body');
+            kcdome?.classList.remove('has-rtl');
         }
     }
 

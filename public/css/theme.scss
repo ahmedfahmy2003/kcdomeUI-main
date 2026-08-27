@@ -81,6 +81,13 @@
       border-top: 3px solid #6576ff;
     }
 
+    body.dark-mode .kc-dropdown-menu {
+      background: #18212d;
+      border-color: #263547;
+      border-top-color: #6576ff;
+      box-shadow: 0 3px 20px 1px rgba(0, 0, 0, 0.4);
+    }
+
     .has-rtl  .kc-dropdown-menu {
         right: auto;
         left: 5%;
