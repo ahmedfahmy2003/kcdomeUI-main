@@ -4,6 +4,7 @@ import { SidebarService } from "../../services/sidebar/sidebar.service";
 import { Language } from "./language/language";
 import { Usermenu } from "./user-menu/user-menu";
 import { Notification } from "./notification/notification";
+import { ThemeService } from "../../services/common/theme.service";
 
 @Component({
     selector: 'app-header',
@@ -15,10 +16,13 @@ import { Notification } from "./notification/notification";
 
 export class Header {
     reportAvailable = signal<boolean>(false);
+    readonly themeService = inject(ThemeService);
+
     constructor(public sidebar: SidebarService){
 
     }
 
-      
- 
+    toggleTheme(): void {
+        this.themeService.toggleTheme();
+    }
 }

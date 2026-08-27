@@ -7,6 +7,7 @@ import { licenseKey } from '../devextreme-license';
 import config from 'devextreme/core/config';
 import { Loader } from './common/loader/loader';
 import { AppService } from './services/common/common.service';
+import { ThemeService } from './services/common/theme.service';
 if (licenseKey) {
   config({ licenseKey });
 }
@@ -23,7 +24,7 @@ export class App implements OnInit {
   isOnline = signal(navigator.onLine);
   toastmsg: import("ngx-toastr").ActiveToast<any>;
 
-  constructor(private auth: AuthService, private _http: AppService, private toastr: ToastrService, private cancelService: RequestCancelService){
+  constructor(private auth: AuthService, private _http: AppService, private toastr: ToastrService, private cancelService: RequestCancelService, private themeService: ThemeService){
     window.addEventListener('online', () => this.isOnline.set(true));
     window.addEventListener('offline', () => this.isOnline.set(false));
 
@@ -44,6 +45,7 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
+    this.themeService.initializeTheme();
     setInterval(()=>{
       this._http.getSignalrURL('ping').subscribe({
                 next:(_res)=>{

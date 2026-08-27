@@ -17,6 +17,18 @@
                                    <!--- <li>
                                         <app-report-list></app-report-list>
                                     </li>-->
+                                    <li class="theme-toggle-item d-none d-sm-block">
+                                        <button
+                                            type="button"
+                                            class="theme-toggle-button"
+                                            [attr.aria-label]="themeService.mode() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+                                            [attr.aria-pressed]="themeService.mode() === 'dark'"
+                                            (click)="toggleTheme()"
+                                        >
+                                            <em class="icon" [class.ni-sun-fill]="themeService.mode() === 'dark'" [class.ni-moon-fill]="themeService.mode() !== 'dark'" [class.ni]="true"></em>
+                                            <span>{{ themeService.mode() === 'dark' ? 'Light' : 'Dark' }}</span>
+                                        </button>
+                                    </li>
                                     <li class="language-dropdown d-none d-sm-block me-n1">
                                         <app-language></app-language>
                                     </li>
