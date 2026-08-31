@@ -188,6 +188,7 @@ export class SideMenus implements AfterViewInit, OnDestroy {
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(link.href);
+      this.closeMobileMenu();
     }
     else{
       if(page === 'dashboard'){
@@ -206,7 +207,7 @@ export class SideMenus implements AfterViewInit, OnDestroy {
       }
       this.store.dispatch(StoreAction.addPage({menu: items}));
       this.store.dispatch(StoreAction.activePage({active: items.id}));
-      //this.toggleMobileIcon();
+      this.closeMobileMenu();
     }
   }
 
@@ -225,6 +226,7 @@ export class SideMenus implements AfterViewInit, OnDestroy {
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(link.href);
+      this.closeMobileMenu();
     }
     else{
       if(page.PrerequisiteMenuID){
@@ -238,9 +240,14 @@ export class SideMenus implements AfterViewInit, OnDestroy {
       }
       this.store.dispatch(StoreAction.addPage({menu: items}))
       this.store.dispatch(StoreAction.activePage({active: items.id}))
+      this.closeMobileMenu();
     }
+  }
 
-    //this.toggleMobileIcon();
+  private closeMobileMenu(): void {
+    if (this.sidebar.isExpandedm()) {
+      this.sidebar.collapse();
+    }
   }
 
 
