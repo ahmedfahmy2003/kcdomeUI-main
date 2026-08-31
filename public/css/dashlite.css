@@ -31569,11 +31569,11 @@ body.nav-shown {
   padding: 0.625rem 40px 0.625rem 24px;
   color: #b8c1d0;
   font-family: Nunito, sans-serif;
-  /* font-weight: 700; */
+  font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.01em;
   text-transform: none;
-  line-height: 1.5rem;
+  line-height: 1.7rem;
 }
 .nk-menu-link:hover, .active > .nk-menu-link {
   color: #7f8dff;
