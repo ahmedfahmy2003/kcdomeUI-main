@@ -24,6 +24,11 @@ import { ApiResponse } from '../../shared/interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PaginationControls } from '../pagination-controls/pagination-controls';
 
+type ExternalPageRequest = {
+  token: number;
+  page: number;
+};
+
 @Component({
     selector: 'menu-grid-tabs',
     standalone: true,
@@ -143,6 +148,7 @@ export class MenuGridTabs implements OnInit{
   @Output() menusChange = new EventEmitter;
   @Output() addRecordemit = new EventEmitter;
   totalRecords = output<any>();
+  @Output() paginationState = new EventEmitter<any>();
   public resultsLength = signal<number>(0);
   public fixedColumns: any = [];
   public currentPage = signal<number>(1);
@@ -150,6 +156,8 @@ export class MenuGridTabs implements OnInit{
   public pageSizeOption: number[] = [10, 30, 100, 500, 1000];
   public goTo: number = 0;
   public totalPages = signal<number>(0);
+  externalPageRequest = input<ExternalPageRequest | null>(null);
+  lastExternalPageToken = signal<number>(0);
   public openRecords: any;
   public recordAdd: boolean = false;
   activeRecord: any = 0;
@@ -276,6 +284,16 @@ export class MenuGridTabs implements OnInit{
         this.menuAccess(this.jobCompleted().page.id);
       }
     })
+
+    effect(() => {
+      const request = this.externalPageRequest();
+      if (!request || request.token === this.lastExternalPageToken()) {
+        return;
+      }
+
+      this.lastExternalPageToken.set(request.token);
+      this.goToPage(request.page);
+    });
 
     this.baseurl = this._http.geturl();
     if(this.closeDetailsSub){
@@ -946,6 +964,7 @@ export class MenuGridTabs implements OnInit{
       this.sysList.set(newSorted);
 
       this.updateGoto();
+      this.emitPaginationState();
 
       if(this.pageType === 'dimensions' && this.resultsLength() === 1 && this.autoOpen){
         this.showSubRecord( this.dataSource()[0].ID, 1,'details','details')
@@ -994,6 +1013,8 @@ export class MenuGridTabs implements OnInit{
       this.noData.set(true);
       this.rowCount.emit(0);
       this.resultsLength.set(0);
+      this.updateGoto();
+      this.emitPaginationState();
 
      this.fieldVal.forEach((e: any) => {
         if(e.FieldName && e.Visible === true){
@@ -1282,10 +1303,13 @@ export class MenuGridTabs implements OnInit{
             }
           })
           this.updateGoto();
+          this.emitPaginationState();
         }else{
           this.noData.set(true);
           this.resultsLength.set(0);
           this.dataSource.set([]);
+          this.updateGoto();
+          this.emitPaginationState();
           
           this.fieldVal.forEach((e: any)=>{ 
             
@@ -1356,6 +1380,16 @@ export class MenuGridTabs implements OnInit{
   updateGoto() {
     this.goTo = (this.currentPage() || 0) + 1;
     this.totalPages.set(Math.ceil(this.resultsLength() / this.pageSize));
+  }
+
+  emitPaginationState() {
+    this.paginationState.emit({
+      currentPage: this.currentPage(),
+      totalPages: this.totalPages(),
+      totalItems: this.resultsLength(),
+      pageSize: this.pageSize,
+      currentItemCount: this.dataSource().length
+    });
   }
 
   goToPage(page: number) {

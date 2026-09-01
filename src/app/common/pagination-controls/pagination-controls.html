@@ -1,23 +1,25 @@
-<div class="pagination-mobile d-flex d-md-none align-items-center justify-content-between">
-    @if(showSummary()){
-        <div class="pagination-mobile-summary">
-            @if(totalItems()){
-                {{ displayStart | number }}-{{ displayEnd | number }} of {{ totalItems() | number }}
-            }
-        </div>
-    }
+@if(showMobile()){
+    <div class="pagination-mobile d-flex d-md-none align-items-center justify-content-between">
+        @if(showSummary()){
+            <div class="pagination-mobile-summary">
+                @if(totalItems()){
+                    {{ displayStart | number }}-{{ displayEnd | number }} of {{ totalItems() | number }}
+                }
+            </div>
+        }
 
-    @if(totalPages() > 1){
-        <div class="pagination-mobile-actions d-flex align-items-center">
-            <button type="button" class="pagination-mobile-button" [disabled]="currentPage() === 1" (click)="goToPrevious()" aria-label="Previous page">
-                <em class="icon ni ni-chevron-left"></em>
-            </button>
-            <button type="button" class="pagination-mobile-button" [disabled]="currentPage() === totalPages()" (click)="goToNext()" aria-label="Next page">
-                <em class="icon ni ni-chevron-right"></em>
-            </button>
-        </div>
-    }
-</div>
+        @if(totalPages() > 1){
+            <div class="pagination-mobile-actions d-flex align-items-center">
+                <button type="button" class="pagination-mobile-button" [disabled]="currentPage() === 1" (click)="goToPrevious()" aria-label="Previous page">
+                    <em class="icon ni ni-chevron-left"></em>
+                </button>
+                <button type="button" class="pagination-mobile-button" [disabled]="currentPage() === totalPages()" (click)="goToNext()" aria-label="Next page">
+                    <em class="icon ni ni-chevron-right"></em>
+                </button>
+            </div>
+        }
+    </div>
+}
 
 <div class="pagination-desktop d-none d-md-block">
     <div class="nk-block-between-md g-3">

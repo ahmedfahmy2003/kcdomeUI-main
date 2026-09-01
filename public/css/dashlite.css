@@ -16036,13 +16036,6 @@ a:hover .btn-trigger:before {
   .card-head.ui-v2 .card-tools-nav li a {
     padding-bottom: 1rem;
   }
-  .card-stretch {
-    margin-left: -18px;
-    margin-right: -18px;
-    border-left: 0 !important;
-    border-right: 0 !important;
-    border-radius: 0 !important;
-  }
 }
 @media (min-width: 576px) {
   .card-inner {

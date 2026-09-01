@@ -17,6 +17,7 @@ export class PaginationControls {
   totalItems = input<number>(0);
   pageSize = input<number>(10);
   currentItemCount = input<number>(0);
+  showMobile = input<boolean>(true);
   showPageNumbers = input<boolean>(false);
   showSummary = input<boolean>(true);
   showGoto = input<boolean>(true);

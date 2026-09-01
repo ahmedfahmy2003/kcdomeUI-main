@@ -10,6 +10,7 @@ import { MenuDashbaord } from "../menu-dashboard/menu-dashboard";
 import { GridTabs } from "../../common/grid-tabs/grid-tabs";
 import { CommonModule } from "@angular/common";
 import { LoaderService } from "../../services/common/loader.service";
+import { PaginationControls } from "../../common/pagination-controls/pagination-controls";
 import * as StoreAction from "../../services/common/store/store.action";
 import { ApiResponse } from "../../shared/interface";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -18,7 +19,7 @@ import { every } from "rxjs";
 @Component({
   selector: 'menu-grids',
   standalone: true,
-  imports: [CommonModule, MenuGridTabs, GridTabs, FormsModule, MenuDashbaord],
+  imports: [CommonModule, MenuGridTabs, GridTabs, FormsModule, MenuDashbaord, PaginationControls],
   templateUrl: './menu-grids.html',
   styleUrl: './menu-grids.scss'
 })
@@ -67,6 +68,8 @@ export class MenuGrids {
   pageType: string = 'mainmenu';
   reportType = signal<string>('pdf');
   totalRecords = signal<number>(0);
+  mobilePagination = signal<any>(null);
+  mobilePaginationRequest = signal<{ token: number; page: number } | null>(null);
   recordStamp = new Date().getTime();
   childRefs = new Map<number, ComponentRef<RecordDetail>>();
   childRefsG = new Map<number, ComponentRef<MenuGridTabs>>();
@@ -477,6 +480,10 @@ export class MenuGrids {
       this.totalRecordsEvt(event);
     })
 
+    childRef.instance.paginationState.subscribe((event: any) => {
+      this.paginationStateEvt(event);
+    })
+
     childRef.instance.useraccessemit.subscribe((event: any)=>{
       this.useraccessevent(event);
     })
@@ -486,6 +493,14 @@ export class MenuGrids {
 
   totalRecordsEvt(event: any){
     this.totalRecords.set(event);
+  }
+
+  paginationStateEvt(event: any){
+    this.mobilePagination.set(event);
+  }
+
+  mobilePageChange(page: number){
+    this.mobilePaginationRequest.set({ token: Date.now(), page });
   }
 
   tabName(e: string){

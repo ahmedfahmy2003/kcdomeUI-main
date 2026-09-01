@@ -37,31 +37,6 @@
                         @if(menuaccess){
                             <div class="card-inner position-relative card-tools-toggle">
                                 <div class="card-title-group">
-                                    <div class="card-tools">
-                                        <ul class="btn-toolbar gx-1">
-                                            <li>
-                                                <div class="kc-dropdown-wrap">
-                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="toggleCount('viewType')">
-                                                        <em class="icon ni ni-eye"></em>
-                                                    </span>
-                                                    @if(openMenuId() === 'viewType'){
-                                                        <div class="kc-dropdown-menu rsett">
-                                                            <ul class="link-check">
-                                                                <li><span>View</span></li>
-                                                                <li [ngClass]="tabType() === 'table' ? 'active':''" (click)="tabTypeEvt('table')"><a class="cursor-pointer">Overview</a></li>
-                                                                <li [ngClass]="tabType() === 'pivot' ? 'active':''" (click)="tabTypeEvt('pivot')"><a class="cursor-pointer">Pivot</a></li>
-                                                                @if(menuaccess && menuaccess.TreeMenu){
-                                                                    <li [ngClass]="tabType() === 'tree' ? 'active':''" (click)="tabTypeEvt('tree')"><a class="cursor-pointer">Tree</a></li>
-                                                                }
-                                                            </ul>
-                                                        </div>
-                                                    }
-                                                </div>
-                                            </li>
-                                            <li class="btn-toolbar-sep"></li>
-                                        </ul>
-                                    </div>
-                                    
                                     <div class="card-tools flex-grow-1">
                                         <ul class="btn-toolbar gx-1">
                                             @if(setApprovebtn()){
@@ -95,6 +70,25 @@
                                                 <span class="btn btn-sm btn-icon btn-trigger cursor-pointer">
                                                     <em class="icon ni ni-filter-fill" (click)="filterToggle()"></em>
                                                 </span>
+                                            </li>
+                                            <li>
+                                                <div class="kc-dropdown-wrap">
+                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="toggleCount('viewType')">
+                                                        <em class="icon ni ni-eye"></em>
+                                                    </span>
+                                                    @if(openMenuId() === 'viewType'){
+                                                        <div class="kc-dropdown-menu rsett">
+                                                            <ul class="link-check">
+                                                                <li><span>View</span></li>
+                                                                <li [ngClass]="tabType() === 'table' ? 'active':''" (click)="tabTypeEvt('table')"><a class="cursor-pointer">Overview</a></li>
+                                                                <li [ngClass]="tabType() === 'pivot' ? 'active':''" (click)="tabTypeEvt('pivot')"><a class="cursor-pointer">Pivot</a></li>
+                                                                @if(menuaccess && menuaccess.TreeMenu){
+                                                                    <li [ngClass]="tabType() === 'tree' ? 'active':''" (click)="tabTypeEvt('tree')"><a class="cursor-pointer">Tree</a></li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </li>
                                             <li>
                                                 <div class="kc-dropdown-wrap">
@@ -132,6 +126,7 @@
                                             [totalItems]="resultsLength()"
                                             [pageSize]="pageSize"
                                             [currentItemCount]="dataSource().length"
+                                            [showMobile]="false"
                                             [showPageNumbers]="!showFilter"
                                             [showGoto]="totalPages() > 1"
                                             [recordsLabel]="''"
