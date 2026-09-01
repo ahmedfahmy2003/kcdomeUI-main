@@ -15,12 +15,13 @@ import { FilterBox } from '../filter-box/filter-box';
 import { Modal } from 'bootstrap';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiResponse } from '../../shared/interface';
+import { PaginationControls } from '../pagination-controls/pagination-controls';
 
 @Component({
   selector: 'filter-input-fields',
   standalone: true,
   providers: [{provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } } ,{provide: MAT_DATE_LOCALE, useValue: 'en-IN'}, provideMomentDateAdapter(undefined, {useUtc:true})],
-  imports: [CommonModule, FormsModule, FilterOperator, forwardRef(() => FilterBox), MatSelectModule, MatDatepickerModule, MatIconModule, MatInputModule],
+  imports: [CommonModule, FormsModule, FilterOperator, forwardRef(() => FilterBox), MatSelectModule, MatDatepickerModule, MatIconModule, MatInputModule, PaginationControls],
   templateUrl: './filter-input-fields.html',
   styleUrl: './filter-input-fields.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

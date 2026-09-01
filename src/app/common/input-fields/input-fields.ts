@@ -14,13 +14,14 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { LoaderService } from '../../services/common/loader.service';
 import { ApiResponse } from '../../shared/interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PaginationControls } from '../pagination-controls/pagination-controls';
 
 @Component({
   selector: 'input-fields',
   templateUrl: './input-fields.html',
   styleUrl: './input-fields.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, NumberDirective, ReactiveFormsModule, CallingMenu, MatAutocompleteModule, MatMenuModule, MatTooltipModule]
+  imports: [CommonModule, FormsModule, NumberDirective, ReactiveFormsModule, CallingMenu, MatAutocompleteModule, MatMenuModule, MatTooltipModule, PaginationControls]
 })
 export class InputFields {
   @Input() fieldname: string;

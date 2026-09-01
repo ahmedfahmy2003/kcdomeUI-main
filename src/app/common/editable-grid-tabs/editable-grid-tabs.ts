@@ -20,11 +20,12 @@ import { LoaderService } from '../../services/common/loader.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiResponse } from '../../shared/interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PaginationControls } from '../pagination-controls/pagination-controls';
 
 @Component({
   selector: 'editable-grid-tabs',
   standalone: true,
-  imports: [forwardRef(() => DimensionsPage), FilterBox, CallingMenu, DateInput, VisbilityGrids, InputFields, TimeInput, MatMenuModule, CommonModule, FormsModule, DxDataGridModule],
+  imports: [forwardRef(() => DimensionsPage), FilterBox, CallingMenu, DateInput, VisbilityGrids, InputFields, TimeInput, MatMenuModule, CommonModule, FormsModule, DxDataGridModule, PaginationControls],
   templateUrl: './editable-grid-tabs.html',
   styleUrl: './editable-grid-tabs.scss'
 })

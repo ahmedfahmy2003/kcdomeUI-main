@@ -192,83 +192,29 @@
             }
             @else if(totalPages() > 1 || (totalPages() === 1 && !noData())){
               @if(totalPages() > 1){
-                <div class="nk-block-between-md g-3 mb-2">
-                  <div class="g">
-                    <ul class="pagination justify-content-center justify-content-md-start">
-                      <li class="page-item">
-                        @if(currentPage() === 1){
-                          <span class="page-link disabled">Prev</span>
-                        }
-                        @else {
-                          <a class="page-link" (click)="goToPage(currentPage() - 1)">Prev</a>
-                        }
-                      </li>
-                      @for(page of [1, 2]; track page){
-                      <li class="page-item">
-                        <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{page}}</a>
-                      </li>
-                      }
-                      @if(currentPage() > 4){
-                      <li class="page-item">
-                        <span class="page-link"><em class="icon ni ni-more-h"></em></span>
-                      </li>
-                      }
-                      @for(page of [currentPage() - 1, currentPage(), currentPage() + 1]; track page){
-                        @if(page > 2 && page < (totalPages() - 1)){
-                        <li class="page-item">
-                          <a class="page-link"[class.active]="currentPage() === page" (click)="goToPage(page)">{{ page }}</a>
-                        </li>
-                        }
-                      }
-                      <!-- Ellipsis before last -->
-                      @if(currentPage() < totalPages() - 3){
-                      <li class="page-item">
-                        <span class="page-link"><em class="icon ni ni-more-h"></em></span>
-                      </li>
-                      }
-                      @for(page of [totalPages() - 1, totalPages()]; track page){
-                        @if(page > 2){
-                        <li class="page-item">
-                          <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{ page }}</a>
-                        </li>
-                        }
-                      }
-                      <li class="page-item">
-                                                          @if(currentPage() === totalPages()){
-                                                              <span class="page-link disabled">Next</span>
-                                                          }
-                                                          @else{
-                                                              <a class="page-link" (click)="goToPage(currentPage() + 1)">Next</a>
-                                                          }
-                                                      </li>
-                                                  </ul>
-                                              </div>
-                                    <div class="">
-                                      Items per page : 
-                                      <div class="ms-1">
-                                        <select class="form-select" [(ngModel)]="pageSize" (change)="sizeChange()">
-                                          @for(item of itemsOptions; track item){
-                                            <option [value]="item">{{item}}</option>
-                                          }
-                                        </select>
-                                      </div>
-                                    </div>
-                                              <div class="g d-none d-md-block">
-                                                              <!-- Page Dropdown -->
-                                                  <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
-                                                      <div>Page</div>
-                                                      <div>
-                                                          @if(totalPages()){
-                                                              <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
-                                                          }
-                                                      </div>
-                                                      <div>of {{ totalPages() }}</div>
-                                                      <div>
-                                                          <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary text-white btn-outline-light">Go</button>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          </div>
+                <div class="mb-2">
+                  <app-pagination-controls
+                    [currentPage]="currentPage()"
+                    [totalPages]="totalPages()"
+                    [pageSize]="pageSize()"
+                    [currentItemCount]="dataSource().length"
+                    [showSummary]="false"
+                    [showPageNumbers]="true"
+                    [gotoSeparator]="'of'"
+                    (pageSelected)="goToPage($event)"
+                  >
+                    <div pagination-middle class="">
+                      Items per page :
+                      <div class="ms-1">
+                        <select class="form-select" [(ngModel)]="pageSize" (change)="sizeChange()">
+                          @for(item of itemsOptions; track item){
+                            <option [value]="item">{{item}}</option>
+                          }
+                        </select>
+                      </div>
+                    </div>
+                  </app-pagination-controls>
+                </div>
               }
               <div class="border demo-table">
                   <table class="table table-tranx">

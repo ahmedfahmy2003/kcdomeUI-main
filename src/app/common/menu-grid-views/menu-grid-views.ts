@@ -7,11 +7,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ToastrService } from 'ngx-toastr';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiResponse } from '../../shared/interface';
+import { PaginationControls } from '../pagination-controls/pagination-controls';
 
 @Component({
   selector: 'menu-grid-views',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTooltipModule, MatMenuModule],
+  imports: [CommonModule, FormsModule, MatTooltipModule, MatMenuModule, PaginationControls],
   templateUrl: './menu-grid-views.html',
   styleUrl: './menu-grid-views.scss'
 })

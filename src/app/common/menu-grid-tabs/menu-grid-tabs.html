@@ -122,95 +122,17 @@
                                         </ul>
                                     </div>
                                     <div class="card-tools ms-2">
-                                        @if(totalPages() > 1){
-                                        <div class="nk-block-between-md g-3">
-                                            <div class="g">
-                                              @if(resultsLength()){  {{((currentPage() - 1) * pageSize) + 1}} - {{dataSource().length === pageSize ? pageSize * currentPage() : ((currentPage() - 1) * pageSize) + dataSource().length}} of {{resultsLength()}} }
-                                            </div>
-                                            <div class="g">
-                                                <ul class="pagination justify-content-center justify-content-md-start">
-                                                    <li class="page-item" [class.disabled]="currentPage() === 1">
-                                                        @if(currentPage() === 1){
-                                                            <span class="page-link">Prev</span>
-                                                        }
-                                                        @else {
-                                                            <a class="page-link" (click)="goToPage(currentPage() - 1)">Prev</a>
-                                                        }
-                                                                    
-                                                    </li>
-                                                    @if(!showFilter){            <!-- First two pages -->
-                                                    @for(page of [1, 2]; track page){
-                                                        <li class="page-item">
-                                                            <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{page}}</a>
-                                                        </li>
-                                                    }
-
-                                                    @if(currentPage() > 4){
-                                                        <li class="page-item">
-                                                            <span class="page-link"><em class="icon ni ni-more-h"></em></span>
-                                                        </li>
-                                                    }
-
-
-                                                                <!-- Current, Previous, Next -->
-                                                    @for(page of [currentPage() - 1, currentPage(), currentPage() + 1]; track page){
-                                                        @if(page > 2 && page < (totalPages() - 1)){
-                                                            <li class="page-item">
-                                                                <a class="page-link"[class.active]="currentPage() === page" (click)="goToPage(page)">{{ page }}</a>
-                                                            </li>
-                                                        }
-                                                    }
-
-                                                                <!-- Ellipsis before last -->
-                                                    @if(currentPage() < totalPages() - 3){
-                                                        <li class="page-item">
-                                                            <span class="page-link"><em class="icon ni ni-more-h"></em></span>
-                                                        </li>
-                                                    }
-
-                                                                <!-- Last two pages -->
-                                                    @for(page of [totalPages() - 1, totalPages()]; track page){
-                                                        @if(page > 2){
-                                                            <li class="page-item">
-                                                                <a class="page-link" (click)="goToPage(page)" [class.active]="currentPage() === page">{{ page }}</a>
-                                                            </li>
-                                                        }
-                                                    }
-                                                    }
-                                                    <li class="page-item" [class.disabled]="currentPage() === totalPages()">
-                                                        @if(currentPage() === totalPages()){
-                                                            <span class="page-link">Next</span>
-                                                        }
-                                                        @else{
-                                                            <a class="page-link" (click)="goToPage(currentPage() + 1)">Next</a>
-                                                        }
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="g d-none d-md-block">
-                                                            <!-- Page Dropdown -->
-                                                <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
-                                                    <div>Page</div>
-                                                    <div class="pe-0">
-                                                        @if(totalPages()){
-                                                            <input type="text" class="form-control c-pg" [(ngModel)]="currentPage" (input)="numbersOnly($event)">
-                                                        }
-                                                    </div>
-                                                    <div class="ps-0">/ {{ totalPages() }}</div>
-                                                    <div>
-                                                        <button (change)="goToPage(currentPage())" [disabled]="!currentPage()" class="btn btn-secondary text-white btn-outline-light">Go</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        }
-                                        @else{
-                                            <div class="nk-block-between-md g-3">
-                                                <div class="g">
-                                                    {{((currentPage() - 1) * pageSize) + 1}} - {{dataSource().length === pageSize ? pageSize * currentPage() : ((currentPage() - 1) * pageSize) + dataSource().length}} of {{resultsLength()}}
-                                                </div>
-                                            </div>
-                                        }
+                                        <app-pagination-controls
+                                            [currentPage]="currentPage()"
+                                            [totalPages]="totalPages()"
+                                            [totalItems]="resultsLength()"
+                                            [pageSize]="pageSize"
+                                            [currentItemCount]="dataSource().length"
+                                            [showPageNumbers]="!showFilter"
+                                            [showGoto]="totalPages() > 1"
+                                            [recordsLabel]="''"
+                                            (pageSelected)="goToPage($event)"
+                                        ></app-pagination-controls>
                                        
                                     </div>
                                 </div>

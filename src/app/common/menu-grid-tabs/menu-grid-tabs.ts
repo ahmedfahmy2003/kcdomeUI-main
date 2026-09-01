@@ -22,11 +22,12 @@ import { PivotGrid } from '../pivot-grid/pivot-grid';
 import { SignalRService } from "../../services/common/signalr.service";
 import { ApiResponse } from '../../shared/interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PaginationControls } from '../pagination-controls/pagination-controls';
 
 @Component({
     selector: 'menu-grid-tabs',
     standalone: true,
-    imports: [DimensionsPage, FilterBox, CommonModule, FormsModule, TreeMenu, DxDataGridModule, VisbilityGrids, PivotGrid, ExportRecord, MatMenuModule],
+    imports: [DimensionsPage, FilterBox, CommonModule, FormsModule, TreeMenu, DxDataGridModule, VisbilityGrids, PivotGrid, ExportRecord, MatMenuModule, PaginationControls],
     templateUrl: './menu-grid-tabs.html',
     styleUrl: './menu-grid-tabs.scss'
 })
