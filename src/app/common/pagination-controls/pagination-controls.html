@@ -1,61 +1,84 @@
-<div class="nk-block-between-md g-3">
+<div class="pagination-mobile d-flex d-md-none align-items-center justify-content-between">
     @if(showSummary()){
-        <div class="g pagination-summary" [class.pagination-summary-compact]="compactSummary()">
+        <div class="pagination-mobile-summary">
             @if(totalItems()){
-                {{ displayStart }} - {{ displayEnd }} of {{ totalItems() }}@if(recordsLabel()){ {{ recordsLabel() }}}
+                {{ displayStart | number }}-{{ displayEnd | number }} of {{ totalItems() | number }}
             }
         </div>
     }
 
     @if(totalPages() > 1){
-        <div class="g" [class.flex-grow-1]="!showPageNumbers()">
-            <ul class="pagination justify-content-center justify-content-md-start">
-                <li class="page-item" [class.disabled]="currentPage() === 1">
-                    @if(currentPage() === 1){
-                        <span class="page-link">Prev</span>
-                    }
-                    @else {
-                        <a class="page-link cursor-pointer" (click)="goToPrevious()">Prev</a>
-                    }
-                </li>
+        <div class="pagination-mobile-actions d-flex align-items-center">
+            <button type="button" class="pagination-mobile-button" [disabled]="currentPage() === 1" (click)="goToPrevious()" aria-label="Previous page">
+                <em class="icon ni ni-chevron-left"></em>
+            </button>
+            <button type="button" class="pagination-mobile-button" [disabled]="currentPage() === totalPages()" (click)="goToNext()" aria-label="Next page">
+                <em class="icon ni ni-chevron-right"></em>
+            </button>
+        </div>
+    }
+</div>
 
-                @for(item of paginationItems(); track $index){
-                    <li class="page-item">
-                        @if(isPageItem(item)){
-                            <a class="page-link cursor-pointer" [class.active]="currentPage() === item" (click)="selectPage(item)">{{ item }}</a>
+<div class="pagination-desktop d-none d-md-block">
+    <div class="nk-block-between-md g-3">
+        @if(showSummary()){
+            <div class="g pagination-summary" [class.pagination-summary-compact]="compactSummary()">
+                @if(totalItems()){
+                    {{ displayStart }} - {{ displayEnd }} of {{ totalItems() }}@if(recordsLabel()){ {{ recordsLabel() }}}
+                }
+            </div>
+        }
+
+        @if(totalPages() > 1){
+            <div class="g" [class.flex-grow-1]="!showPageNumbers()">
+                <ul class="pagination justify-content-center justify-content-md-start">
+                    <li class="page-item" [class.disabled]="currentPage() === 1">
+                        @if(currentPage() === 1){
+                            <span class="page-link">Prev</span>
                         }
                         @else {
-                            <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                            <a class="page-link cursor-pointer" (click)="goToPrevious()">Prev</a>
                         }
                     </li>
-                }
 
-                <li class="page-item" [class.disabled]="currentPage() === totalPages()">
-                    @if(currentPage() === totalPages()){
-                        <span class="page-link">Next</span>
+                    @for(item of paginationItems(); track $index){
+                        <li class="page-item">
+                            @if(isPageItem(item)){
+                                <a class="page-link cursor-pointer" [class.active]="currentPage() === item" (click)="selectPage(item)">{{ item }}</a>
+                            }
+                            @else {
+                                <span class="page-link"><em class="icon ni ni-more-h"></em></span>
+                            }
+                        </li>
                     }
-                    @else{
-                        <a class="page-link cursor-pointer" (click)="goToNext()">Next</a>
-                    }
-                </li>
-            </ul>
-        </div>
-    }
 
-    <ng-content select="[pagination-middle]"></ng-content>
+                    <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+                        @if(currentPage() === totalPages()){
+                            <span class="page-link">Next</span>
+                        }
+                        @else{
+                            <a class="page-link cursor-pointer" (click)="goToNext()">Next</a>
+                        }
+                    </li>
+                </ul>
+            </div>
+        }
 
-    @if(showGoto() && totalPages() > 1){
-        <div class="g d-none d-md-block">
-            <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
-                <div>Page</div>
-                <div class="pe-0">
-                    <input type="text" class="form-control c-pg" [ngModel]="gotoPage()" (ngModelChange)="updateGoto($event)" (keyup.enter)="submitGoto()">
-                </div>
-                <div class="ps-0">{{ gotoSeparator() }} {{ totalPages() }}</div>
-                <div>
-                    <button type="button" (click)="submitGoto()" [disabled]="!gotoPage()" class="btn btn-secondary btn-sm text-white btn-outline-light">Go</button>
+        <ng-content select="[pagination-middle]"></ng-content>
+
+        @if(showGoto() && totalPages() > 1){
+            <div class="g">
+                <div class="pagination-goto d-flex justify-content-center justify-content-md-start gx-3">
+                    <div>Page</div>
+                    <div class="pe-0">
+                        <input type="text" class="form-control c-pg" [ngModel]="gotoPage()" (ngModelChange)="updateGoto($event)" (keyup.enter)="submitGoto()">
+                    </div>
+                    <div class="ps-0">{{ gotoSeparator() }} {{ totalPages() }}</div>
+                    <div>
+                        <button type="button" (click)="submitGoto()" [disabled]="!gotoPage()" class="btn btn-secondary btn-sm text-white btn-outline-light">Go</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

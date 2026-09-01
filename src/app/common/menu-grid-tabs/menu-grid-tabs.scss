@@ -55,6 +55,22 @@ tr.selected{
 .rsett{
     min-width: 160px;
 }
+
+.rsett .link-check li span {
+    display: block;
+    font-weight: 600;
+}
+
+.rsett .link-check li.active a {
+    color: #6576ff;
+    font-weight: 700;
+}
+
+.rsett .link-check li.active a::before {
+    content: "\2713";
+    margin-right: 0.5rem;
+}
+
 .rocount{
     width: 110px;
 }

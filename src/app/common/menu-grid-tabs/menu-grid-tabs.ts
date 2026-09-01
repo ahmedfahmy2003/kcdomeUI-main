@@ -443,6 +443,7 @@ export class MenuGridTabs implements OnInit{
 
   tabTypeEvt(e: any){
     this.tabType.set(e);
+    this.openMenuId.set('');
   }
 
   getmenuFields(id: number) {

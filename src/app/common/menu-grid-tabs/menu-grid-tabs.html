@@ -40,20 +40,24 @@
                                     <div class="card-tools">
                                         <ul class="btn-toolbar gx-1">
                                             <li>
-                                                    <div class="d-flex pt-1">
-                                                        <div class="custom-control custom-control-sm custom-radio">
-                                                            <input type="radio" [name]="'tabType'+page.dtid" class="custom-control-input" [(ngModel)]="tabType" value="table" [id]="pageIndex+'table'" (change)="tabTypeEvt('table')"> <label class="custom-control-label" [for]="pageIndex+'table'">Overview</label>
+                                                <div class="kc-dropdown-wrap">
+                                                    <span class="btn btn-sm btn-icon btn-trigger cursor-pointer" (click)="toggleCount('viewType')">
+                                                        <em class="icon ni ni-eye"></em>
+                                                    </span>
+                                                    @if(openMenuId() === 'viewType'){
+                                                        <div class="kc-dropdown-menu rsett">
+                                                            <ul class="link-check">
+                                                                <li><span>View</span></li>
+                                                                <li [ngClass]="tabType() === 'table' ? 'active':''" (click)="tabTypeEvt('table')"><a class="cursor-pointer">Overview</a></li>
+                                                                <li [ngClass]="tabType() === 'pivot' ? 'active':''" (click)="tabTypeEvt('pivot')"><a class="cursor-pointer">Pivot</a></li>
+                                                                @if(menuaccess && menuaccess.TreeMenu){
+                                                                    <li [ngClass]="tabType() === 'tree' ? 'active':''" (click)="tabTypeEvt('tree')"><a class="cursor-pointer">Tree</a></li>
+                                                                }
+                                                            </ul>
                                                         </div>
-                                                        <div class="ms-2 custom-control custom-control-sm custom-radio">
-                                                            <input type="radio" [name]="'tabType'+page.dtid" class="custom-control-input" [(ngModel)]="tabType" value="pivot" [id]="pageIndex+'pivot'" (change)="tabTypeEvt('pivot')"> <label class="custom-control-label" [for]="pageIndex+'pivot'">Pivot</label>
-                                                        </div>
-                                                        @if(menuaccess && menuaccess.TreeMenu){
-                                                        <div class="ms-2 custom-control custom-control-sm custom-radio">
-                                                            <input type="radio" [name]="'tabType'+page.dtid" class="custom-control-input" [(ngModel)]="tabType" value="tree" [id]="pageIndex+'tree'" (change)="tabTypeEvt('tree')"> <label class="custom-control-label" [for]="pageIndex+'tree'">Tree</label>
-                                                        </div>
-                                                        }
-                                                    </div>
-                                                </li>
+                                                    }
+                                                </div>
+                                            </li>
                                             <li class="btn-toolbar-sep"></li>
                                         </ul>
                                     </div>
