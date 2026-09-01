@@ -33418,14 +33418,8 @@ select:-webkit-autofill:focus {
 
 .page-title {
   font-family: Nunito, sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
-}
-
-@media (min-width: 992px) {
-  .page-title {
-    font-size: 1.75rem;
-  }
 }
 .overline-title {
   font-size: 11px;
