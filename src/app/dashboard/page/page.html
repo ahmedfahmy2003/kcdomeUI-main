@@ -1,67 +1,70 @@
 <div class="container-fluid">
     @if(tabList() && tabList().length > 0){
         <div>
-            @if(dlist().length > 0){
-                @if(!closealldisable()){
-                <div class="btn-group me-3 mb-1">
-                    <a (click)="closeAll()" class="btn btn-sm btn-danger px-2" title="Close" aria-label="Close"><em class="icon ni ni-cross"></em></a>
-                </div>
-                }
-            }
-                        @for (page of tabList(); track page; let pageIndex = $index) {
-                            @if(page.pageType !== 'dashboard'){
-                                <div class="btn-group me-3 mb-1">
-                                    <a (click)="switchPage(page)" class="btn px-2 border-end-0" [ngClass]="((page.pageType !== 'detailmenu' && activeId() === page.id) || (page.pageType === 'detailmenu' && activeId() === page.dtid)) ? 'btn-secondary':'btn-white btn-outline-light btn-dim'">{{page.name}} {{page.pageType === 'pendingwf' ? '*':''}}</a>
-                                    @if(!page.disableClose){
+            <div class="page-tabs-row" #pageTabsRow>
+                <div class="page-tabs-track">
+                    @if(dlist().length > 0 && !closealldisable()){
+                        <div class="btn-group me-3 page-tab-group page-tab-group-static">
+                            <a (click)="closeAll()" class="btn btn-sm btn-danger px-2" title="Close" aria-label="Close"><em class="icon ni ni-cross"></em></a>
+                        </div>
+                    }
+
+                    @for (page of tabList(); track page) {
+                        @if(page.pageType !== 'dashboard'){
+                            <div class="btn-group me-3 page-tab-group">
+                                <a (click)="switchPage(page)" class="btn px-2 border-end-0 page-tab-link" [class.page-tab-link-active]="isActivePage(page)" [ngClass]="isActivePage(page) ? 'btn-secondary':'btn-white btn-outline-light btn-dim'">{{page.name}} {{page.pageType === 'pendingwf' ? '*':''}}</a>
+                                @if(!page.disableClose){
                                     <div class="btn-group">
                                         <a (click)="closePage(page)" class="btn border-left px-2" [ngClass]="((page.pageType !== 'detailmenu' && activeId() === page.id) || (page.pageType === 'detailmenu' && activeId() === page.dtid)) ? 'border-start btn-secondary':'btn-dim btn-outline-primary'" title="Close" aria-label="Close"><em class="icon ni ni-cross"></em></a>
                                     </div>
-                                    }
-                                </div>
-                            }
-                            @else {
-                                <div class="btn-group me-3 mb-1">
-                                    <a (click)="switchPage(page)" class="btn px-2" [ngClass]="activeId() === page.dtid ? 'btn-secondary':'btn-white btn-outline-light btn-dim'">
-                                       {{templateName()}}
-                                    </a>
-                                    @if(activeId() === page.dtid){
-                                        <div class="btn-group">
-                                            <dashboard-menu [editbtn]="editbtn()" [templateList]="templateList()" (selectTemplateEmit)="selectTemplateEvt($event)"></dashboard-menu>
-                                            @if(templateEdit()){
-                                                <button (click)="editList()" [disabled]="editbtn()" class="btn btn-secondary text-white border-start"><em class="icon ni ni-edit"></em></button>
-                                            }
-                                        </div>
-                                    }
-                                    <div class="btn-group">
-                                        <a (click)="closePage(page)" class="btn px-2" [ngClass]="activeId() === page.dtid ? 'btn-secondary border-start':'btn-dim btn-outline-primary'" title="Close" aria-label="Close"><em class="icon ni ni-cross"></em></a>
-                                    </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         }
-                    </div>
-                    
-                <div class="nk-content-inner mt-2">
-                        @for (page of tabList(); track page.id; let pageIndex = $index) {
-                            @if(page.pageType === 'user'){
-                                @if(page.name === "My Settings"){
-                                    <user-settings [page]="page" [ngClass]="page.id === activeId() ? '':'d-none'" (closeSettingsPage)="closeSettingsPageEvt($event, page)"></user-settings>
+                        @else {
+                            <div class="btn-group me-3 page-tab-group">
+                                <a (click)="switchPage(page)" class="btn px-2 page-tab-link" [class.page-tab-link-active]="isActivePage(page)" [ngClass]="isActivePage(page) ? 'btn-secondary':'btn-white btn-outline-light btn-dim'">
+                                    {{templateName()}}
+                                </a>
+                                @if(activeId() === page.dtid){
+                                    <div class="btn-group">
+                                        <dashboard-menu [editbtn]="editbtn()" [templateList]="templateList()" (selectTemplateEmit)="selectTemplateEvt($event)"></dashboard-menu>
+                                        @if(templateEdit()){
+                                            <button (click)="editList()" [disabled]="editbtn()" class="btn btn-secondary text-white border-start"><em class="icon ni ni-edit"></em></button>
+                                        }
+                                    </div>
                                 }
-                                @else if(page.name === "TMS"){
-                                    <app-tms [page]="page" [ngClass]="page.id === activeId() ? '':'d-none'" (closeSettingsPage)="closeSettingsPageEvt($event, page)"></app-tms>
-                                }
-                            }
-                            @else if(page.pageType === 'dashboard' && companyID()){
-                                <ui-dashboard [ngClass]="page.id === activeId() ? '':'d-none'" [templateName]="templateName()" [_templateID]="templateID()" [editBtn]="editbtn()" [companyID]="companyID()" (editBtnEmit)="editBtnEmitEvt($event)"></ui-dashboard>
-                            }
-                            @else if((page.pageType !== 'user' && page.menuType !== 'Dashboard') || (page.menuType === 'Dashboard' && page.pageType === 'prerequisitemenu')){
-                                <menu-grids class="nk-content-body" [pages]="page" [pIndex]="pageIndex" [pageAdd]="pageAdd()" (procedureJob)="procedureJobEvt($event)"></menu-grids>
-                            }
-                            @else if(page.menuType === 'Dashboard') {
-                                <div [ngClass]="page.id === activeId() ? '':'d-none'">
-                                    <menu-dashboard [endpoint]="endpoint()" [page]="page" [companyID]="companyID()" [preid]="0"></menu-dashboard>
+                                <div class="btn-group">
+                                    <a (click)="closePage(page)" class="btn px-2" [ngClass]="activeId() === page.dtid ? 'btn-secondary border-start':'btn-dim btn-outline-primary'" title="Close" aria-label="Close"><em class="icon ni ni-cross"></em></a>
                                 </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="nk-content-inner mt-2">
+                @for (page of tabList(); track page.id; let pageIndex = $index) {
+                    @if(page.pageType === 'user'){
+                        @if(page.name === "My Settings"){
+                            <user-settings [page]="page" [ngClass]="page.id === activeId() ? '':'d-none'" (closeSettingsPage)="closeSettingsPageEvt($event, page)"></user-settings>
+                        }
+                        @else if(page.name === "TMS"){
+                            <app-tms [page]="page" [ngClass]="page.id === activeId() ? '':'d-none'" (closeSettingsPage)="closeSettingsPageEvt($event, page)"></app-tms>
+                        }
+                    }
+                    @else if(page.pageType === 'dashboard' && companyID()){
+                        <ui-dashboard [ngClass]="page.id === activeId() ? '':'d-none'" [templateName]="templateName()" [_templateID]="templateID()" [editBtn]="editbtn()" [companyID]="companyID()" (editBtnEmit)="editBtnEmitEvt($event)"></ui-dashboard>
+                    }
+                    @else if((page.pageType !== 'user' && page.menuType !== 'Dashboard') || (page.menuType === 'Dashboard' && page.pageType === 'prerequisitemenu')){
+                        <menu-grids class="nk-content-body" [pages]="page" [pIndex]="pageIndex" [pageAdd]="pageAdd()" (procedureJob)="procedureJobEvt($event)"></menu-grids>
+                    }
+                    @else if(page.menuType === 'Dashboard') {
+                        <div [ngClass]="page.id === activeId() ? '':'d-none'">
+                            <menu-dashboard [endpoint]="endpoint()" [page]="page" [companyID]="companyID()" [preid]="0"></menu-dashboard>
+                        </div>
+                    }
                 }
-            }
+            </div>
         </div>
     }
 </div>

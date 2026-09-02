@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnDestroy, OnInit, signal } from "@angular/core";
+import { Component, DestroyRef, effect, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from "@angular/core";
 import { AppService } from "../../services/common/common.service";
 import { Store, select } from "@ngrx/store";
 import * as StoreAction from '../../services/common/store/store.action';
@@ -21,6 +21,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 })
 
 export class Page implements OnInit, OnDestroy {
+  @ViewChild('pageTabsRow') pageTabsRow?: ElementRef<HTMLDivElement>;
 
   private store = inject(Store);
   public tabList = signal<any>([]);
@@ -36,9 +37,18 @@ export class Page implements OnInit, OnDestroy {
   templateName = signal<string>('Main Dashboard');
   templateID = signal<number>(0);
   templateEdit = signal<boolean>(true);
-  closealldisable = signal<boolean>(false)
+  closealldisable = signal<boolean>(false);
+  previousTabCount = 0;
 
   constructor(private _http: AppService, private destroyRef: DestroyRef){
+    effect(() => {
+      this.activeId();
+      const tabCount = this.tabList().length;
+      const shouldScrollToEnd = tabCount > this.previousTabCount;
+      this.previousTabCount = tabCount;
+
+      setTimeout(() => this.scrollActiveTabIntoView(shouldScrollToEnd), 0);
+    });
     
     this.pages = this.store.pipe(select('pages')).subscribe(data=>{
       this.tabList.set(data.menulist);
@@ -83,6 +93,39 @@ export class Page implements OnInit, OnDestroy {
     }
     else{
       this.store.dispatch(StoreAction.activePage({active: page.dtid}))
+    }
+  }
+
+  isActivePage(page: any): boolean{
+    return (page.pageType !== 'detailmenu' && this.activeId() === page.id) || (page.pageType === 'detailmenu' && this.activeId() === page.dtid);
+  }
+
+  scrollActiveTabIntoView(scrollToEnd = false){
+    const container = this.pageTabsRow?.nativeElement;
+    const activeTab = container?.querySelector<HTMLElement>('.page-tab-link-active');
+
+    if (!container || !activeTab) {
+      return;
+    }
+
+    if (scrollToEnd) {
+      container.scrollTo({
+        left: container.scrollWidth,
+        behavior: 'smooth'
+      });
+      return;
+    }
+
+    const targetLeft = Math.max(activeTab.offsetLeft - 24, 0);
+    const targetRight = activeTab.offsetLeft + activeTab.offsetWidth + 24;
+    const visibleLeft = container.scrollLeft;
+    const visibleRight = visibleLeft + container.clientWidth;
+
+    if (targetLeft < visibleLeft || targetRight > visibleRight) {
+      container.scrollTo({
+        left: Math.max(activeTab.offsetLeft - ((container.clientWidth - activeTab.offsetWidth) / 2), 0),
+        behavior: 'smooth'
+      });
     }
   }
 

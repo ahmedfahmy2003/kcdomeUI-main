@@ -5,3 +5,33 @@
         cursor: pointer;
     }
 }
+
+.page-tabs-row {
+    display: block;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.page-tabs-track {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    min-width: max-content;
+    white-space: nowrap;
+}
+
+.page-tab-group {
+    flex: 0 0 auto;
+}
+
+.page-tabs-row::-webkit-scrollbar {
+    height: 6px;
+}
+
+.page-tabs-row::-webkit-scrollbar-thumb {
+    background: rgba(82, 100, 132, 0.35);
+    border-radius: 999px;
+}
