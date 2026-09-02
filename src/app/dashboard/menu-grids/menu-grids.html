@@ -1,7 +1,7 @@
 <div  [ngClass]="(activeID() === page().id && (page().dtid === '' || (page().dtid && page().pageType === 'mainmenu') || page().pageType === 'prerequisitemenu')) || (activeID() === page().dtid && page().pageType === 'detailmenu') || (activeID() === page().id && (page().pageType === 'pendingwf' || page().pageType === 'menu')) ? 'nk-block-head nk-block-head-sm pb-2':'d-none'">
                                     <div class="nk-block-between">
                                         <div class="nk-block-head-content w-100 d-flex flex-wrap">
-                                            <h3 class="nk-block-title page-title flex-grow-1">{{page().name}} - {{page().pageType === 'pendingwf' ? page().pwfid.MenuID : page().pageType === 'mainmenu' && page().dtid ? page().dtid : page().pageType === 'menu' ? page().pwfid.MenuId : page().id}}</h3>
+                                            <!-- <h3 class="nk-block-title page-title flex-grow-1">{{page().name}} - {{page().pageType === 'pendingwf' ? page().pwfid.MenuID : page().pageType === 'mainmenu' && page().dtid ? page().dtid : page().pageType === 'menu' ? page().pwfid.MenuId : page().id}}</h3> -->
                                             <div class="nk-block-des text-soft pt-2">
                                                @if(totalRecords()){ <p class="text-dark d-none d-md-block">Total {{totalRecords()}} records</p>}
                                                @if(mobilePagination()){
