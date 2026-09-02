@@ -964,7 +964,7 @@ export class MenuGridTabs implements OnInit{
       this.sysList.set(newSorted);
 
       this.updateGoto();
-      this.emitPaginationState();
+      this.emitPaginationState(this.dataSourceRaw.length);
 
       if(this.pageType === 'dimensions' && this.resultsLength() === 1 && this.autoOpen){
         this.showSubRecord( this.dataSource()[0].ID, 1,'details','details')
@@ -1014,7 +1014,7 @@ export class MenuGridTabs implements OnInit{
       this.rowCount.emit(0);
       this.resultsLength.set(0);
       this.updateGoto();
-      this.emitPaginationState();
+      this.emitPaginationState(0);
 
      this.fieldVal.forEach((e: any) => {
         if(e.FieldName && e.Visible === true){
@@ -1303,13 +1303,13 @@ export class MenuGridTabs implements OnInit{
             }
           })
           this.updateGoto();
-          this.emitPaginationState();
+          this.emitPaginationState(response.dataModel.length);
         }else{
           this.noData.set(true);
           this.resultsLength.set(0);
           this.dataSource.set([]);
           this.updateGoto();
-          this.emitPaginationState();
+          this.emitPaginationState(0);
           
           this.fieldVal.forEach((e: any)=>{ 
             
@@ -1382,13 +1382,13 @@ export class MenuGridTabs implements OnInit{
     this.totalPages.set(Math.ceil(this.resultsLength() / this.pageSize));
   }
 
-  emitPaginationState() {
+  emitPaginationState(currentItemCount = this.dataSource().length) {
     this.paginationState.emit({
       currentPage: this.currentPage(),
       totalPages: this.totalPages(),
       totalItems: this.resultsLength(),
       pageSize: this.pageSize,
-      currentItemCount: this.dataSource().length
+      currentItemCount
     });
   }
 
