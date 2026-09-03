@@ -135,6 +135,14 @@ export class MenuGrids {
     }
   }
 
+  isGridViewActive(): boolean {
+    if (this.page().pageType === 'prerequisitemenu' && !this.page().isJobEnable) {
+      return this.prtype() === 'grid' && !this.detailsPage() && !this.newRecordShow() && !this.detailsBtnGrid;
+    }
+
+    return !this.detailsPage() && !this.newRecordShow() && !this.detailsBtnGrid;
+  }
+
   addRecord(type: string){
    this.newRecordShow.set(true);
    this.detailsPage.set(true);
