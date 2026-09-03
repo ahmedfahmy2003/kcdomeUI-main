@@ -1,12 +1,15 @@
 <div [hidden]="!visible">
 
-<div class="row mx-0">
-    <div [ngClass]="!showFilter ? 'd-none': pageType === 'submenu' ? 'px-0' : sidebar.isExpanded() ? 'ps-0 col-2':'ps-0 col-3'">
-        <div class="card card-bordered card-stretch">
+<div class="row mx-0 position-relative">
+    @if(showFilter && isMobileView()){
+        <div class="filter-mobile-backdrop" (click)="filterOff(false)"></div>
+    }
+    <div [ngClass]="!showFilter ? 'd-none' : isMobileView() ? 'filter-mobile-panel' : pageType === 'submenu' ? 'px-0' : sidebar.isExpanded() ? 'ps-0 col-2':'ps-0 col-3'">
+        <div class="card card-bordered card-stretch" [class.filter-mobile-card]="isMobileView()">
             @if(sysList().length > 0){<filter-box [recordList]="recordList" [pageType]="pageType" [companyID]="companyID()" (closefilter)="filterOff($event)" (setFilterValue)="setFilterValueEvent($event)" (subQueryEmit)="subQueryEmitEvt($event)" [menuid]="menuid" [_sysList]="sysList()"></filter-box>}
         </div>
     </div>
-    <div class="px-0" [ngClass]="!showFilter ? 'col-12' :   sidebar.isExpanded() ? 'col-10':'col-9' ">
+    <div class="px-0" [ngClass]="isMobileView() ? 'col-12' : !showFilter ? 'col-12' : sidebar.isExpanded() ? 'col-10':'col-9' ">
         <div class="card card-bordered card-stretch">
         @if(eisLoading()){
             <div style="position: fixed; width: 100% !important; height: 100%; background: rgba(255, 255, 255, 0.8); top: 0; left: 0; z-index: 111111;" >

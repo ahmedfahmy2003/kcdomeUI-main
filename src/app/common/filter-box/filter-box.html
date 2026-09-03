@@ -96,7 +96,8 @@
                         <button class="btn btn-success me-2" (click)="applyFilter($event)">Apply</button>
                         <button class="btn btn-danger" (click)="clearFilter()">Clear</button>
                     </div>
-                        <div style=" height: 100%; max-height: calc(100vh - 520px); overflow-y: auto;" class="slimScroll">
+                        <!-- <div style=" height: 100%; max-height: calc(100vh - 520px); overflow-y: auto;" class="slimScroll"> -->
+                        <div style=" height: 100%;" class="slimScroll">
                     @for(list of filterFieldList(); track list; let i = $index){
                         <div class="p-2">
                             <div class="d-flex">

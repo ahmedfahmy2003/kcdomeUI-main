@@ -219,6 +219,7 @@ export class MenuGridTabs implements OnInit{
   closeDetailsSub: any;
   recordListSub: any;
   showFilter: boolean = false;
+  isMobileView = signal<boolean>(false);
   menuid: number;
   setApprovebtn = signal<boolean>(false);
   applyFilter: boolean;
@@ -296,6 +297,7 @@ export class MenuGridTabs implements OnInit{
     });
 
     this.baseurl = this._http.geturl();
+    this.setViewportState();
     if(this.closeDetailsSub){
       this.closeDetailsSub.unsubscribe();
     }
@@ -309,6 +311,15 @@ export class MenuGridTabs implements OnInit{
     this.menulistsub = this.store.pipe(select('list')).subscribe(data=>{
       this.menulist = data.list;
     });
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.setViewportState();
+  }
+
+  setViewportState() {
+    this.isMobileView.set(window.innerWidth < 768);
   }
 
   ngOnInit(): void {

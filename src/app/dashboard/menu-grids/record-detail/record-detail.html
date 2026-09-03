@@ -1,8 +1,7 @@
 <div [hidden]="!visible()" class="card card-bordered card-stretch">
       <div class="row mx-0">
         <div class="col-3 pt-2 ps-3 d-flex">
-          @if(clogo()){<span><img src="data:image/png;base64,{{clogo()}}" class="logo-img bg-white me-2" style="max-height: 16px;" alt="Logo" /></span>}
-          <h6>Record ID: {{recordId() ? recordId() : ''}}</h6>
+          <h6>ID: {{recordId() ? recordId() : ''}}</h6>
         </div>
         <div class="col-9">
           <ul class="nav nav-tabs nav-tabs-s2 float-end">
