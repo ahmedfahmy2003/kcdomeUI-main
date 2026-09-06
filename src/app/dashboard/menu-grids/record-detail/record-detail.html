@@ -1,12 +1,12 @@
 <div [hidden]="!visible()" class="card card-bordered card-stretch">
       <div class="row mx-0">
-        <div class="col-3 pt-2 ps-3 d-flex align-items-start">
+        <div class="col-3 pt-1 ps-3 d-flex align-items-start">
           @if(hasDetailsSideMenu()){
             <button type="button" class="btn btn-trigger btn-icon details-menu-toggle d-md-none me-2" (click)="toggleDetailsMenu()" title="Menu" aria-label="Open record links">
               <em class="icon ni ni-menu"></em>
             </button>
           }
-          <h6>ID: {{recordId() ? recordId() : ''}}</h6>
+          <span>{{recordId() ? recordId() : ''}}</span>
         </div>
         <div class="col-9">
           <ul class="nav nav-tabs nav-tabs-s2 float-end">

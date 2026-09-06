@@ -2965,7 +2965,6 @@ div.dt-container div.dt-search .input-group.has-validation > .form-floating:nth-
 .btn, .dual-listbox .dual-listbox__button {
   --bs-btn-padding-x: 1.125rem;
   --bs-btn-padding-y: 0.4375rem;
-  --bs-btn-font-family: Nunito, sans-serif;
   --bs-btn-font-size: 0.8125rem;
   --bs-btn-font-weight: 700;
   --bs-btn-line-height: 1.25rem;

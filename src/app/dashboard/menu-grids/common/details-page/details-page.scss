@@ -180,6 +180,40 @@ button{
 }
 
 @media (max-width: 767.98px) {
+    .main-tab-table {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        margin: 0;
+        display: block;
+    }
+
+    .main-tab-table tbody,
+    .main-tab-table tr,
+    .main-tab-table td.tdcol,
+    .main-tab-table td.lookup {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .main-tab-table td.tdcol,
+    .main-tab-table td.lookup {
+        padding-right: 0;
+        margin-bottom: 0.75rem;
+    }
+
+    .main-tab-table .form-label {
+        display: block;
+    }
+
+    .main-tab-table .form-control,
+    .main-tab-table .form-select,
+    .main-tab-table .form-area-group {
+        width: 100%;
+    }
+
     .details-tabs-menu {
         position: fixed;
         top: 0;
