@@ -80,6 +80,8 @@ export class DetailsPage implements OnInit{
   @Output() closeNewRecord = new EventEmitter;
   @Output() approveClose = new EventEmitter;
   @Output() wfStatusUpdate = new EventEmitter;
+  detailsMenuOpen = input<boolean>(false);
+  @Output() detailsMenuOpenChange = new EventEmitter<boolean>();
   @Input() prerequisitesType: string;
   @Input() subRecordId: number;
   @Input() plinkedfieldid: any;
@@ -1201,6 +1203,7 @@ export class DetailsPage implements OnInit{
   }
 
   openTab(tab: any, index: number){
+    this.closeDetailsMenu();
     let otherTable: any;
     this.otherTrTabGrid.set([]);
     this.filterKey.set('');
@@ -1391,6 +1394,10 @@ export class DetailsPage implements OnInit{
       });
     }
     },100)
+  }
+
+  closeDetailsMenu(){
+    this.detailsMenuOpenChange.emit(false);
   }
   setUpdate(e: any, fieldName: string){
       this.trTab.update(tab => {

@@ -131,26 +131,37 @@
         </div>
     </div>
     
-    <div class="row mt-3 mx-0">
+    <div class="row mt-3 mx-0 details-page-body">
         @if(pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'){
-            <div class="col-2 px-0">
-                <div class="border-bottom tab-item" [ngClass]="activeTab() === 'Main' ? 'active':''">
-                    <a (click)="openTab('Main', 0)" class="btn ps-1 pe-0 small">
-                        <em class="icon ni ni-caret-right-fill"></em> Main
-                    </a>
-                </div>
-                @for (tab of detailsTab(); track tab.Caption){
-                    @if(tab.Caption){
-                        <div class="border-bottom tab-item" [ngClass]="activeTab() === tab.ContainerName ? 'active':''">
-                            <a (click)="openTab(tab, 0)" class="btn ps-1 pe-0 small">
-                                <em class="icon ni ni-caret-right-fill"></em> {{tab.Caption}} 
-                            </a>
+            @if(detailsMenuOpen()){
+                <div class="details-tabs-backdrop d-md-none" (click)="closeDetailsMenu()"></div>
+            }
+            <div class="col-2 px-0 details-tabs-menu" [class.details-tabs-menu-open]="detailsMenuOpen()">
+                <ul class="nk-menu details-tabs-list">
+                    <li class="nk-menu-item" [ngClass]="activeTab() === 'Main' ? 'active':''">
+                        <div class="cursor-pointer nk-menu-link details-tabs-link" (click)="openTab('Main', 0)">
+                            <span class="nk-menu-icon">
+                                <em class="icon ni ni-caret-right-fill"></em>
+                            </span>
+                            <span class="text-break menu-item">Main</span>
                         </div>
+                    </li>
+                    @for (tab of detailsTab(); track tab.Caption){
+                        @if(tab.Caption){
+                            <li class="nk-menu-item" [ngClass]="activeTab() === tab.ContainerName ? 'active':''">
+                                <div class="cursor-pointer nk-menu-link details-tabs-link" (click)="openTab(tab, 0)">
+                                    <span class="nk-menu-icon">
+                                        <em class="icon ni ni-caret-right-fill"></em>
+                                    </span>
+                                    <span class="text-break menu-item">{{tab.Caption}}</span>
+                                </div>
+                            </li>
+                        }
                     }
-                }
+                </ul>
             </div>
         }
-        <div class="subemenu" [ngClass]="pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'? 'col-10 pe-0':'col-12 px-0'">
+        <div class="subemenu" [ngClass]="pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'? 'col-10 pe-0 details-content-with-tabs':'col-12 px-0'">
             @if(pageType() === 'mainmenu' || pageType() === 'callingmenu' || pageType() === 'detailsBtnGrid'){
                 <mat-accordion>
                     <mat-expansion-panel [expanded]="true" [disabled]="true">

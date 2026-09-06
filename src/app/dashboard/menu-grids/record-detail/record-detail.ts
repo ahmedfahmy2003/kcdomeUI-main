@@ -62,6 +62,7 @@ export class RecordDetail {
   menulabelbtn = signal<string>('');
   cAllatt = signal<boolean>(true);
   enableReport = signal<boolean>(false)
+  detailsMenuOpen = signal<boolean>(false);
   pageLoad: boolean = false;
   prepage = signal<any>({});
   private store = inject(Store);
@@ -105,6 +106,19 @@ export class RecordDetail {
 
   setTabs(menu: string){
     this.activeTab.set(menu);
+    this.detailsMenuOpen.set(false);
+  }
+
+  toggleDetailsMenu(){
+    this.detailsMenuOpen.update(open => !open);
+  }
+
+  detailsMenuOpenEvt(open: boolean){
+    this.detailsMenuOpen.set(open);
+  }
+
+  hasDetailsSideMenu(): boolean {
+    return this.activeTab() === 'details' && (this.pageType() === 'mainmenu' || this.pageType() === 'callingmenu' || this.pageType() === 'detailsBtnGrid');
   }
 
   fileCount(e: any){
