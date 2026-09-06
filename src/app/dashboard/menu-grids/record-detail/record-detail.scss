@@ -62,6 +62,8 @@
 }
 
 .details-menu-toggle {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
   flex: 0 0 auto;
   color: #526484;
 }
