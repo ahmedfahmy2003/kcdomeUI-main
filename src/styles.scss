@@ -46,10 +46,3 @@ body.dark-mode {
 /* You can add global styles to this file, and also import other style files */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-@media (max-width: 767.98px) {
-  .table td:first-child,
-  .table th:first-child {
-    padding-left: 0 !important;
-  }
-}
