@@ -552,7 +552,7 @@ export class DetailsPage implements OnInit{
 
         }else{
           this.disableWfBtn.set(true);
-          this.afterLoaded('init');
+          this.afterLoaded('workflow');
           this.otherReadonly.emit({readonly: this.readonly(), disable: this.rreadonly})
         }
       }
@@ -614,7 +614,7 @@ export class DetailsPage implements OnInit{
                         }
                       })
                     });
-                    this.afterLoaded('init');
+                    this.afterLoaded('workflow');
                   }
 
                 }else{
@@ -860,7 +860,7 @@ export class DetailsPage implements OnInit{
       }
     }
       
-          if(!this.recordId() && this.menuId()){
+          if(type !== 'workflow' && !this.recordId() && this.menuId()){
             const user = JSON.parse(localStorage.getItem('user') || '');
             const lang = JSON.parse(localStorage.getItem('lang') || '');
        
@@ -939,7 +939,7 @@ export class DetailsPage implements OnInit{
               error: (_e)=>{
               }
             })
-          }else if(this.recordId() && this.menuId()){
+          }else if(type !== 'workflow' && this.recordId() && this.menuId()){
             const user = JSON.parse(localStorage.getItem('user') || '');
             const lang = JSON.parse(localStorage.getItem('lang') || '');
        
@@ -976,7 +976,7 @@ export class DetailsPage implements OnInit{
                }
             })
             this.getSysFieldsValue();
-          }else{
+          }else if(type !== 'workflow'){
             this.getSysFieldsValue();
           }
 
