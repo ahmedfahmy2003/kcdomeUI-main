@@ -27,4 +27,8 @@ export class Dashboard {
     this.hasHover.set(e);
   }
 
+  closeMobileSidebar(){
+    this.sidebar.collapse();
+  }
+
 }

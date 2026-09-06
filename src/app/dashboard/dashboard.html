@@ -1,5 +1,8 @@
 
         <div class="nk-main bg-lighter">
+            @if(sidebar.isExpandedm()){
+                <div class="main-sidebar-backdrop d-xl-none" (click)="closeMobileSidebar()"></div>
+            }
             <div
                 class="nk-sidebar nk-sidebar-fixed"
                 [ngClass]="{
