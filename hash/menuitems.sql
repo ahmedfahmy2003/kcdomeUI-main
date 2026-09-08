@@ -2,89 +2,93 @@ ALTER TABLE Sys_Menus
 ADD IconFont NVARCHAR(50) NULL;
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-coins'
+set IconFont=Icon
+
+
+UPDATE Sys_Menus
+SET Icon = 'icon ni ni-coins'
 WHERE MenuType = 'Menu' AND MenuName = 'Accounting';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-wallet'
+SET Icon = 'icon ni ni-wallet'
 WHERE MenuType = 'Menu' AND MenuName = 'Cash & Banks';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-building'
+SET Icon = 'icon ni ni-building'
 WHERE MenuType = 'Menu' AND MenuName = 'Fixed Assets';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-users'
+SET Icon = 'icon ni ni-users'
 WHERE MenuType = 'Menu' AND MenuName = 'Human Resource';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-user-check'
+SET Icon = 'icon ni ni-user-check'
 WHERE MenuType = 'Menu' AND MenuName = 'Self Service';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-box'
+SET Icon = 'icon ni ni-box'
 WHERE MenuType = 'Menu' AND MenuName = 'Materials';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-cart'
+SET Icon = 'icon ni ni-cart'
 WHERE MenuType = 'Menu' AND MenuName = 'Procurements';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-growth'
+SET Icon = 'icon ni ni-growth'
 WHERE MenuType = 'Menu' AND MenuName = 'Sales';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-cart'
+SET Icon = 'icon ni ni-cart'
 WHERE MenuType = 'Menu' AND MenuName = 'Retail';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-setting-alt'
+SET Icon = 'icon ni ni-setting-alt'
 WHERE MenuType = 'Menu' AND MenuName = 'Services';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-setting'
+SET Icon = 'icon ni ni-setting'
 WHERE MenuType = 'Menu' AND MenuName = 'Settings / Development';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-laptop'
+SET Icon = 'icon ni ni-laptop'
 WHERE MenuType = 'Menu' AND MenuName = 'Information Technology';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-building'
+SET Icon = 'icon ni ni-building'
 WHERE MenuType = 'Menu' AND MenuName = 'Manufacturing';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-users-fill'
+SET Icon = 'icon ni ni-users-fill'
 WHERE MenuType = 'Menu' AND MenuName = 'CRM';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-briefcase'
+SET Icon = 'icon ni ni-briefcase'
 WHERE MenuType = 'Menu' AND MenuName = 'Projects';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-pie'
+SET Icon = 'icon ni ni-pie'
 WHERE MenuType = 'Menu' AND MenuName = 'BSC';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-upload-cloud'
+SET Icon = 'icon ni ni-upload-cloud'
 WHERE MenuType = 'Menu' AND MenuName = 'Release Manager';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-user-circle'
+SET Icon = 'icon ni ni-user-circle'
 WHERE MenuType = 'Menu' AND MenuName = 'Customer Portal';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-briefcase'
+SET Icon = 'icon ni ni-briefcase'
 WHERE MenuType = 'Menu' AND MenuName = 'Vendor Portal';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-percent'
+SET Icon = 'icon ni ni-percent'
 WHERE MenuType = 'Menu' AND MenuName = 'Tax';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-reports'
+SET Icon = 'icon ni ni-reports'
 WHERE MenuType = 'Menu' AND MenuName = 'Reports';
 
 UPDATE Sys_Menus
-SET IconFont = 'icon ni ni-shield-check'
+SET Icon = 'icon ni ni-shield-check'
 WHERE MenuType = 'Menu' AND MenuName = 'Auditing';
