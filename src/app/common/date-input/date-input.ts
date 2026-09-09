@@ -288,7 +288,7 @@ export class DateInput implements OnInit {
 
   setEnDate(){
     this.field().FieldVal =  this.hijrien;   
-    console.log(this.hijrien)
+    // console.log(this.hijrien)
     this.setfieldVal.emit({value: new Date(this.hijrien), type: this.field().FieldType});
     setTimeout(()=>{
       this.hijriModal.hide();

@@ -1112,7 +1112,6 @@ export class EditableGridTabs implements OnInit{
             }
             return 0;
           });
-          console.log(newSorted)
           this.sysList.set(newSorted);
 
           this.updateGoto();

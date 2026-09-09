@@ -93,7 +93,6 @@ export class FilterInputFields {
       let size = 1000;
       let pid = this.recordList && this.recordList.parentPageID ? this.recordList.parentPageID : this.menuid;
       let url = "SystemFields/GetDataFields?fieldID="+ this.field.FieldID +"&pMenuId="+pid+"&precordID=0&isFilterApply=false";
-      console.log('filter-input-1:',this.field.FieldID);
       this.fieldActionBody['CompanyID'] = this.companyID();
     
       let params = {
@@ -232,7 +231,6 @@ export class FilterInputFields {
   setMatMultiSelect(){
     this.field.FieldVal = this.lookupSelected().toString();
     this.field.FieldVal = this.field.FieldVal.toString().replaceAll(",","','");
-    console.log(this.lookupSelected())
     this.setInputVal('');
   }
 
