@@ -1400,16 +1400,17 @@ export class DetailsPage implements OnInit{
     this.detailsMenuOpenChange.emit(false);
   }
   setUpdate(e: any, fieldName: string){
-      this.trTab.update(tab => {
-      tab.forEach((x: any) => {
-        x.col.forEach((y: any) => {
-          if(y.FieldName === fieldName && y.FieldType === 'LookUp'){
-            y.updateList = e.value;
-          }
-        })
-      })
-      return tab;   // IMPORTANT: must return updated array
-    });
+    // Acknowledge refreshes in both Main and the active secondary tab.
+    for (const rows of [this.trTab, this.otherTrTab]) {
+      rows.update(tabs => tabs.map((tab: any) => ({
+        ...tab,
+        col: tab.col.map((field: any) =>
+          field.FieldName === fieldName && field.FieldType === 'LookUp'
+            ? { ...field, updateList: e.value }
+            : field
+        )
+      })));
+    }
   }
   getmainval(e: any, fieldName: string)
   {

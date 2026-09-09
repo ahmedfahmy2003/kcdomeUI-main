@@ -191,10 +191,10 @@
                                             </td>
                                         </tr>
                                     }
-                                    @for(row of trTab(); track row.col; let rowIndex = $index){
+                                    @for(row of trTab(); track $index; let rowIndex = $index){
                                         <tr>
                                             @if(row.col.length > 0){
-                                                @for(col of row.col; track col; let colIndex = $index){
+                                                @for(col of row.col; track col.Id ?? ('placeholder-' + $index); let colIndex = $index){
                                                     @if(col.hideCol === 'false' && col.RowLocation){
                                                         <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan : '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
                                                             @if(col.Id){
@@ -236,10 +236,10 @@
                                 <tr>
                                     <td class="p-0 tdcol"></td><td class="p-0 tdcol"></td><td class="p-0 tdcol"></td>
                                 </tr>
-                                @for(row of otherTrTab(); track row; let rowIndex = $index){
+                                @for(row of otherTrTab(); track $index; let rowIndex = $index){
                                     <tr>
                                         @if(row.col.length > 0){
-                                            @for(col of row.col; track col; let colIndex = $index){
+                                            @for(col of row.col; track col.Id ?? ('placeholder-' + $index); let colIndex = $index){
                                                 @if(col.hideCol === 'false' && col.RowLocation){
                                                 <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan: '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
                                                     @if(col.Id){
@@ -299,10 +299,10 @@
                                 <tr>
                                     <td class="p-0 tdcol"></td><td class="p-0 tdcol"></td><td class="p-0 tdcol"></td>
                                 </tr>
-                                @for(row of trTab(); track row; let rowIndex = $index){
+                                @for(row of trTab(); track $index; let rowIndex = $index){
                                     <tr>
                                         @if(row.col.length > 0){
-                                            @for(col of row.col; track col; let colIndex = $index){
+                                            @for(col of row.col; track col.Id ?? ('placeholder-' + $index); let colIndex = $index){
                                                 @if(col.hideCol === 'false' && col.RowLocation){
                                                 <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan : '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
                                                     @if(col.Id){
@@ -361,10 +361,10 @@
                                             <tr>
                                                 <td class="p-0 tdcol"></td><td class="p-0 tdcol"></td><td class="p-0 tdcol"></td>
                                             </tr>
-                                            @for(row of otherTrTab(); track row; let rowIndex = $index){
+                                            @for(row of otherTrTab(); track $index; let rowIndex = $index){
                                                 <tr>
                                                     @if(row.col.length > 0){
-                                                        @for(col of row.col; track col; let colIndex = $index){
+                                                        @for(col of row.col; track col.Id ?? ('placeholder-' + $index); let colIndex = $index){
                                                             @if(col.hideCol === 'false' && col.RowLocation){
                                                             <td [colSpan]="col.ColumnSpan ? col.ColumnSpan: '1'" [rowSpan]="col.RowSpan ? col.RowSpan : '1'" [ngClass]="col.FieldType === 'LookUp'? 'lookup':'tdcol'">
                                                                 @if(col.Id){

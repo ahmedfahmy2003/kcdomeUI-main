@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, input, Input, Output, output, inject, AfterViewInit, ElementRef, ViewChild, signal, effect, DestroyRef } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output, output, inject, AfterViewInit, ElementRef, ViewChild, signal, effect, untracked, DestroyRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppService } from '../../services/common/common.service';
 import { ToastrService } from 'ngx-toastr';
@@ -100,12 +100,18 @@ export class InputFields {
   dateFormat: any;
   constructor(private _http: AppService, private toastr: ToastrService, public modal: ModalService, public loader: LoaderService, private destroyRef: DestroyRef) {
   this.dateFormat = this._http.getDateFormat();
-   effect(()=>{
-   
-    if(!this.pageLoaded){
-      this.oninit();
-    }
-   })
+   effect(() => {
+     const field = this.field();
+     // Keep the field dependency active after initialization. Ordinary value
+     // updates retain options; only an explicit updateList reloads them.
+     untracked(() => {
+       if (!this.pageLoaded) {
+         this.oninit();
+       } else if (field.updateList) {
+         this.loadLookupOptions();
+       }
+     });
+   });
   }
   
   oninit() {
@@ -121,6 +127,10 @@ export class InputFields {
       this.bgColor = 'rgba('+red+','+green+','+blue+', 1)';
     }
 
+    this.loadLookupOptions();
+  }
+
+  private loadLookupOptions() {
     if(this.fieldActionBody && this.field().FieldType === "LookUp" && this.field().DefaultValue && (this.field().updateList || this.optionslist().length === 0)){ //"Editor"
       this.field.update(f => ({ ...f, updateList: false }));
       this.setUpdateList.emit({value: this.field().updateList});
@@ -182,6 +192,9 @@ export class InputFields {
               }
               
               this.optionslist.set(response.dataModel);
+          } else {
+            this.optionslist.set([]);
+            this.largeRow.set(false);
           }
         },
         error: (_e)=>{

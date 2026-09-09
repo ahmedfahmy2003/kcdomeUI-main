@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, signal, Inject, input, forwardRef, ComponentRef, ViewChild, ViewContainerRef, DestroyRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef, signal, Inject, input, ComponentRef, ViewChild, ViewContainerRef, DestroyRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AppService } from '../../services/common/common.service';
 import { ToastrService } from 'ngx-toastr';
@@ -21,7 +21,7 @@ import { PaginationControls } from '../pagination-controls/pagination-controls';
   selector: 'filter-input-fields',
   standalone: true,
   providers: [{provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } } ,{provide: MAT_DATE_LOCALE, useValue: 'en-IN'}, provideMomentDateAdapter(undefined, {useUtc:true})],
-  imports: [CommonModule, FormsModule, FilterOperator, forwardRef(() => FilterBox), MatSelectModule, MatDatepickerModule, MatIconModule, MatInputModule, PaginationControls],
+  imports: [CommonModule, FormsModule, FilterOperator, MatSelectModule, MatDatepickerModule, MatIconModule, MatInputModule, PaginationControls],
   templateUrl: './filter-input-fields.html',
   styleUrl: './filter-input-fields.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
