@@ -93,7 +93,7 @@ export class FilterInputFields {
       let size = 1000;
       let pid = this.recordList && this.recordList.parentPageID ? this.recordList.parentPageID : this.menuid;
       let url = "SystemFields/GetDataFields?fieldID="+ this.field.FieldID +"&pMenuId="+pid+"&precordID=0&isFilterApply=false";
-
+      console.log('filter-input-1:',this.field.FieldID);
       this.fieldActionBody['CompanyID'] = this.companyID();
     
       let params = {
@@ -281,6 +281,7 @@ export class FilterInputFields {
 
     let pid = this.recordList && this.recordList.parentPageID ? this.recordList.parentPageID : this.menuid;
     let url = "SystemFields/GetDataFields?fieldID="+ this.field.FieldID +"&pMenuId="+pid+"&precordID=0&isFilterApply="+this.filterApply;
+    console.log('filter-input-2:',this.field.FieldID);
     this.noData.set(false);
     this.totalItems.set(0);
 

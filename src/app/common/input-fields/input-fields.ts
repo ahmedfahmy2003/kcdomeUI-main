@@ -142,6 +142,7 @@ export class InputFields {
         prid = this.recordId
       }
       let url = "SystemFields/GetDataFields?fieldID="+ this.field().Id+"&pMenuId="+pid+"&precordID="+prid+"&isFilterApply=true";
+      console.log('input-fields-1:',this.field().Id);
       //this.loader.show();
       
       let params = {
@@ -259,6 +260,7 @@ export class InputFields {
       prid = this.recordId
     }
       let url = "SystemFields/GetDataFields?fieldID="+ this.field().Id+"&pMenuId="+pid+"&precordID="+prid+"&isFilterApply=true";
+      console.log('input-fields-2:',this.field().Id);
       this.loader.show();
    
       let params:any = {
